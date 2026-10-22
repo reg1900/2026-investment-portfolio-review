@@ -2,282 +2,72 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>2026 9月 投資案</title>
-  <meta name="description" content="一份以成本配置為基礎的匿名投資組合檢視，聚焦集中度、現金流與風險。">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#123c31">
+  <title>2026 9月 投資案｜手機儀表板</title>
   <style>
-    :root{--ink:#15221d;--muted:#607168;--paper:#f6f4ee;--card:#fffdf8;--green:#164e3b;--mint:#d9e9df;--gold:#d6a54a;--red:#a4473d;--line:#ddd9cf}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif;line-height:1.75}main{max-width:1040px;margin:auto;padding:44px 22px 80px}.eyebrow{color:var(--green);font-weight:750;letter-spacing:.08em;text-transform:uppercase}h1{font-size:clamp(1.8rem,3.5vw,2.8rem);line-height:1.12;margin:.25em 0}h2{margin-top:2.1em;font-size:1.65rem}h3{margin-bottom:.25em}.lede{font-size:1.14rem;max-width:760px;color:#34483f}.notice{border-left:5px solid var(--gold);background:#fff7e6;padding:15px 18px;margin:28px 0;border-radius:0 10px 10px 0}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.card{background:var(--card);border:1px solid var(--line);border-radius:15px;padding:18px;box-shadow:0 4px 18px #14251d0a}.metric{font-size:2rem;font-weight:800;color:var(--green);line-height:1.2}.small{font-size:.9rem;color:var(--muted)}.bar-row{display:grid;grid-template-columns:minmax(170px,1.7fr) 4fr 64px;gap:12px;align-items:center;margin:10px 0}.track{height:17px;background:#e5e2d9;border-radius:999px;overflow:hidden}.fill{height:100%;background:var(--green);border-radius:999px}.fill.alt{background:#4e7d6a}.fill.gold{background:var(--gold)}.fill.red{background:var(--red)}.overview{display:grid;grid-template-columns:minmax(230px,340px) 1fr;gap:28px;align-items:center}.pie{width:min(100%,310px);aspect-ratio:1;border-radius:50%;margin:auto;background:conic-gradient(#164e3b 0 52.52%,#4e7d6a 52.52% 70.05%,#d6a54a 70.05% 84.22%,#86a99a 84.22% 94.11%,#a4473d 94.11% 98.29%,#d88355 98.29% 100%);position:relative}.pie:after{content:"總成本\A NT$1,208.6萬";white-space:pre;position:absolute;inset:25%;border-radius:50%;background:var(--card);display:grid;place-content:center;text-align:center;font-weight:800;line-height:1.35}.pie-list{display:grid;gap:10px}.pie-item{display:grid;grid-template-columns:16px 1fr auto;gap:9px;align-items:center;padding-bottom:8px;border-bottom:1px solid var(--line)}.status{display:inline-block;border-radius:999px;padding:1px 8px;font-size:.78rem;font-weight:750;background:var(--mint);color:var(--green)}.status.forecast{background:#f1e8d2;color:#795b1d}.cash-chart{display:flex;align-items:flex-end;gap:8px;height:220px;padding:10px 4px 0}.cash-month{flex:1;text-align:center;min-width:34px}.cash-bar{display:flex;flex-direction:column-reverse;height:var(--h);overflow:hidden;border-radius:7px 7px 2px 2px;box-shadow:inset 0 0 0 1px #ffffff66}.cash-bar span{min-height:2px}.seg-schroder{background:#164e3b}.seg-fidelity{background:#4f8069}.seg-0050{background:#d39a29}.seg-00713{background:#efb64d}.seg-00878{background:#e58a4f}.seg-00919{background:#c95f43}.seg-00751b{background:#7d9dac}.seg-00933b{background:#547487}.seg-00937b{background:#2f596f}.seg-00406a{background:#965887}.legend{display:flex;flex-wrap:wrap;gap:7px 16px;margin-top:14px}.legend span{white-space:nowrap}.swatch{display:inline-block;width:.8em;height:.8em;border-radius:2px;margin-right:5px}.cash-chip{display:inline-block;margin:2px 3px 2px 0;padding:2px 7px;border-radius:999px;color:#fff;font-size:.82rem;line-height:1.55;white-space:nowrap}table{width:100%;border-collapse:collapse;background:var(--card);font-size:.95rem}th,td{padding:11px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}th{color:var(--muted);font-size:.82rem;letter-spacing:.04em}td:last-child,th:last-child{text-align:right}.risk{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.tag{display:inline-block;background:var(--mint);color:var(--green);border-radius:999px;padding:2px 9px;font-size:.82rem;font-weight:700}.callout{background:var(--green);color:white;border-radius:18px;padding:22px;margin-top:28px}.callout h2{margin-top:0}.questions li{margin-bottom:8px}footer{color:var(--muted);font-size:.86rem;margin-top:44px;padding-top:18px;border-top:1px solid var(--line)}@media(max-width:760px){.grid,.risk,.overview{grid-template-columns:1fr}.bar-row{grid-template-columns:1fr 55px}.bar-row .track{grid-column:1/3}.metric{font-size:1.7rem}.cash-chart{gap:4px}.cash-month .small{font-size:.7rem}.cash-month small{font-size:.7rem}}@media print{body{background:white}.card{box-shadow:none}main{padding:20px}}
+    :root{--ink:#13221c;--muted:#66766e;--paper:#f3f1ea;--card:#fffdf8;--green:#174e3c;--green2:#39715c;--mint:#dcebe2;--gold:#dda83d;--red:#ae4d43;--blue:#597f91;--line:#ded9ce;--shadow:0 10px 28px #173b2e12}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif;line-height:1.55}.app{max-width:620px;margin:auto;padding:0 14px calc(92px + env(safe-area-inset-bottom))}.hero{margin:0 -14px 16px;padding:calc(22px + env(safe-area-inset-top)) 20px 22px;background:linear-gradient(145deg,#123c31,#1d5b46);color:white;border-radius:0 0 28px 28px;box-shadow:0 12px 30px #174e3c28}.topline{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.eyebrow{font-size:.75rem;letter-spacing:.12em;color:#bcd5c8;font-weight:750}.hero h1{font-size:1.35rem;margin:5px 0 2px}.asof{font-size:.78rem;color:#c7dace}.privacy{border:1px solid #ffffff45;background:#ffffff14;color:white;border-radius:999px;padding:8px 11px;font-weight:750}.hero-total{margin-top:22px}.hero-total .label{font-size:.82rem;color:#c7dace}.hero-total .amount{font-size:2.05rem;line-height:1.18;font-weight:850;letter-spacing:-.03em}.hero-total .sub{font-size:.8rem;color:#c7dace;margin-top:4px}.masked{filter:blur(7px);user-select:none}.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:18px}.summary div{background:#ffffff12;border:1px solid #ffffff1f;border-radius:13px;padding:10px}.summary span{display:block;font-size:.68rem;color:#c7dace}.summary strong{font-size:.9rem}.loss{color:#ffd0ca}.gain{color:#176a4c}.hero .gain{color:#bff0d2}.section{scroll-margin-top:10px;margin:17px 0}.section-head{display:flex;justify-content:space-between;align-items:end;margin:0 3px 9px}.section h2{font-size:1.05rem;margin:0}.section-head small{color:var(--muted)}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}.allocation{padding:16px}.ring-row{display:grid;grid-template-columns:142px 1fr;gap:17px;align-items:center}.ring{width:142px;aspect-ratio:1;border-radius:50%;background:conic-gradient(var(--green) 0 52.52%,var(--green2) 52.52% 70.05%,var(--gold) 70.05% 84.22%,#7f9fac 84.22% 94.11%,var(--red) 94.11% 98.29%,#9b5d8d 98.29%);position:relative}.ring:after{content:"11 檔\A資產";white-space:pre;position:absolute;inset:25%;display:grid;place-content:center;text-align:center;background:var(--card);border-radius:50%;font-weight:850;line-height:1.25}.allocation-list{display:grid;gap:8px}.allocation-list div{display:grid;grid-template-columns:9px 1fr auto;gap:7px;align-items:center;font-size:.78rem}.dot{width:9px;height:9px;border-radius:50%}.cash-card{padding:15px 11px 12px;overflow:hidden}.cash-top{display:flex;justify-content:space-between;align-items:center;padding:0 4px 9px}.cash-top strong{font-size:1.18rem}.bars{height:154px;display:flex;align-items:end;gap:5px;border-bottom:1px solid var(--line)}.month{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0}.month button{border:0;padding:0;width:100%;height:var(--h);display:flex;flex-direction:column-reverse;border-radius:6px 6px 2px 2px;overflow:hidden;background:#ddd;cursor:pointer}.month small{font-size:.64rem;color:var(--muted)}.month.active small{color:var(--green);font-weight:850}.seg-fund{background:#174e3c}.seg-equity{background:#dda83d}.seg-bond{background:#597f91}.seg-active{background:#9b5d8d}.cash-detail{margin-top:12px;background:#f0eee7;border-radius:13px;padding:11px}.detail-head{display:flex;justify-content:space-between;font-weight:850;margin-bottom:6px}.detail-line{display:flex;justify-content:space-between;gap:16px;padding:5px 0;border-top:1px solid #ded9ce;font-size:.82rem}.detail-line b{font-variant-numeric:tabular-nums}.balance{padding:16px}.compare{display:grid;gap:13px}.compare-row{display:grid;grid-template-columns:42px 1fr;gap:9px;align-items:center;font-size:.78rem;font-weight:800}.track{height:42px;display:flex;border-radius:11px;overflow:hidden}.part{display:grid;place-items:center;text-align:center;line-height:1.1}.part.a{background:var(--gold);color:#35280d}.part.b{background:var(--red);color:white}.move{margin-top:13px;padding:10px 12px;background:#fff4d6;border-radius:12px;color:#6e5113;font-size:.8rem}.holdings{display:grid;gap:9px}.holding{overflow:hidden}.holding button{width:100%;border:0;background:transparent;padding:13px 14px;display:grid;grid-template-columns:1fr auto;gap:8px;text-align:left;color:inherit}.holding-title{display:flex;gap:9px;align-items:center}.ticker{font-weight:900;font-size:1rem}.kind{font-size:.67rem;padding:2px 7px;border-radius:99px;background:var(--mint);color:var(--green);font-weight:750}.holding-right{text-align:right}.weight{font-weight:900}.cost{display:block;font-size:.7rem;color:var(--muted)}.pl{display:block;font-size:.82rem;font-weight:850}.holding-more{display:none;border-top:1px solid var(--line);padding:12px 14px;background:#f8f6f0}.holding.open .holding-more{display:block}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.metrics+.metrics{margin-top:7px}.metrics div{background:white;border:1px solid var(--line);border-radius:10px;padding:8px}.metrics span{display:block;font-size:.65rem;color:var(--muted)}.metrics strong{font-size:.82rem}.risk-high{color:var(--red)}.risk-good{color:var(--green)}.holding-note{font-size:.76rem;color:var(--muted);margin-top:9px}.more-holdings{display:none}.more-holdings.show{display:grid;gap:9px;margin-top:9px}.show-more{width:100%;border:1px solid #b9c8c0;background:#eef5f1;color:var(--green);font-weight:850;border-radius:13px;padding:11px;margin-top:9px}.notice{padding:14px;font-size:.78rem;color:#5a675f}.bottom-nav{position:fixed;z-index:20;bottom:0;left:50%;transform:translateX(-50%);width:min(620px,100%);display:grid;grid-template-columns:repeat(4,1fr);background:#fffdf8eF;backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:8px 8px calc(8px + env(safe-area-inset-bottom));box-shadow:0 -8px 24px #173b2e12}.bottom-nav a{text-decoration:none;color:var(--muted);text-align:center;font-size:.66rem;font-weight:700}.bottom-nav b{display:block;font-size:1.1rem;line-height:1.2}.bottom-nav a:active{color:var(--green)}@media(max-width:390px){.ring-row{grid-template-columns:120px 1fr}.ring{width:120px}.allocation-list div{font-size:.72rem}.hero-total .amount{font-size:1.8rem}.summary strong{font-size:.8rem}}@media(min-width:700px){body{padding:20px}.app{border-radius:28px;overflow:hidden;box-shadow:0 25px 70px #173b2e20}.hero{border-radius:0 0 28px 28px}}
+    /* 手機方塊損益圖：台股慣例為漲紅跌綠 */
+    .loss{color:#bff0d2}.hero .gain{color:#ffc0ba}.holdings{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.holding{min-height:124px;overflow:hidden;border-radius:15px}.holding.open{min-height:0;grid-column:1/-1}.tile-gain{background:linear-gradient(145deg,#fffdf8,#fff3f1)}.tile-loss{background:linear-gradient(145deg,#fffdf8,#edf8f2)}.tile-button{width:100%;height:100%;min-height:124px;padding:11px 12px;border:0;background:transparent;color:inherit;text-align:left;display:flex;flex-direction:column;justify-content:space-between;touch-action:manipulation;-webkit-tap-highlight-color:transparent}.holding.open .tile-button{min-height:0}.tile-button:active{transform:scale(.985)}.holding-title{align-items:flex-start;justify-content:space-between;gap:5px}.holding-title .ticker{font-size:clamp(.86rem,3.8vw,1rem);line-height:1.25}.day-change{font-size:.7rem;font-weight:850;margin-top:3px}.tile-bottom{border-top:1px solid var(--line);padding-top:6px}.tile-bottom .cost{font-size:.62rem}.tile-pl{font-size:clamp(.82rem,3.7vw,1rem);font-weight:900;line-height:1.2;white-space:nowrap}.tile-rate{font-size:.66rem;font-weight:800}.tile-details{display:none;border-top:1px dashed var(--line);margin-top:9px;padding-top:8px;font-size:.72rem;color:var(--muted);line-height:1.65}.holding.open .tile-details{display:grid;grid-template-columns:1fr 1fr;gap:2px 12px}.pl-up{color:#c43e36}.pl-down{color:#16805b}.holdings .money{transition:filter .15s}@media(max-width:350px){.holdings{gap:7px}.holding{min-height:118px}.tile-button{min-height:118px;padding:10px}.tile-pl{font-size:.78rem}}
   </style>
-  <style>.heatmap{display:grid;grid-template-columns:repeat(5,minmax(110px,1fr));gap:8px}.cash-month,.pie-item,.bar-row,.heatmap>div,#riskReturn circle,[data-interactive]{transition:transform .18s ease,filter .18s ease,opacity .18s ease;cursor:pointer}.cash-month:hover,.cash-month:focus,.pie-item:hover,.pie-item:focus,.bar-row:hover,.bar-row:focus,.heatmap>div:hover,.heatmap>div:focus,[data-interactive]:hover,[data-interactive]:focus{transform:translateY(-3px);filter:brightness(1.04)}#riskReturn circle:hover,#riskReturn circle:focus{stroke:#15221d;stroke-width:4;opacity:1}.chart-tip{position:fixed;z-index:20;display:none;pointer-events:none;width:min(310px,calc(100vw - 28px));background:#15221d;color:white;padding:12px 14px;border-radius:10px;font-size:.84rem;line-height:1.45;box-shadow:0 8px 25px #0003}.tip-title{font-weight:800;font-size:.94rem;padding-bottom:7px;margin-bottom:5px;border-bottom:1px solid #ffffff35}.tip-line{display:flex;justify-content:space-between;gap:18px;padding:3px 0}.tip-line span:last-child{font-variant-numeric:tabular-nums;font-weight:750;white-space:nowrap}.balance-compare{display:grid;gap:15px;margin-top:16px}.balance-row{display:grid;grid-template-columns:88px 1fr;gap:13px;align-items:center}.balance-label{font-weight:800}.balance-track{display:flex;height:46px;border-radius:12px;overflow:hidden;background:#eee9df;box-shadow:inset 0 0 0 1px #d7d1c5}.balance-part{display:grid;place-items:center;color:#fff;font-weight:800;line-height:1.15;text-align:center;font-size:.84rem}.balance-part.lowvol{background:#d6a54a;color:#33250b}.balance-part.leverage{background:#a4473d}.balance-note{display:flex;flex-wrap:wrap;gap:12px;margin:10px 0 0 101px}.balance-note span{font-size:.82rem}.table-shell{overflow:auto;border:1px solid var(--line);border-radius:15px;box-shadow:0 8px 28px #14251d0c}.holding-table{min-width:1040px;border-collapse:separate;border-spacing:0}.holding-table thead th{position:sticky;top:0;z-index:3;background:#164e3b;color:#fff;border-bottom:0;padding:13px 10px}.holding-table th:first-child,.holding-table td:first-child{position:sticky;left:0;z-index:2}.holding-table thead th:first-child{z-index:4}.holding-table tbody td:first-child{background:#fffdf8;font-weight:850;color:#164e3b}.holding-table tbody tr:nth-child(even) td{background:#f4f1e9}.holding-table tbody tr:nth-child(even) td:first-child{background:#f4f1e9}.holding-table tbody tr:hover td{background:#fff4d7}.holding-table tbody tr:hover td:first-child{background:#fff4d7}.holding-table td:nth-child(n+3){text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}.holding-table td:nth-child(2){min-width:210px;color:#465b51}.holding-table .perf-up{color:#176b4d;font-weight:750}.holding-table .perf-down{color:#a4473d;font-weight:750}.holding-table .perf-na{color:#9a9a94}.holding-table .weight-cell{font-weight:850;color:#164e3b}.holding-table .ticker-kind{display:block;color:#7b8b82;font-size:.72rem;font-weight:600;margin-top:1px}@media(max-width:760px){.heatmap{grid-template-columns:repeat(2,minmax(0,1fr))}.balance-row{grid-template-columns:65px 1fr}.balance-part{font-size:.72rem}.balance-note{margin-left:78px}}</style>
 </head>
-<body><main>
-  <div class="eyebrow">匿名公開版</div>
-  <h1>2026 9月 投資案</h1>
-  <p class="lede">0050 占成本 52.52%，是組合最主要的報酬與風險來源；其餘配置分散於高股息、債券、槓桿、主動式 ETF 與海外基金。</p>
-  <div class="notice"><strong>資料口徑：</strong>資產比例按試算表 2026-10-22 最新成本總額 NT$12,085,778.23 計算，不代表目前市值。歷史績效截至 2026 年 9 月；現金流依既有紀錄與前次估算整理。</div>
+<body>
+<main class="app">
+  <header class="hero" id="home">
+    <div class="topline"><div><div class="eyebrow">匿名投資儀表板</div><h1>2026 9月 投資案</h1><div class="asof">資料更新：2026-10-22</div></div><button class="privacy" id="privacy" aria-pressed="false">隱藏金額</button></div>
+    <div class="hero-total"><div class="label">估算目前市值</div><div class="amount money">NT$11,905,940</div><div class="sub">台灣 ETF 10/22 收盤；海外基金 10/21 官方淨值</div></div>
+    <div class="summary"><div><span>未實現損益</span><strong class="money loss">−NT$179,838</strong></div><div><span>損益率</span><strong class="loss">−1.49%</strong></div><div><span>投資成本</span><strong class="money">NT$12,085,778</strong></div></div>
+  </header>
 
-  <section class="grid" aria-label="組合摘要">
-    <div class="card"><div class="small">最大單一部位</div><div class="metric">52.52%</div><div>台灣大型股市值型 ETF</div></div>
-    <div class="card"><div class="small">前三大成本占比</div><div class="metric">70.11%</div><div>集中度已高於「多檔持有」的直覺</div></div>
-    <div class="card"><div class="small">可辨識的投資級債券 ETF</div><div class="metric">9.89%</div><div>三檔台灣掛牌債券 ETF</div></div>
-  </section>
+  <section class="section" id="holdings"><div class="section-head"><h2>現價與未實現損益</h2><small>點方塊看明細</small></div><div class="holdings" id="holdingsGrid"></div></section>
 
-  <section>
-    <h2>資產總覽</h2>
-    <div class="card overview">
-      <div class="pie" role="img" aria-label="總成本新台幣 12,085,778 元；台灣大型股市值型 ETF 52.52%，海外基金 17.53%，台股高股息低波 ETF 14.17%，投資級債券 ETF 9.89%，台股槓桿 ETF 4.18%，台股主動式 ETF 1.72%"></div>
-      <div class="pie-list">
-        <div class="pie-item"><i class="swatch" style="background:#164e3b"></i><span>0050</span><strong>52.52% · NT$6,347,145</strong></div>
-        <div class="pie-item"><i class="swatch" style="background:#4e7d6a"></i><span>富達永續</span><strong>9.16% · 約 NT$1,106,913</strong></div>
-        <div class="pie-item"><i class="swatch" style="background:#d6a54a"></i><span>00713</span><strong>8.43% · NT$1,018,400</strong></div>
-        <div class="pie-item"><i class="swatch" style="background:#4e7d6a"></i><span>施羅德環球</span><strong>8.37% · 約 NT$1,011,121</strong></div>
-        <div class="pie-item"><i class="swatch" style="background:#86a99a"></i><span>00937B</span><strong>4.96% · NT$599,760</strong></div>
-        <div class="pie-item"><i class="swatch" style="background:#a4473d"></i><span>00631L</span><strong>4.18% · NT$505,130</strong></div>
-        <div class="pie-item"><i class="swatch" style="background:#d6a54a"></i><span>00919</span><strong>3.23% · NT$389,910</strong></div>
-        <div class="pie-item"><i class="swatch" style="background:#d6a54a"></i><span>00878</span><strong>2.51% · NT$303,300</strong></div>
-        <div class="pie-item"><i class="swatch" style="background:#86a99a"></i><span>00751B</span><strong>2.50% · NT$301,900</strong></div>
-        <div class="pie-item"><i class="swatch" style="background:#86a99a"></i><span>00933B</span><strong>2.43% · NT$293,930</strong></div>
-        <div class="pie-item"><i class="swatch" style="background:#d88355"></i><span>00406A</span><strong>1.72% · NT$208,270</strong></div>
-      </div>
-    </div>
-    <p class="small">依原始投資比重表的成本分類繪製，金額為占比乘以總成本後四捨五入；不代表目前市值。</p>
-  </section>
+  <section class="section" id="allocation"><div class="section-head"><h2>資產配置</h2><small>依成本占比</small></div><div class="card allocation"><div class="ring-row"><div class="ring" aria-label="0050 52.52%，海外基金17.53%，高股息14.17%，債券9.89%，槓桿4.18%，主動式1.72%"></div><div class="allocation-list"><div><i class="dot" style="background:#174e3c"></i><span>0050</span><b>52.52%</b></div><div><i class="dot" style="background:#39715c"></i><span>海外基金</span><b>17.53%</b></div><div><i class="dot" style="background:#dda83d"></i><span>高股息</span><b>14.17%</b></div><div><i class="dot" style="background:#7f9fac"></i><span>投資級債</span><b>9.89%</b></div><div><i class="dot" style="background:#ae4d43"></i><span>00631L</span><b>4.18%</b></div><div><i class="dot" style="background:#9b5d8d"></i><span>00406A</span><b>1.72%</b></div></div></div></div></section>
 
-  <section>
-    <h2>每月預估配息現金流</h2>
-    <p>以各標的最近一次可得配息與既有頻率外推；00631L 無收益分配。海外基金換匯暫採原表匯率 31.856。10 月已加入使用者提供的 00713、00751B、00919、00933B、00937B 金額，其餘沿用前次資料。</p>
-    <div class="card" style="margin-bottom:16px">
-      <div class="cash-chart" aria-label="每月預估配息逐檔堆疊條狀圖">
-        <div class="cash-month"><div class="small">39.6k</div><div class="cash-bar" style="--h:82px"><span class="seg-schroder" style="height:20.9%" title="施羅德環球 NT$8,262"></span><span class="seg-fidelity" style="height:20.9%" title="富達永續 NT$8,264"></span><span class="seg-00713" style="height:31.5%" title="00713 NT$12,480"></span><span class="seg-00751b" style="height:10.9%" title="00751B NT$4,300"></span><span class="seg-00933b" style="height:3.5%" title="00933B NT$1,368"></span><span class="seg-00937b" style="height:5.3%" title="00937B NT$2,100"></span><span class="seg-00406a" style="height:7.1%" title="00406A NT$2,800"></span></div><small>1月</small></div>
-        <div class="cash-month"><div class="small">84.4k</div><div class="cash-bar" style="--h:175px"><span class="seg-schroder" style="height:9.8%" title="施羅德環球 NT$8,262"></span><span class="seg-fidelity" style="height:9.8%" title="富達永續 NT$8,264"></span><span class="seg-0050" style="height:68.7%" title="0050 NT$58,000"></span><span class="seg-00878" style="height:4.3%" title="00878 NT$3,600"></span><span class="seg-00933b" style="height:1.6%" title="00933B NT$1,368"></span><span class="seg-00937b" style="height:2.5%" title="00937B NT$2,100"></span><span class="seg-00406a" style="height:3.3%" title="00406A NT$2,800"></span></div><small>2月</small></div>
-        <div class="cash-month"><div class="small">29.3k</div><div class="cash-bar" style="--h:61px"><span class="seg-schroder" style="height:28.2%" title="施羅德環球 NT$8,262"></span><span class="seg-fidelity" style="height:28.2%" title="富達永續 NT$8,264"></span><span class="seg-00919" style="height:22.1%" title="00919 NT$6,480"></span><span class="seg-00933b" style="height:4.7%" title="00933B NT$1,368"></span><span class="seg-00937b" style="height:7.2%" title="00937B NT$2,100"></span><span class="seg-00406a" style="height:9.6%" title="00406A NT$2,800"></span></div><small>3月</small></div>
-        <div class="cash-month"><div class="small">39.6k</div><div class="cash-bar" style="--h:82px"><span class="seg-schroder" style="height:20.9%" title="施羅德環球 NT$8,262"></span><span class="seg-fidelity" style="height:20.9%" title="富達永續 NT$8,264"></span><span class="seg-00713" style="height:31.5%" title="00713 NT$12,480"></span><span class="seg-00751b" style="height:10.9%" title="00751B NT$4,300"></span><span class="seg-00933b" style="height:3.5%" title="00933B NT$1,368"></span><span class="seg-00937b" style="height:5.3%" title="00937B NT$2,100"></span><span class="seg-00406a" style="height:7.1%" title="00406A NT$2,800"></span></div><small>4月</small></div>
-        <div class="cash-month"><div class="small">26.4k</div><div class="cash-bar" style="--h:55px"><span class="seg-schroder" style="height:31.3%" title="施羅德環球 NT$8,262"></span><span class="seg-fidelity" style="height:31.3%" title="富達永續 NT$8,264"></span><span class="seg-00878" style="height:13.6%" title="00878 NT$3,600"></span><span class="seg-00933b" style="height:5.2%" title="00933B NT$1,368"></span><span class="seg-00937b" style="height:8%" title="00937B NT$2,100"></span><span class="seg-00406a" style="height:10.6%" title="00406A NT$2,800"></span></div><small>5月</small></div>
-        <div class="cash-month"><div class="small">29.3k</div><div class="cash-bar" style="--h:61px"><span class="seg-schroder" style="height:28.2%" title="施羅德環球 NT$8,262"></span><span class="seg-fidelity" style="height:28.2%" title="富達永續 NT$8,264"></span><span class="seg-00919" style="height:22.1%" title="00919 NT$6,480"></span><span class="seg-00933b" style="height:4.7%" title="00933B NT$1,368"></span><span class="seg-00937b" style="height:7.2%" title="00937B NT$2,100"></span><span class="seg-00406a" style="height:9.6%" title="00406A NT$2,800"></span></div><small>6月</small></div>
-        <div class="cash-month"><div class="small">39.6k</div><div class="cash-bar" style="--h:82px"><span class="seg-schroder" style="height:20.9%" title="施羅德環球 NT$8,262"></span><span class="seg-fidelity" style="height:20.9%" title="富達永續 NT$8,264"></span><span class="seg-00713" style="height:31.5%" title="00713 NT$12,480"></span><span class="seg-00751b" style="height:10.9%" title="00751B NT$4,300"></span><span class="seg-00933b" style="height:3.5%" title="00933B NT$1,368"></span><span class="seg-00937b" style="height:5.3%" title="00937B NT$2,100"></span><span class="seg-00406a" style="height:7.1%" title="00406A NT$2,800"></span></div><small>7月</small></div>
-        <div class="cash-month"><div class="small">61.2k</div><div class="cash-bar" style="--h:127px"><span class="seg-schroder" style="height:13.5%" title="施羅德環球 NT$8,262"></span><span class="seg-fidelity" style="height:13.5%" title="富達永續 NT$8,264"></span><span class="seg-0050" style="height:56.9%" title="0050 NT$34,800"></span><span class="seg-00878" style="height:5.9%" title="00878 NT$3,600"></span><span class="seg-00933b" style="height:2.2%" title="00933B NT$1,368"></span><span class="seg-00937b" style="height:3.4%" title="00937B NT$2,100"></span><span class="seg-00406a" style="height:4.6%" title="00406A NT$2,800"></span></div><small>8月</small></div>
-        <div class="cash-month"><div class="small">29.3k</div><div class="cash-bar" style="--h:61px"><span class="seg-schroder" style="height:28.2%" title="施羅德環球 NT$8,262"></span><span class="seg-fidelity" style="height:28.2%" title="富達永續 NT$8,264"></span><span class="seg-00919" style="height:22.1%" title="00919 NT$6,480"></span><span class="seg-00933b" style="height:4.7%" title="00933B NT$1,368"></span><span class="seg-00937b" style="height:7.2%" title="00937B NT$2,100"></span><span class="seg-00406a" style="height:9.6%" title="00406A NT$2,800"></span></div><small>9月</small></div>
-        <div class="cash-month"><div class="small">61.1k</div><div class="cash-bar" style="--h:127px"><span class="seg-schroder" style="height:13.5%" title="施羅德環球 NT$8,262"></span><span class="seg-fidelity" style="height:13.5%" title="富達永續 NT$8,264"></span><span class="seg-00713" style="height:32.7%" title="00713 NT$20,000"></span><span class="seg-00751b" style="height:7%" title="00751B NT$4,290"></span><span class="seg-00919" style="height:21.4%" title="00919 NT$13,100"></span><span class="seg-00933b" style="height:2.3%" title="00933B NT$1,377"></span><span class="seg-00937b" style="height:4.9%" title="00937B NT$3,014"></span><span class="seg-00406a" style="height:4.6%" title="00406A NT$2,800"></span></div><small>10月</small></div>
-        <div class="cash-month"><div class="small">26.4k</div><div class="cash-bar" style="--h:55px"><span class="seg-schroder" style="height:31.3%" title="施羅德環球 NT$8,262"></span><span class="seg-fidelity" style="height:31.3%" title="富達永續 NT$8,264"></span><span class="seg-00878" style="height:13.6%" title="00878 NT$3,600"></span><span class="seg-00933b" style="height:5.2%" title="00933B NT$1,368"></span><span class="seg-00937b" style="height:8%" title="00937B NT$2,100"></span><span class="seg-00406a" style="height:10.6%" title="00406A NT$2,800"></span></div><small>11月</small></div>
-        <div class="cash-month"><div class="small">29.3k</div><div class="cash-bar" style="--h:61px"><span class="seg-schroder" style="height:28.2%" title="施羅德環球 NT$8,262"></span><span class="seg-fidelity" style="height:28.2%" title="富達永續 NT$8,264"></span><span class="seg-00919" style="height:22.1%" title="00919 NT$6,480"></span><span class="seg-00933b" style="height:4.7%" title="00933B NT$1,368"></span><span class="seg-00937b" style="height:7.2%" title="00937B NT$2,100"></span><span class="seg-00406a" style="height:9.6%" title="00406A NT$2,800"></span></div><small>12月</small></div>
-      </div>
-      <div class="small legend" aria-label="配息來源圖例"><span><i class="swatch seg-schroder"></i>施羅德環球</span><span><i class="swatch seg-fidelity"></i>富達永續</span><span><i class="swatch seg-0050"></i>0050</span><span><i class="swatch seg-00713"></i>00713</span><span><i class="swatch seg-00878"></i>00878</span><span><i class="swatch seg-00919"></i>00919</span><span><i class="swatch seg-00751b"></i>00751B</span><span><i class="swatch seg-00933b"></i>00933B</span><span><i class="swatch seg-00937b"></i>00937B</span><span><i class="swatch seg-00406a"></i>00406A</span></div>
-      <p class="small" style="margin-bottom:0">依目前資料，全年現金流約 NT$495,301；月均約 NT$41,275。各月詳細來源列於下表。</p>
-    </div>
-    <div style="overflow-x:auto"><table>
-      <thead><tr><th>月份</th><th>配息來源與金額</th><th>合計</th></tr></thead>
-      <tbody>
-        <tr><td>1 月</td><td><span class="cash-chip seg-schroder">施羅德環球 NT$8,262</span><span class="cash-chip seg-fidelity">富達永續 NT$8,264</span><span class="cash-chip seg-00713">00713 NT$12,480</span><span class="cash-chip seg-00751b">00751B NT$4,300</span><span class="cash-chip seg-00933b">00933B NT$1,368</span><span class="cash-chip seg-00937b">00937B NT$2,100</span><span class="cash-chip seg-00406a">00406A NT$2,800</span></td><td>NT$39,574</td></tr>
-        <tr><td>2 月</td><td><span class="cash-chip seg-schroder">施羅德環球 NT$8,262</span><span class="cash-chip seg-fidelity">富達永續 NT$8,264</span><span class="cash-chip seg-0050">0050 NT$58,000</span><span class="cash-chip seg-00878">00878 NT$3,600</span><span class="cash-chip seg-00933b">00933B NT$1,368</span><span class="cash-chip seg-00937b">00937B NT$2,100</span><span class="cash-chip seg-00406a">00406A NT$2,800</span></td><td>NT$84,394</td></tr>
-        <tr><td>3 月</td><td><span class="cash-chip seg-schroder">施羅德環球 NT$8,262</span><span class="cash-chip seg-fidelity">富達永續 NT$8,264</span><span class="cash-chip seg-00919">00919 NT$6,480</span><span class="cash-chip seg-00933b">00933B NT$1,368</span><span class="cash-chip seg-00937b">00937B NT$2,100</span><span class="cash-chip seg-00406a">00406A NT$2,800</span></td><td>NT$29,274</td></tr>
-        <tr><td>4 月</td><td><span class="cash-chip seg-schroder">施羅德環球 NT$8,262</span><span class="cash-chip seg-fidelity">富達永續 NT$8,264</span><span class="cash-chip seg-00713">00713 NT$12,480</span><span class="cash-chip seg-00751b">00751B NT$4,300</span><span class="cash-chip seg-00933b">00933B NT$1,368</span><span class="cash-chip seg-00937b">00937B NT$2,100</span><span class="cash-chip seg-00406a">00406A NT$2,800</span></td><td>NT$39,574</td></tr>
-        <tr><td>5 月</td><td><span class="cash-chip seg-schroder">施羅德環球 NT$8,262</span><span class="cash-chip seg-fidelity">富達永續 NT$8,264</span><span class="cash-chip seg-00878">00878 NT$3,600</span><span class="cash-chip seg-00933b">00933B NT$1,368</span><span class="cash-chip seg-00937b">00937B NT$2,100</span><span class="cash-chip seg-00406a">00406A NT$2,800</span></td><td>NT$26,394</td></tr>
-        <tr><td>6 月</td><td><span class="cash-chip seg-schroder">施羅德環球 NT$8,262</span><span class="cash-chip seg-fidelity">富達永續 NT$8,264</span><span class="cash-chip seg-00919">00919 NT$6,480</span><span class="cash-chip seg-00933b">00933B NT$1,368</span><span class="cash-chip seg-00937b">00937B NT$2,100</span><span class="cash-chip seg-00406a">00406A NT$2,800</span></td><td>NT$29,274</td></tr>
-        <tr><td>7 月</td><td><span class="cash-chip seg-schroder">施羅德環球 NT$8,262</span><span class="cash-chip seg-fidelity">富達永續 NT$8,264</span><span class="cash-chip seg-00713">00713 NT$12,480</span><span class="cash-chip seg-00751b">00751B NT$4,300</span><span class="cash-chip seg-00933b">00933B NT$1,368</span><span class="cash-chip seg-00937b">00937B NT$2,100</span><span class="cash-chip seg-00406a">00406A NT$2,800</span></td><td>NT$39,574</td></tr>
-        <tr><td>8 月</td><td><span class="cash-chip seg-schroder">施羅德環球 NT$8,262</span><span class="cash-chip seg-fidelity">富達永續 NT$8,264</span><span class="cash-chip seg-0050">0050 NT$34,800</span><span class="cash-chip seg-00878">00878 NT$3,600</span><span class="cash-chip seg-00933b">00933B NT$1,368</span><span class="cash-chip seg-00937b">00937B NT$2,100</span><span class="cash-chip seg-00406a">00406A NT$2,800</span></td><td>NT$61,194</td></tr>
-        <tr><td>9 月</td><td><span class="cash-chip seg-schroder">施羅德環球 NT$8,262</span><span class="cash-chip seg-fidelity">富達永續 NT$8,264</span><span class="cash-chip seg-00919">00919 NT$6,480</span><span class="cash-chip seg-00933b">00933B NT$1,368</span><span class="cash-chip seg-00937b">00937B NT$2,100</span><span class="cash-chip seg-00406a">00406A NT$2,800</span></td><td>NT$29,274</td></tr>
-        <tr><td>10 月</td><td><span class="cash-chip seg-schroder">施羅德環球 NT$8,262</span><span class="cash-chip seg-fidelity">富達永續 NT$8,264</span><span class="cash-chip seg-00713">00713 NT$20,000</span><span class="cash-chip seg-00751b">00751B NT$4,290</span><span class="cash-chip seg-00919">00919 NT$13,100</span><span class="cash-chip seg-00933b">00933B NT$1,377</span><span class="cash-chip seg-00937b">00937B NT$3,014</span><span class="cash-chip seg-00406a">00406A NT$2,800</span></td><td>NT$61,107</td></tr>
-        <tr><td>11 月</td><td><span class="cash-chip seg-schroder">施羅德環球 NT$8,262</span><span class="cash-chip seg-fidelity">富達永續 NT$8,264</span><span class="cash-chip seg-00878">00878 NT$3,600</span><span class="cash-chip seg-00933b">00933B NT$1,368</span><span class="cash-chip seg-00937b">00937B NT$2,100</span><span class="cash-chip seg-00406a">00406A NT$2,800</span></td><td>NT$26,394</td></tr>
-        <tr><td>12 月</td><td><span class="cash-chip seg-schroder">施羅德環球 NT$8,262</span><span class="cash-chip seg-fidelity">富達永續 NT$8,264</span><span class="cash-chip seg-00919">00919 NT$6,480</span><span class="cash-chip seg-00933b">00933B NT$1,368</span><span class="cash-chip seg-00937b">00937B NT$2,100</span><span class="cash-chip seg-00406a">00406A NT$2,800</span></td><td>NT$29,274</td></tr>
-      </tbody>
-    </table></div>
-    <p class="small">基準：施羅德 241.26 單位 × US$1.07493＝US$259.34；富達 3,206.81 單位 × US$0.0809＝US$259.43。全年若兩者單位配息完全不變，僅供壓力測試的年化值約 US$6,225（約 NT$198,300）；實際配息會變動，且可能來自本金。</p>
-  </section>
+  <section class="section" id="cash"><div class="section-head"><h2>每月配息</h2><small>點月份看明細</small></div><div class="card cash-card"><div class="cash-top"><span>全年估計</span><strong class="money">NT$495,301</strong></div><div class="bars" id="bars"></div><div class="cash-detail" id="cashDetail" aria-live="polite"></div></div></section>
 
-  <section>
-    <h2>年化報酬與全期風險象限</h2>
-    <p>縱軸為截至 2026 年 9 月的 3 年年化報酬，橫軸為各標的完整可用期間的年化標準差。圓點大小代表成本占比，資料不足 3 年者不放入圖中。</p>
-    <div class="card" style="position:relative">
-      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px" aria-label="象限圖篩選">
-        <button type="button" class="quad-filter" data-group="all">全部</button>
-        <button type="button" class="quad-filter" data-group="equity">股票／槓桿</button>
-        <button type="button" class="quad-filter" data-group="bond">債券</button>
-        <button type="button" class="quad-filter" data-group="fund">海外基金</button>
-      </div>
-      <svg id="riskReturn" viewBox="0 0 860 470" role="img" aria-label="各標的截至二〇二六年九月三年年化報酬與全期標準差互動象限圖" style="width:100%;height:auto"></svg>
-      <div id="quadTip" style="position:absolute;display:none;pointer-events:none;background:#15221d;color:white;padding:9px 11px;border-radius:8px;font-size:.84rem;line-height:1.45;box-shadow:0 8px 25px #0003"></div>
-      <p class="small">報酬與風險資料截至 2026-09；標準差採各標的成立後可取得的全部月報酬，樣本標準差乘以 √12。資料可能回補或調整，不含個人稅費。</p>
-    </div>
-  </section>
+  <section class="section" id="balance"><div class="section-head"><h2>00713 × 00631L</h2><small>兩檔子組合</small></div><div class="card balance"><div class="compare"><div class="compare-row"><span>目前</span><div class="track"><div class="part a" style="width:66.8%">00713<br><b>66.8%</b></div><div class="part b" style="width:33.2%">00631L<br><b>33.2%</b></div></div></div><div class="compare-row"><span>建議</span><div class="track"><div class="part a" style="width:60%">00713<br><b>60%</b></div><div class="part b" style="width:40%">00631L<br><b>40%</b></div></div></div></div><div class="move">若只調整這兩檔：約從 00713 移轉 <b class="money">NT$104,282</b> 至 00631L。正二為每日槓桿，需另設停損與持有條件。</div></div></section>
 
-  <section>
-    <h2>蒙地卡羅：配息不再投入的 5 年資產預測</h2>
-    <div class="grid">
-      <div class="card"><div class="small">5 年後資產中位數</div><div class="metric">NT$1,353萬</div><div>不含已領走的配息</div></div>
-      <div class="card"><div class="small">10%–90% 情境區間</div><div class="metric">792–2,153萬</div><div>市場波動造成寬幅差異</div></div>
-      <div class="card"><div class="small">5 年累計領取現金</div><div class="metric">約 NT$237萬</div><div>假設前次配息水準不變</div></div>
-    </div>
-    <div class="card" style="margin-top:16px">
-      <div class="small">5 年後資產金額分布（配息未再投入）</div>
-      <svg viewBox="0 0 820 250" role="img" aria-label="蒙地卡羅期末資產倍數分布圖" style="width:100%;height:auto" tabindex="0" data-interactive data-tip="5 年後資產：10% 情境 NT$792萬；中位數 NT$1,353萬；90% 情境 NT$2,153萬。配息未再投入。">
-        <line x1="55" y1="215" x2="790" y2="215" stroke="#aaa"/><line x1="55" y1="25" x2="55" y2="215" stroke="#aaa"/>
-        <path d="M55 214 C130 214 145 206 190 183 C235 160 265 95 330 55 C390 18 445 35 500 83 C555 132 610 177 790 214" fill="#d9e9df" stroke="#164e3b" stroke-width="3"/>
-        <line x1="220" y1="42" x2="220" y2="215" stroke="#d6a54a" stroke-width="2" stroke-dasharray="5 5"/>
-        <line x1="420" y1="32" x2="420" y2="215" stroke="#164e3b" stroke-width="3"/>
-        <line x1="690" y1="42" x2="690" y2="215" stroke="#d6a54a" stroke-width="2" stroke-dasharray="5 5"/>
-        <text x="185" y="235">NT$792萬</text><text x="382" y="235">NT$1,353萬</text><text x="652" y="235">NT$2,153萬</text>
-        <text x="175" y="35">10%</text><text x="395" y="24">中位數</text><text x="680" y="35">90%</text>
-      </svg>
-    </div>
-    <p>以最新初始成本 NT$12,085,778 模擬 10,000 條、5 年年度路徑。配息視為每年領出，不再投入，因此由原本約 7.3% 的總報酬假設扣除約 3.9% 現金配息率，資產本身採約 3.4% 年化成長與 17.5% 波動。模型估計 5 年後低於起始金額的機率約 38.8%；另行領取的配息現金不包含在期末資產中。</p>
-    <div class="notice"><strong>重要限制：</strong>模型使用假設參數而非即時市場預測，未含稅、交易成本、匯率尾端事件、基金配息來自本金、槓桿 ETF 每日重設造成的完整路徑耗損，也不能模擬制度或市場結構改變。它適合比較配置，不適合當成報酬承諾。</div>
-  </section>
+  <div class="card notice">未實現損益＝估算市值−投資成本，未計已領配息、稅費與交易成本。台灣 ETF 採證交所 2026/10/22 14:30 收盤；施羅德與富達採官網 2026/10/21 淨值，以臺銀 10/22 美元即期買入 32.425 換算。海外基金成本均價為台幣成本除以持有單位，不是歷史美元成本。</div>
 
-  <section>
-    <h2>前十大成分熱力圖</h2>
-    <p>各產品資料更新頻率不同。本審核版只列可核對的最新官方／基金公司資料；未取得同日完整十項者不以推測補齊。00631L 是衍生性商品曝險，不能用一般「前十大持股」解讀。</p>
-    <div class="card" style="margin-bottom:16px">
-      <div class="heatmap">
-        <div style="background:#164e3b;color:white;padding:22px 10px;border-radius:10px"><strong>台積電</strong><br>0050 · 57.10%</div>
-        <div style="background:#39705c;color:white;padding:18px 10px;border-radius:10px"><strong>聯發科</strong><br>0050 · 5.93%</div>
-        <div style="background:#5c8b77;color:white;padding:16px 10px;border-radius:10px"><strong>台達電</strong><br>0050 · 3.01%</div>
-        <div style="background:#71a08c;color:white;padding:15px 10px;border-radius:10px"><strong>鴻海</strong><br>0050 · 2.86%</div>
-        <div style="background:#8bb5a3;color:#15221d;padding:14px 10px;border-radius:10px"><strong>日月光</strong><br>0050 · 2.13%</div>
-        <div style="background:#3e725f;color:white;padding:18px 10px;border-radius:10px"><strong>台積電</strong><br>00406A · 9.50%</div>
-        <div style="background:#477d68;color:white;padding:18px 10px;border-radius:10px"><strong>台達電</strong><br>00406A · 8.50%</div>
-        <div style="background:#528773;color:white;padding:17px 10px;border-radius:10px"><strong>聯發科</strong><br>00406A · 8.00%</div>
-        <div style="background:#70a18b;color:white;padding:15px 10px;border-radius:10px"><strong>緯穎</strong><br>00406A · 5.11%</div>
-        <div style="background:#77a891;color:white;padding:15px 10px;border-radius:10px"><strong>智邦</strong><br>00406A · 4.93%</div>
-        <div style="background:#80ae99;color:#15221d;padding:14px 10px;border-radius:10px"><strong>國巨</strong><br>00406A · 4.39%</div>
-        <div style="background:#88b6a1;color:#15221d;padding:14px 10px;border-radius:10px"><strong>台光電</strong><br>00406A · 4.27%</div>
-        <div style="background:#98c1af;color:#15221d;padding:13px 10px;border-radius:10px"><strong>奇鋐</strong><br>00406A · 3.82%</div>
-        <div style="background:#a9ccbd;color:#15221d;padding:12px 10px;border-radius:10px"><strong>致茂</strong><br>00406A · 3.23%</div>
-        <div style="background:#b7d6c8;color:#15221d;padding:12px 10px;border-radius:10px"><strong>群聯</strong><br>00406A · 3.13%</div>
-      </div>
-      <p class="small">色塊越深代表單一產品內權重越高。台積電、聯發科與台達電在多個台股策略重疊，是組合共同因子的主要來源。</p>
-    </div>
-    <div class="risk">
-      <article class="card"><h3>0050｜2026-10-20</h3><p>目前可核對的前五大為：台積電 57.10%、聯發科 5.93%、台達電 3.01%、鴻海 2.86%、日月光投控 2.13%。光是台積電即高於整檔 ETF 的一半。</p></article>
-      <article class="card"><h3>00631L｜2026-10-20</h3><p>主要不是十檔股票，而是約 NT$4,477.9 億期貨、NT$1,096.4 億股票、NT$1,259.2 億保證金及其他現金管理資產；目標為臺灣50指數「單日」正向兩倍。</p></article>
-      <article class="card"><h3>00406A｜2026-02-28揭露</h3><p>台積電、台達電、聯發科、緯穎、智邦、國巨、台光電、奇鋐、致茂、群聯；揭露權重依序為 9.50%、8.50%、8.00%、5.11%、4.93%、4.39%、4.27%、3.82%、3.23%、3.13%。</p></article>
-      <article class="card"><h3>00713｜2026-10-20</h3><p>官方 PCF 可核對的前五大為：台灣大 9.84%、統一 8.43%、第一金 7.06%、統一超 6.44%、玉山金 5.53%。前五大合計 37.30%，偏向電信、民生消費與金融。</p><p class="small"><a href="https://www.yuantaetfs.com/tradeInfo/pcf/00713">元大投信官方資料</a></p></article>
-      <article class="card"><h3>00919｜2026-09-10</h3><p>官方 PCF 前十大為：富邦金 15.01%、國泰金 12.52%、中信金 10.17%、廣達 9.98%、台新新光金 8.77%、華碩 6.26%、凱基金 5.32%、長榮 3.79%、聯詠 3.31%、瑞昱 2.69%。金融股集中度明顯。</p><p class="small"><a href="https://www.capitalfund.com.tw/etf/product/detail/195/buyback">群益投信官方資料</a></p></article>
-      <article class="card"><h3>00751B｜2026-09-09</h3><p>官方 PCF 前五大債券為 Meta 5.625% 2055（1.09%）、UnitedHealth 5.875% 2053（1.00%）、Meta 5.75% 2065（0.96%）、UnitedHealth 6.05% 2063（0.89%）、Meta 5.75% 2063（0.89%）。共有 376 檔債券，平均修正存續期間 13.79 年。</p><p class="small"><a href="https://www.yuantaetfs.com/tradeInfo/pcf/00751B">元大投信官方資料</a></p></article>
-      <article class="card"><h3>00878／00933B／00937B</h3><p>尚未取得可在同一基準日完整核對的官方前十大清單，因此不以二手資料補值。00878 應列股票權重；00933B、00937B 應列前十大債券或發行人，並同時檢查存續期間、信用評等及美元曝險。</p></article>
-      <article class="card"><h3>兩檔海外基金</h3><p>施羅德屬全球多重資產收益策略；富達至少 70% 投資全球股票並採股息與選擇權收益策略。前十大持倉需以各自最新月報為準，避免把不同月份的持倉混合比較。</p></article>
-    </div>
-  </section>
-
-  <section>
-    <h2>00631L 與 00713 的平衡建議</h2>
-    <p>希望的配置比例為 <strong>00713：00631L＝6：4</strong>。若只在兩者目前合計成本 NT$1,523,530 內調整，目標約為：00713 NT$914,118、00631L NT$609,412；相較目前成本，約需從 00713 移轉 NT$104,282 至 00631L。這仍會提高槓桿曝險，但幅度低於原先誤植的 4：6。</p>
-    <div class="card" aria-label="00713 與 00631L 目前及建議比例比較">
-      <div class="balance-compare">
-        <div class="balance-row"><div class="balance-label">目前</div><div class="balance-track"><div class="balance-part lowvol" style="width:66.8%">00713<br>66.8%</div><div class="balance-part leverage" style="width:33.2%">00631L<br>33.2%</div></div></div>
-        <div class="balance-row"><div class="balance-label">建議</div><div class="balance-track"><div class="balance-part lowvol" style="width:60%">00713<br>60%</div><div class="balance-part leverage" style="width:40%">00631L<br>40%</div></div></div>
-      </div>
-      <div class="balance-note"><span><i class="swatch" style="background:#d6a54a"></i>00713 高息低波</span><span><i class="swatch" style="background:#a4473d"></i>00631L 每日正二</span></div>
-    </div>
-    <div style="overflow-x:auto"><table>
-      <thead><tr><th>方案</th><th>00631L 目標</th><th>00713 目標</th><th>適用情境</th></tr></thead>
-      <tbody>
-        <tr><td>使用者目標 6：4</td><td>40%（約 NT$609,412）</td><td>60%（約 NT$914,118）</td><td>保留低波收益核心，搭配較高槓桿部位</td></tr>
-        <tr><td>目前狀態</td><td>33.2%（NT$505,130）</td><td>66.8%（NT$1,018,400）</td><td>偏向低波／收益</td></tr>
-      </tbody>
-    </table></div>
-    <ul class="questions">
-      <li>以兩檔合計部位為基準，00631L 目標 40%、00713 目標 60%；可設定 00631L 35%–45% 為再平衡帶，超出才調整，避免頻繁交易。</li>
-      <li>至少每季檢視一次；00631L 為每日兩倍槓桿產品，另訂最大可承受損失、持有期限及退出條件。</li>
-      <li>00713可作台股低波／收益因子配置，但仍是股票，不取代債券或緊急預備金。</li>
-      <li>0050 已占整體成本 52.52%，把兩檔子組合調成 6:4 仍會增加臺灣50曝險；執行前宜以整體資產而非只看兩檔比例確認可承受風險。</li>
-    </ul>
-  </section>
-
-  <section>
-    <h2>持倉明細（依成本占比）</h2>
-    <p class="small">1／3／5／7／10 年年化報酬、標準差、夏普值與相關係數均截至 2026 年 9 月。標準差等風險指標採各標的完整可用月資料；夏普值假設年化無風險利率 1.5%。資料不足列「無」。</p>
-    <div class="table-shell"><table class="holding-table">
-      <thead><tr><th>標的</th><th>角色／主要風險</th><th>成本占比</th><th>1年年化</th><th>3年年化</th><th>5年年化</th><th>7年年化</th><th>10年年化</th><th>全期標準差</th><th>全期夏普值</th><th>全期與0050相關係數</th></tr></thead>
-      <tbody>
-        <tr><td>0050<span class="ticker-kind">台股核心</span></td><td>核心市值型；高度連動台灣大型權值股</td><td>52.52%</td><td>70.42%</td><td>56.40%</td><td>29.79%</td><td>28.90%</td><td>23.34%</td><td>28.06%</td><td>0.26</td><td>1.00</td></tr>
-        <tr><td>富達永續<span class="ticker-kind">海外基金</span></td><td>全球股息＋選擇權收益；美元避險</td><td>9.16%</td><td>15.80%</td><td>無</td><td>無</td><td>無</td><td>無</td><td>無</td><td>無</td><td>無</td></tr>
-        <tr><td>00713<span class="ticker-kind">台股低波</span></td><td>高息低波；仍是台股權益風險</td><td>8.43%</td><td>36.27%</td><td>21.79%</td><td>17.99%</td><td>18.90%</td><td>無</td><td>13.22%</td><td>1.11</td><td>0.64</td></tr>
-        <tr><td>施羅德環球<span class="ticker-kind">海外基金</span></td><td>全球多重資產收益；配息可能來自本金</td><td>8.37%</td><td>18.96%</td><td>15.54%</td><td>5.74%</td><td>無</td><td>無</td><td>8.47%</td><td>0.57</td><td>無</td></tr>
-        <tr><td>00937B<span class="ticker-kind">投資級債</span></td><td>長天期投資級債；利率敏感度較高</td><td>4.96%</td><td>-1.60%</td><td>無</td><td>無</td><td>無</td><td>無</td><td>9.62%</td><td>0.21</td><td>0.07</td></tr>
-        <tr><td>00631L<span class="ticker-kind">槓桿 ETF</span></td><td>每日 2 倍槓桿；路徑依賴與波動耗損</td><td>4.18%</td><td>126.20%</td><td>87.53%</td><td>44.85%</td><td>49.97%</td><td>41.21%</td><td>46.69%</td><td>0.08</td><td>0.76</td></tr>
-        <tr><td>00919<span class="ticker-kind">台股高息</span></td><td>台股高股息</td><td>3.23%</td><td>70.49%</td><td>31.67%</td><td>無</td><td>無</td><td>無</td><td>18.07%</td><td>1.82</td><td>0.67</td></tr>
-        <tr><td>00878<span class="ticker-kind">台股高息</span></td><td>台股 ESG／高股息</td><td>2.51%</td><td>77.28%</td><td>32.73%</td><td>23.14%</td><td>無</td><td>無</td><td>17.48%</td><td>1.21</td><td>0.76</td></tr>
-        <tr><td>00751B<span class="ticker-kind">投資級債</span></td><td>美元公司債；信用、利率與匯率曝險</td><td>2.50%</td><td>-2.61%</td><td>4.02%</td><td>-2.94%</td><td>-1.89%</td><td>無</td><td>12.01%</td><td>-0.07</td><td>0.27</td></tr>
-        <tr><td>00933B<span class="ticker-kind">投資級債</span></td><td>長天期金融債；產業與利率風險</td><td>2.43%</td><td>0.13%</td><td>6.93%</td><td>無</td><td>無</td><td>無</td><td>10.13%</td><td>0.54</td><td>-0.01</td></tr>
-        <tr><td>00406A<span class="ticker-kind">主動 ETF</span></td><td>台股主動策略；經理人與策略執行風險</td><td>1.72%</td><td>無</td><td>無</td><td>無</td><td>無</td><td>無</td><td>無</td><td>無</td><td>無</td></tr>
-      </tbody>
-    </table></div>
-    <p class="small">海外基金來源：富達永續採 2026-08 官方月報，該級別 2024-06-26 成立，故僅列 1 年；成立以來年化為 13.8%。施羅德環球採 MoneyDJ 同級別截至 2026-09 的原幣績效，3 年與 5 年由累積報酬換算年化。不同資料源的計算口徑可能略有差異。</p>
-  </section>
-
-  <section>
-    <h2>讀到的四個核心風險</h2>
-    <div class="risk">
-      <article class="card"><span class="tag">集中度</span><h3>一半以上押在單一 ETF</h3><p>0050 占 52.52%；前三大標的合計 70.11%，前五大合計 83.44%。持有 11 個標的不代表風險平均分散。</p></article>
-      <article class="card"><span class="tag">共同因子</span><h3>台股產品彼此可能高度同向</h3><p>市值型、高股息、低波、主動式與正二雖名稱不同，底層仍大量承擔台灣股票市場與大型權值股的共同波動。</p></article>
-      <article class="card"><span class="tag">槓桿</span><h3>4.18% 的正二會放大尾端風險</h3><p>槓桿 ETF 追求每日倍數，不等於長期報酬固定翻倍。在震盪市場中，路徑依賴與波動耗損尤其值得監控。</p></article>
-      <article class="card"><span class="tag">利率／匯率</span><h3>收益型資產不是現金替代品</h3><p>長天期債券會受利率變動影響；美元計價或美元資產也帶來匯率曝險。配息高低不等於總報酬高低。</p></article>
-    </div>
-  </section>
-
-  <footer>
-    <strong>資料與限制：</strong>依一份私人投資試算表截至 2026-10-22 可見內容整理，公開稿已移除姓名、帳號、銀行資金調度、逐筆交易日期與其他可識別資訊。比例以表內成本總額 NT$12,085,778.23 計算；四捨五入可能產生微小差異。本文為資料整理與風險教育，不構成投資建議、報酬保證或即時市場資訊。<br>
-    <strong>版本：</strong>匿名公開版。資料來源包括元大投信 0050／00631L 公開資料、中國信託投信 00406A 揭露、MoneyDJ 施羅德配息頁、富達官方配息頁與 Yahoo Finance 歷史還原價格。部分產品的前十大成分或歷史序列仍待以同一基準日補齊，已在正文中標示。
-  </footer>
 </main>
+<nav class="bottom-nav" aria-label="主要導覽"><a href="#home"><b>⌂</b>總覽</a><a href="#cash"><b>▥</b>配息</a><a href="#balance"><b>⇄</b>平衡</a><a href="#holdings"><b>◫</b>標的</a></nav>
 <script>
-(() => {
-  const data = [
-    {n:'0050',g:'equity',r:56.40,s:28.06,w:52.52,sh:.26,c:1.00,dx:0,dy:-24},
-    {n:'00713',g:'equity',r:21.79,s:13.22,w:8.43,sh:1.11,c:.64,dx:-24,dy:-18},
-    {n:'00631L',g:'equity',r:87.53,s:46.69,w:4.18,sh:.08,c:.76,dx:-34,dy:22},
-    {n:'00919',g:'equity',r:31.67,s:18.07,w:3.23,sh:1.82,c:.67,dx:30,dy:-18},
-    {n:'00878',g:'equity',r:32.73,s:17.48,w:2.51,sh:1.21,c:.76,dx:-28,dy:20},
-    {n:'00751B',g:'bond',r:4.02,s:12.01,w:2.50,sh:-.07,c:.27,dx:28,dy:20},
-    {n:'00933B',g:'bond',r:6.93,s:10.13,w:2.43,sh:.54,c:-.01,dx:-26,dy:-16},
-    {n:'施羅德環球',g:'fund',r:15.54,s:8.47,w:8.37,sh:.57,c:null,dx:-10,dy:24}
-  ];
-  const svg=document.getElementById('riskReturn'),tip=document.getElementById('quadTip');
-  const NS='http://www.w3.org/2000/svg', W=860,H=470,L=66,R=24,T=24,B=58;
-  const x=v=>L+v/50*(W-L-R), y=v=>H-B-v/90*(H-T-B);
-  function el(t,a={},txt=''){const e=document.createElementNS(NS,t);Object.entries(a).forEach(([k,v])=>e.setAttribute(k,v));if(txt)e.textContent=txt;return e}
-  function draw(group='all'){
-    svg.replaceChildren();
-    svg.append(el('rect',{x:L,y:T,width:W-L-R,height:H-T-B,fill:'#fbfaf6',stroke:'#ddd9cf'}));
-    svg.append(el('line',{x1:x(13.22),y1:T,x2:x(13.22),y2:H-B,stroke:'#d6a54a','stroke-dasharray':'6 6'}));
-    svg.append(el('line',{x1:L,y1:y(21.79),x2:W-R,y2:y(21.79),stroke:'#d6a54a','stroke-dasharray':'6 6'}));
-    for(let v=0;v<=50;v+=10){svg.append(el('line',{x1:x(v),y1:T,x2:x(v),y2:H-B,stroke:'#e9e5dc'}));svg.append(el('text',{x:x(v),y:H-B+23,'text-anchor':'middle',fill:'#607168','font-size':'13'},v+'%'))}
-    for(let v=0;v<=90;v+=15){svg.append(el('line',{x1:L,y1:y(v),x2:W-R,y2:y(v),stroke:'#e9e5dc'}));svg.append(el('text',{x:L-10,y:y(v)+4,'text-anchor':'end',fill:'#607168','font-size':'13'},v+'%'))}
-    svg.append(el('text',{x:(L+W-R)/2,y:H-12,'text-anchor':'middle',fill:'#34483f','font-size':'14'},'全期年化標準差 →'));
-    svg.append(el('text',{x:18,y:(T+H-B)/2,transform:`rotate(-90 18 ${(T+H-B)/2})`,'text-anchor':'middle',fill:'#34483f','font-size':'14'},'近 3 年年化總報酬 →'));
-    const colors={equity:'#d6a54a',bond:'#4e7d6a',fund:'#164e3b'};
-    data.filter(d=>group==='all'||d.g===group).forEach(d=>{
-      const c=el('circle',{cx:x(d.s),cy:y(d.r),r:Math.max(7,Math.sqrt(d.w)*2.2),fill:colors[d.g],opacity:'.86',stroke:'#fff','stroke-width':'2',tabindex:'0','aria-label':`${d.n}，近三年年化報酬 ${d.r}%，標準差 ${d.s}%`});
-      const show=e=>{tip.style.display='block';tip.innerHTML=`<strong>${d.n}</strong><br>3 年年化報酬 ${d.r}%<br>全期標準差 ${d.s}%<br>全期夏普值 ${d.sh}<br>全期與 0050 相關係數 ${d.c==null?'無':d.c.toFixed(2)}<br>成本占比 ${d.w}%`;const box=svg.getBoundingClientRect();tip.style.left=Math.min(box.width-210,(e.clientX||box.left+x(d.s))-box.left+12)+'px';tip.style.top=Math.max(42,(e.clientY||box.top+y(d.r))-box.top-15)+'px'};
-      c.addEventListener('mouseenter',show);c.addEventListener('mousemove',show);c.addEventListener('focus',show);c.addEventListener('click',show);c.addEventListener('mouseleave',()=>tip.style.display='none');c.addEventListener('blur',()=>tip.style.display='none');svg.append(c);
-      const lx=x(d.s)+d.dx,ly=y(d.r)+d.dy;
-      svg.append(el('line',{x1:x(d.s),y1:y(d.r),x2:lx,y2:ly,stroke:'#8b978f','stroke-width':'1','pointer-events':'none'}));
-      svg.append(el('text',{x:lx,y:ly-3,'text-anchor':'middle',fill:'#15221d','font-size':'12','font-weight':'750','paint-order':'stroke',stroke:'#fbfaf6','stroke-width':'4','pointer-events':'none'},d.n));
-    });
-  }
-  document.querySelectorAll('.quad-filter').forEach(b=>{b.style.cssText='border:1px solid #c8c3b7;background:#fffdf8;color:#164e3b;border-radius:999px;padding:6px 12px;cursor:pointer;font-weight:700';b.addEventListener('click',()=>draw(b.dataset.group))});
-  draw();
-
-  const generalTip=document.createElement('div');generalTip.className='chart-tip';document.body.append(generalTip);
-  const cashRows=[...document.querySelectorAll('.cash-chart')][0]?.closest('section')?.querySelectorAll('tbody tr')||[];
-  document.querySelectorAll('.cash-month').forEach((node,i)=>{
-    const row=cashRows[i];node.tabIndex=0;
-    if(!row){node.dataset.tip=node.textContent.trim();return}
-    const lines=[...row.querySelectorAll('.cash-chip')].map(chip=>{const m=chip.textContent.trim().match(/^(.*?)\s+(NT\$[\d,]+)$/);return m?`<div class="tip-line"><span>${m[1]}</span><span>${m[2]}</span></div>`:`<div class="tip-line"><span>${chip.textContent.trim()}</span></div>`}).join('');
-    node.dataset.tip=`<div class="tip-title">${row.cells[0].textContent.trim()} · 合計 ${row.cells[2].textContent.trim()}</div>${lines}`;
-  });
-  document.querySelectorAll('.pie-item').forEach(node=>{node.tabIndex=0;node.dataset.tip=node.textContent.trim()});
-  document.querySelectorAll('.heatmap > div').forEach(node=>{node.tabIndex=0;node.dataset.tip=node.textContent.trim()});
-  document.querySelectorAll('.bar-row').forEach(node=>{node.tabIndex=0;node.dataset.tip=node.textContent.trim()});
-  document.querySelectorAll('.holding-table tbody tr').forEach(row=>{
-    [...row.cells].forEach((cell,i)=>{
-      const value=cell.textContent.trim();
-      if(i===2) cell.classList.add('weight-cell');
-      if(i>=3&&i<=8){if(value==='無')cell.classList.add('perf-na');else if(value.startsWith('-'))cell.classList.add('perf-down');else cell.classList.add('perf-up')}
-    });
-  });
-  const reveal=(node,e)=>{generalTip.innerHTML=node.dataset.tip||node.getAttribute('aria-label')||'';generalTip.style.display='block';const px=e.clientX||innerWidth/2,py=e.clientY||innerHeight/2;generalTip.style.left=Math.min(innerWidth-300,px+14)+'px';generalTip.style.top=Math.min(innerHeight-100,py+14)+'px'};
-  document.querySelectorAll('[data-tip]').forEach(node=>{node.addEventListener('mouseenter',e=>reveal(node,e));node.addEventListener('mousemove',e=>reveal(node,e));node.addEventListener('focus',e=>reveal(node,e));node.addEventListener('click',e=>reveal(node,e));node.addEventListener('mouseleave',()=>generalTip.style.display='none');node.addEventListener('blur',()=>generalTip.style.display='none')});
-})();
+const cash=[
+ {m:'1月',t:39574,x:[['施羅德環球',8262,'fund'],['富達永續',8264,'fund'],['00713',12480,'equity'],['00751B',4300,'bond'],['00933B',1368,'bond'],['00937B',2100,'bond'],['00406A',2800,'active']]},
+ {m:'2月',t:84394,x:[['施羅德環球',8262,'fund'],['富達永續',8264,'fund'],['0050',58000,'equity'],['00878',3600,'equity'],['00933B',1368,'bond'],['00937B',2100,'bond'],['00406A',2800,'active']]},
+ {m:'3月',t:29274,x:[['施羅德環球',8262,'fund'],['富達永續',8264,'fund'],['00919',6480,'equity'],['00933B',1368,'bond'],['00937B',2100,'bond'],['00406A',2800,'active']]},
+ {m:'4月',t:39574,x:[['施羅德環球',8262,'fund'],['富達永續',8264,'fund'],['00713',12480,'equity'],['00751B',4300,'bond'],['00933B',1368,'bond'],['00937B',2100,'bond'],['00406A',2800,'active']]},
+ {m:'5月',t:26394,x:[['施羅德環球',8262,'fund'],['富達永續',8264,'fund'],['00878',3600,'equity'],['00933B',1368,'bond'],['00937B',2100,'bond'],['00406A',2800,'active']]},
+ {m:'6月',t:29274,x:[['施羅德環球',8262,'fund'],['富達永續',8264,'fund'],['00919',6480,'equity'],['00933B',1368,'bond'],['00937B',2100,'bond'],['00406A',2800,'active']]},
+ {m:'7月',t:39574,x:[['施羅德環球',8262,'fund'],['富達永續',8264,'fund'],['00713',12480,'equity'],['00751B',4300,'bond'],['00933B',1368,'bond'],['00937B',2100,'bond'],['00406A',2800,'active']]},
+ {m:'8月',t:61194,x:[['施羅德環球',8262,'fund'],['富達永續',8264,'fund'],['0050',34800,'equity'],['00878',3600,'equity'],['00933B',1368,'bond'],['00937B',2100,'bond'],['00406A',2800,'active']]},
+ {m:'9月',t:29274,x:[['施羅德環球',8262,'fund'],['富達永續',8264,'fund'],['00919',6480,'equity'],['00933B',1368,'bond'],['00937B',2100,'bond'],['00406A',2800,'active']]},
+ {m:'10月',t:61107,x:[['施羅德環球',8262,'fund'],['富達永續',8264,'fund'],['00713',20000,'equity'],['00751B',4290,'bond'],['00919',13100,'equity'],['00933B',1377,'bond'],['00937B',3014,'bond'],['00406A',2800,'active']]},
+ {m:'11月',t:26394,x:[['施羅德環球',8262,'fund'],['富達永續',8264,'fund'],['00878',3600,'equity'],['00933B',1368,'bond'],['00937B',2100,'bond'],['00406A',2800,'active']]},
+ {m:'12月',t:29274,x:[['施羅德環球',8262,'fund'],['富達永續',8264,'fund'],['00919',6480,'equity'],['00933B',1368,'bond'],['00937B',2100,'bond'],['00406A',2800,'active']]}
+];
+const holdings=[
+ {n:'0050',k:'台股核心',w:'52.52%',c:6347145,avg:'NT$109.43',q:'NT$106.90',v:6200200,d:'10/22',day:-1.16,note:'最大單一部位；高度連動台灣大型權值股。'},
+ {n:'富達永續',k:'海外基金',w:'9.16%',c:1106912.57,avg:'NT$345.18/單位',q:'US$10.8600',v:1129232,d:'10/21',day:0.28,note:'富達官網 B 股 C 月配息美元避險級別，ISIN LU2829149991。'},
+ {n:'00713',k:'台股低波',w:'8.43%',c:1018400,avg:'NT$63.65',q:'NT$65.90',v:1054400,d:'10/22',day:0.92,note:'高息低波，但仍承擔台股權益風險。'},
+ {n:'施羅德環球',k:'海外基金',w:'8.37%',c:1011120.66,avg:'NT$4,191.00/單位',q:'US$124.7049',v:975548,d:'10/21',day:0.53,note:'施羅德官網美元 U 級別月配固定，ISIN LU1884790491。'},
+ {n:'00937B',k:'投資級債',w:'4.96%',c:599760,avg:'NT$14.28',q:'NT$14.11',v:592620,d:'10/22',day:0.64,note:'長天期投資級債，利率敏感度較高。'},
+ {n:'00631L',k:'槓桿 ETF',w:'4.18%',c:505130,avg:'NT$38.86',q:'NT$35.61',v:462930,d:'10/22',day:-2.73,note:'追求臺灣50單日正向兩倍；具路徑依賴與波動耗損。'},
+ {n:'00919',k:'台股高息',w:'3.23%',c:389910,avg:'NT$32.49',q:'NT$32.42',v:389040,d:'10/22',day:-0.34,note:'台股高股息策略，金融股曝險較高。'},
+ {n:'00878',k:'台股高息',w:'2.51%',c:303300,avg:'NT$33.70',q:'NT$35.27',v:317430,d:'10/22',day:-0.34,note:'ESG 與高股息策略。'},
+ {n:'00751B',k:'投資級債',w:'2.50%',c:301900,avg:'NT$30.19',q:'NT$30.13',v:301300,d:'10/22',day:0.67,note:'美元公司債，含信用、利率及匯率風險。'},
+ {n:'00933B',k:'投資級債',w:'2.43%',c:293930,avg:'NT$15.47',q:'NT$15.42',v:292980,d:'10/22',day:0.39,note:'長天期金融債，含產業集中及利率風險。'},
+ {n:'00406A',k:'主動 ETF',w:'1.72%',c:208270,avg:'NT$9.92',q:'NT$9.06',v:190260,d:'10/22',day:-1.74,note:'台股主動策略，績效受經理人與策略執行影響。'}
+];
+const money=n=>'NT$'+n.toLocaleString('zh-TW');
+let hidden=false;
+const bars=document.getElementById('bars'),detail=document.getElementById('cashDetail');
+function showCash(i){document.querySelectorAll('.month').forEach((n,j)=>n.classList.toggle('active',i===j));const d=cash[i];detail.innerHTML=`<div class="detail-head"><span>${d.m}</span><b class="money">${money(d.t)}</b></div>`+d.x.map(v=>`<div class="detail-line"><span>${v[0]}</span><b class="money">${money(v[1])}</b></div>`).join('');syncPrivacy()}
+cash.forEach((d,i)=>{const el=document.createElement('div');el.className='month';el.innerHTML=`<button aria-label="查看${d.m}配息" style="--h:${Math.round(d.t/84394*132)}px;height:${Math.round(d.t/84394*132)}px">${d.x.map(v=>`<i class="seg-${v[2]}" style="height:${v[1]/d.t*100}%"></i>`).join('')}</button><small>${d.m.replace('月','')}</small>`;el.querySelector('button').onclick=()=>showCash(i);bars.append(el)});showCash(9);
+function card(h){const p=h.v-h.c,rate=p/h.c*100,up=p>=0,sign=up?'+':'−',tone=up?'pl-up':'pl-down',dayUp=h.day>=0,daySign=dayUp?'+':'−',dayTone=dayUp?'pl-up':'pl-down',quoteLabel=h.k==='海外基金'?'淨值':'收盤';return `<article class="card holding ${up?'tile-gain':'tile-loss'}"><button class="tile-button" aria-expanded="false"><div><div class="holding-title"><span class="ticker">${h.n}</span></div><div class="day-change ${dayTone}">前一日 ${daySign}${Math.abs(h.day).toFixed(2)}%</div></div><div class="tile-bottom"><div class="cost">目前損益</div><div class="tile-pl money ${tone}">${sign}${money(Math.abs(Math.round(p)))}</div><div class="tile-rate ${tone}">${sign}${Math.abs(rate).toFixed(2)}%</div><div class="tile-details"><span>類型</span><b>${h.k}</b><span>${quoteLabel}</span><b>${h.q}</b><span>成本均價</span><b>${h.avg}</b><span>估算市值</span><b class="money">${money(h.v)}</b><span>投資成本</span><b class="money">${money(Math.round(h.c))}</b><span>資料日期</span><b>${h.d}</b></div></div></button></article>`}
+document.getElementById('holdingsGrid').innerHTML=holdings.map(card).join('');
+document.querySelectorAll('.tile-button').forEach(button=>button.onclick=()=>{const tile=button.closest('.holding'),open=tile.classList.toggle('open');button.setAttribute('aria-expanded',open);syncPrivacy()});
+function syncPrivacy(){document.querySelectorAll('.money').forEach(n=>n.classList.toggle('masked',hidden));document.getElementById('privacy').textContent=hidden?'顯示金額':'隱藏金額';document.getElementById('privacy').setAttribute('aria-pressed',hidden)}document.getElementById('privacy').onclick=()=>{hidden=!hidden;syncPrivacy()};
 </script>
-</body></html>
+</body>
+</html>
