@@ -28,6 +28,9 @@ jobs:
 
       - name: 更新市場資料
         run: node scripts/update-market-data.mjs
+        env:
+          GOOGLE_SHEET_SYNC_URL: ${{ secrets.GOOGLE_SHEET_SYNC_URL }}
+          GOOGLE_SHEET_SYNC_TOKEN: ${{ secrets.GOOGLE_SHEET_SYNC_TOKEN }}
 
       - name: 驗證儀表板
         run: node scripts/validate-dashboard.mjs
