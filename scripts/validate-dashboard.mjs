@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises';
 
-const path = new URL('../index.html', import.meta.url);
+const path = process.env.DASHBOARD_PATH || new URL('../index.html', import.meta.url);
 const html = await fs.readFile(path, 'utf8');
 
 for (const match of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)) {
@@ -16,6 +16,9 @@ const checks = [
   ['red-up styling', html.includes('.pl-up{color:#c43e36}')],
   ['green-down styling', html.includes('.pl-down{color:#16805b}')],
   ['two-column cards', html.includes('grid-template-columns:repeat(2,minmax(0,1fr))')],
+  ['holding units', html.includes('unit-pill') && html.includes('持有單位')],
+  ['interactive allocation', html.includes('allocationRing') && html.includes('allocationDetail')],
+  ['five-item navigation', html.includes('grid-template-columns:repeat(5,1fr)')],
   ['rebalance target', html.includes('00713 <b>60%</b>・00631L <b>40%</b>')],
 ];
 
