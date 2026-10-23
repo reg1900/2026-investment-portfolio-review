@@ -1,0 +1,72 @@
+name: 更新投資儀表板
+
+on:
+  schedule:
+    - cron: '35 8 * * 1-5'
+      timezone: 'Asia/Taipei'
+    - cron: '35 15 * * 1-5'
+      timezone: 'Asia/Taipei'
+  workflow_dispatch:
+
+concurrency:
+  group: portfolio-dashboard-update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: 取得網站原始碼
+        uses: actions/checkout@v4
+
+      - name: 設定 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: 更新市場資料
+        run: node scripts/update-market-data.mjs
+
+      - name: 驗證儀表板
+        run: node scripts/validate-dashboard.mjs
+
+      - name: 保存更新
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          if git diff --cached --quiet; then
+            echo "No data changes"
+          else
+            git commit -m "chore: update portfolio market data"
+            git push
+          fi
+
+      - name: 準備 GitHub Pages 檔案
+        run: |
+          mkdir -p _site
+          cp index.html _site/index.html
+
+      - name: 設定 GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: 上傳 GitHub Pages 檔案
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: update
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 發布 GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
