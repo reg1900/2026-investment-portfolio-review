@@ -40,9 +40,17 @@ function escapeHtml(value) {
   return String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
+function sourceDate(source) {
+  if (source.kind === 'fx' && /^\d{4}-\d{2}-\d{2}T/.test(source.date)) {
+    const date = new Date(source.date);
+    if (Number.isFinite(date.getTime())) return new Intl.DateTimeFormat('sv-SE', {timeZone:'Asia/Taipei'}).format(date);
+  }
+  return source.date || '日期未提供';
+}
+
 export function installDataStatus(html, meta, now = new Date()) {
   const state = getDataStatus(meta, now);
-  const panel = `<section class="data-status ${state.tone}" id="dataStatus" aria-label="資料更新狀態"><strong id="dataStatusTitle">${state.title}</strong><p id="dataStatusMessage">${state.message}</p><dl>${meta.sources.map(s => `<div><dt>${escapeHtml(s.name)}</dt><dd>${escapeHtml(s.date || '日期未提供')}</dd></div>`).join('')}</dl><div class="sync-schedule">平日 08:35／15:35 同步；09:05／16:05／17:35／20:35 再檢查。排程可能延遲。</div><a href="https://github.com/reg1900/2026-investment-portfolio-review/actions/workflows/update-portfolio.yml" target="_blank" rel="noopener">查看執行紀錄 ↗</a></section>`;
+  const panel = `<section class="data-status ${state.tone}" id="dataStatus" aria-label="資料更新狀態"><strong id="dataStatusTitle">${state.title}</strong><p id="dataStatusMessage">${state.message}</p><dl>${meta.sources.map(s => `<div><dt>${escapeHtml(s.name)}</dt><dd>${escapeHtml(sourceDate(s))}</dd></div>`).join('')}</dl><div class="sync-schedule">平日 08:35／15:35 同步；09:05／16:05／17:35／20:35 再檢查。排程可能延遲。</div><a href="https://github.com/reg1900/2026-investment-portfolio-review/actions/workflows/update-portfolio.yml" target="_blank" rel="noopener">查看執行紀錄 ↗</a></section>`;
   const css = `.data-status{margin:14px 0 18px;padding:14px 15px;border:1px solid #d6b567;border-radius:16px;background:#fff5da;color:#493d21;font-size:.9rem}.data-status.current{background:#edf5ef;border-color:#bad5c4;color:#214a35}.data-status>strong{display:block;font-size:1rem}.data-status p{margin:5px 0 10px;line-height:1.6}.data-status dl{margin:0;border-top:1px solid #493d2120}.data-status dl div{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px solid #493d2120}.data-status dt{font-weight:650}.data-status dd{margin:0;text-align:right;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.sync-schedule{margin-top:9px;font-size:.86rem;line-height:1.6}.data-status a{display:inline-block;margin-top:8px;padding:3px 0;color:inherit;font-weight:750;text-underline-offset:3px}`;
   const script = `<script id="dataStatusScript">\nconst portfolioDataStatus=${JSON.stringify(meta).replaceAll('<','\\u003c')};\n${getDataStatus.toString()}\nfunction refreshDataStatus(){const state=getDataStatus(portfolioDataStatus);document.getElementById('dataStatus').className='data-status '+state.tone;document.getElementById('dataStatusTitle').textContent=state.title;document.getElementById('dataStatusMessage').textContent=state.message;}\nrefreshDataStatus();setInterval(refreshDataStatus,60000);document.addEventListener('visibilitychange',refreshDataStatus);\n</script>`;
   let output = html.replace(/<div class="asof">[\s\S]*?<\/div>/, `<div class="asof">最近同步成功：${escapeHtml(meta.syncedAt)}（台北）</div>`);
@@ -58,6 +66,11 @@ export function installDataStatus(html, meta, now = new Date()) {
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const path = new URL('../index.html', import.meta.url);
   const html = await fs.readFile(path, 'utf8');
+  const existing = html.match(/const portfolioDataStatus=([^;]+);/);
+  if (existing) {
+    await fs.writeFile(path, installDataStatus(html, JSON.parse(existing[1])));
+    process.exit(0);
+  }
   const syncedAt = html.match(/(?:更新時間：|最近同步成功：)(\d{4}-\d{2}-\d{2} \d{2}:\d{2})/)?.[1];
   const twDate = html.match(/台灣 ETF (\d{4}-\d{2}-\d{2}) 收盤/)?.[1];
   const fundDate = html.match(/海外基金 (\d{4}-\d{2}-\d{2}) 淨值/)?.[1];
