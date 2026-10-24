@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises';
+import { installDataStatus, getDataStatus } from './data-status.mjs';
 
 const HTML_PATH = new URL('../index.html', import.meta.url);
 const TZ = 'Asia/Taipei';
@@ -41,6 +42,8 @@ function rocDateToIso(value) {
 }
 
 async function fetchWithTimeout(url, type = 'text') {
+  const safeUrl = new URL(url).origin + new URL(url).pathname;
+  for (let attempt = 1; attempt <= 3; attempt++) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 25000);
   try {
@@ -52,14 +55,20 @@ async function fetchWithTimeout(url, type = 'text') {
       const safeUrl = new URL(url).origin + new URL(url).pathname;
       throw new Error(`${response.status} ${response.statusText} for ${safeUrl}`);
     }
-    if (type === 'json') return response.json();
+    if (type === 'json') return await response.json();
     if (type === 'big5') {
       const bytes = await response.arrayBuffer();
       return new TextDecoder('big5').decode(bytes);
     }
-    return response.text();
+    return await response.text();
+  } catch {
+    // 不輸出帶有同步金鑰的原始 URL 或底層錯誤。
+    if (attempt === 3) throw new Error(`Source request failed after 3 attempts: ${safeUrl}`);
+    console.warn(`Source request retry ${attempt}/3: ${safeUrl}`);
+    await new Promise(resolve => setTimeout(resolve, attempt * 1500));
   } finally {
     clearTimeout(timer);
+  }
   }
 }
 
@@ -241,6 +250,7 @@ for (const holding of holdings) {
     holding.q = `NT$${quote.price.toFixed(2)}`;
     holding.v = Math.round(quote.price * taiwanPositions[holding.n]);
     holding.d = ymdToShort(quote.isoDate);
+    holding.quoteDate = quote.isoDate;
     holding.day = Number(quote.day.toFixed(4));
   } else if (holding.n in fundPositions) {
     const position = fundPositions[holding.n];
@@ -248,6 +258,7 @@ for (const holding of holdings) {
     holding.q = `US$${quote.nav.toFixed(4)}`;
     holding.v = Math.round(quote.nav * position.units * fx.value);
     holding.d = ymdToShort(quote.isoDate);
+    holding.quoteDate = quote.isoDate;
     holding.day = Number(quote.day.toFixed(4));
   }
 }
@@ -258,10 +269,17 @@ const totalPnl = totalValue - totalCost;
 const totalRate = totalPnl / totalCost * 100;
 const pnlSign = totalPnl >= 0 ? '+' : '−';
 const pnlClass = totalPnl >= 0 ? 'gain' : 'loss';
-const twDate = [...twQuotes.values()][0].isoDate;
+const twDates = [...new Set([...twQuotes.values()].map(q => q.isoDate))].sort();
+const twDate = twDates.length === 1 ? twDates[0] : `${twDates[0]}～${twDates.at(-1)}`;
 const fundDates = Object.values(fundQuotes).map(v => v.isoDate).sort();
 const fundDateText = fundDates[0] === fundDates.at(-1) ? fundDates[0] : `${fundDates[0]}～${fundDates.at(-1)}`;
 const updatedAt = formatTaipei();
+const metadata = { syncedAt: updatedAt, sources: [
+  ...twDates.map(date => ({name:'台灣 ETF 收盤',date})),
+  {name:'富達永續淨值',date:fundQuotes.fidelity.isoDate},
+  {name:'施羅德環球淨值',date:fundQuotes.schroder.isoDate},
+  {name:'美元匯率',date:String(fx.timestamp || ''),kind:'fx'},
+] };
 
 let output = html;
 output = replaceOrThrow(output, /const holdings=\[[\s\S]*?\];/, `const holdings=${JSON.stringify(holdings)};`, 'holdings array');
@@ -281,6 +299,12 @@ output = replaceOrThrow(
   'methodology notice',
 );
 
+output = installDataStatus(output, metadata);
+const freshness = getDataStatus(metadata);
+if (freshness.tone === 'waiting') console.warn(`::warning::${freshness.title}；台灣 ETF ${twDate}；基金 ${fundDateText}`);
+if (process.env.GITHUB_STEP_SUMMARY) await fs.appendFile(process.env.GITHUB_STEP_SUMMARY,
+  `## 資料同步結果\n\n- 同步成功：${updatedAt}（台北）\n- 台灣 ETF：${twDate}\n- 富達：${fundQuotes.fidelity.isoDate}\n- 施羅德：${fundQuotes.schroder.isoDate}\n- 狀態：${freshness.title}\n\n${freshness.message}\n`);
 if (/NaN|undefined|null/.test(output)) throw new Error('Generated HTML contains an invalid numeric value');
 await fs.writeFile(HTML_PATH, output);
 console.log(JSON.stringify({ updatedAt, twDate, fundDateText, usdTwd: fx.value, totalValue: Math.round(totalValue), totalPnl: Math.round(totalPnl) }, null, 2));
+

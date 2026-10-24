@@ -9,7 +9,8 @@ for (const match of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi))
 
 const checks = [
   ['11 holdings', (html.match(/\{\"n\":/g) || []).length === 11],
-  ['update timestamp', /更新時間：\d{4}-\d{2}-\d{2} \d{2}:\d{2}/.test(html)],
+  ['sync timestamp', /最近同步成功：\d{4}-\d{2}-\d{2} \d{2}:\d{2}/.test(html)],
+  ['separate source dates', html.includes('id="dataStatus"') && html.includes('id="dataStatusScript"')],
   ['Taiwan quote sources', html.includes('證交所與櫃買中心')],
   ['fund quote source', html.includes('MoneyDJ')],
   ['privacy control', html.includes('id="privacy"')],
@@ -28,3 +29,4 @@ for (const [name, ok] of checks) {
 if (/NaN|undefined|null/.test(html)) throw new Error('Validation failed: invalid numeric value');
 
 console.log('Dashboard validation passed.');
+

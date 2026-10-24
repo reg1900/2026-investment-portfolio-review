@@ -16,14 +16,17 @@
     /* 互動配置與重新排序的底部導覽 */
     .card-name-row{display:flex;align-items:center;justify-content:space-between;gap:6px}.card-name-row .ticker{min-width:0}.unit-pill{flex:none;font-size:.72rem;line-height:1.2;font-weight:850;color:var(--green);background:var(--mint);border-radius:999px;padding:4px 7px;white-space:nowrap}.ring:after{display:none}.allocation-ring{border:0;cursor:pointer;display:grid;place-items:center;padding:0;color:var(--ink);box-shadow:inset 0 0 0 1px #173b2e10;touch-action:manipulation}.ring-center{width:54%;aspect-ratio:1;border-radius:50%;background:var(--card);display:grid;place-content:center;text-align:center;line-height:1.18;padding:5px;box-shadow:0 2px 12px #173b2e14}.ring-center strong{font-size:.82rem}.ring-center span{font-size:1rem;font-weight:900;color:var(--green)}.allocation-list button{width:100%;border:0;background:transparent;color:inherit;display:grid;grid-template-columns:9px 1fr auto;gap:7px;align-items:center;text-align:left;font-size:.86rem;padding:5px 6px;border-radius:9px;cursor:pointer}.allocation-list button.active{background:#edf4f0;color:var(--green)}.allocation-list button b{font-variant-numeric:tabular-nums}.allocation-detail{margin-top:14px;border-top:1px solid var(--line);padding-top:12px}.allocation-detail-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:6px}.allocation-detail-head strong{font-size:1rem}.allocation-detail-head b{font-size:.9rem;color:var(--green)}.allocation-asset{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:3px 10px;padding:9px 2px;border-top:1px solid #e9e5db}.allocation-asset:first-of-type{border-top:0}.allocation-asset strong{font-size:.9rem}.allocation-asset .asset-share{font-weight:900;text-align:right}.allocation-asset small{font-size:.78rem;color:var(--muted)}.allocation-asset .asset-cost{font-size:.8rem;font-weight:800;text-align:right}.bottom-nav{grid-template-columns:repeat(5,1fr);padding-left:4px;padding-right:4px}.bottom-nav a{border-radius:10px;padding:2px 0}.bottom-nav a.active{color:var(--green);background:#e8f1ec}.bottom-nav b{font-size:1.15rem}@media(max-width:390px){.ring-row{grid-template-columns:118px 1fr;gap:12px}.allocation-ring{width:118px}.allocation-list button{font-size:.78rem;padding:4px}.unit-pill{font-size:.66rem;padding:3px 6px}.bottom-nav a{font-size:.68rem}}
   </style>
+<style id="dataStatusStyle">.data-status{margin:14px 0 18px;padding:14px 15px;border:1px solid #d6b567;border-radius:16px;background:#fff5da;color:#493d21;font-size:.9rem}.data-status.current{background:#edf5ef;border-color:#bad5c4;color:#214a35}.data-status>strong{display:block;font-size:1rem}.data-status p{margin:5px 0 10px;line-height:1.6}.data-status dl{margin:0;border-top:1px solid #493d2120}.data-status dl div{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px solid #493d2120}.data-status dt{font-weight:650}.data-status dd{margin:0;text-align:right;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.sync-schedule{margin-top:9px;font-size:.86rem;line-height:1.6}.data-status a{display:inline-block;margin-top:8px;padding:3px 0;color:inherit;font-weight:750;text-underline-offset:3px}</style>
 </head>
 <body>
 <main class="app">
   <header class="hero" id="home">
-    <div class="topline"><div><div class="eyebrow">匿名投資儀表板</div><h1>2026 9月 投資案</h1><div class="asof">更新時間：2026-10-23 20:49</div></div><button class="privacy" id="privacy" aria-pressed="false">隱藏金額</button></div>
+    <div class="topline"><div><div class="eyebrow">匿名投資儀表板</div><h1>2026 9月 投資案</h1><div class="asof">最近同步成功：2026-10-23 20:49（台北）</div></div><button class="privacy" id="privacy" aria-pressed="false">隱藏金額</button></div>
     <div class="hero-total"><div class="label">估算目前市值</div><div class="amount money">NT$11,893,382</div><div class="sub">台灣 ETF 2026-10-22 收盤；海外基金 2026-10-22 淨值</div></div>
     <div class="summary"><div><span>未實現損益</span><strong class="money loss">−NT$192,396</strong></div><div><span>損益率</span><strong class="loss">−1.59%</strong></div><div><span>投資成本</span><strong class="money">NT$12,085,778</strong></div></div>
   </header>
+
+  <section class="data-status waiting" id="dataStatus" aria-label="資料更新狀態"><strong id="dataStatusTitle">部分報價非今日資料</strong><p id="dataStatusMessage">損益依下列日期計算。休市、基金公布時差或來源尚未更新，都可能造成日期落後。</p><dl><div><dt>台灣 ETF 收盤</dt><dd>2026-10-22</dd></div><div><dt>富達永續淨值</dt><dd>2026-10-22</dd></div><div><dt>施羅德環球淨值</dt><dd>2026-10-22</dd></div><div><dt>美元匯率</dt><dd>日期未提供</dd></div></dl><div class="sync-schedule">平日 08:35／15:35 同步；09:05／16:05／17:35／20:35 再檢查。排程可能延遲。</div><a href="https://github.com/reg1900/2026-investment-portfolio-review/actions/workflows/update-portfolio.yml" target="_blank" rel="noopener">查看執行紀錄 ↗</a></section>
 
   <section class="section" id="holdings"><div class="section-head"><h2>現價與未實現損益</h2><small>點方塊看明細</small></div><div class="holdings" id="holdingsGrid"></div></section>
 
@@ -89,5 +92,44 @@ const navTargets=navLinks.map(link=>document.querySelector(link.getAttribute('hr
 const navObserver=new IntersectionObserver(entries=>{const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];if(!visible)return;navLinks.forEach(link=>link.classList.toggle('active',link.getAttribute('href')===`#${visible.target.id}`))},{rootMargin:'-20% 0px -60% 0px',threshold:[0,.25,.5]});
 navTargets.forEach(target=>navObserver.observe(target));navLinks[0].classList.add('active');
 </script>
+<script id="dataStatusScript">
+const portfolioDataStatus={"syncedAt":"2026-10-23 20:49","sources":[{"name":"台灣 ETF 收盤","date":"2026-10-22"},{"name":"富達永續淨值","date":"2026-10-22"},{"name":"施羅德環球淨值","date":"2026-10-22"},{"name":"美元匯率","date":"","kind":"fx"}]};
+function getDataStatus(meta, now = new Date()) {
+  const local = new Intl.DateTimeFormat('sv-SE', {
+    timeZone: 'Asia/Taipei', year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', hour12: false,
+  }).format(now);
+  const today = local.slice(0, 10);
+  const checkedAt = new Date(meta.syncedAt.replace(' ', 'T') + ':00+08:00');
+  // 給原排程 90 分鐘緩衝，週末沿用週五；國定假日仍會同步資料。
+  const cutoff = new Date(now.getTime() - 90 * 60 * 1000);
+  let expected = 0;
+  for (let back = 0; back < 8; back++) {
+    const day = new Date(Date.parse(today + 'T00:00:00+08:00') - back * 86400000);
+    const date = new Intl.DateTimeFormat('sv-SE', {timeZone:'Asia/Taipei'}).format(day);
+    const weekday = new Date(date + 'T12:00:00Z').getUTCDay();
+    if (weekday === 0 || weekday === 6) continue;
+    for (const time of ['08:35', '15:35']) {
+      const slot = Date.parse(date + 'T' + time + ':00+08:00');
+      if (slot <= cutoff.getTime()) expected = Math.max(expected, slot);
+    }
+  }
+  const overdue = !Number.isFinite(checkedAt.getTime()) || checkedAt.getTime() < expected;
+  const earlier = meta.sources.filter(source => source.kind !== 'fx' && source.date < today);
+  return {
+    overdue,
+    tone: overdue || earlier.length ? 'waiting' : 'current',
+    title: overdue ? '同步時間已落後，等待補跑' : earlier.length ? '部分報價非今日資料' : '同步完成・報價日期為今日',
+    message: overdue
+      ? '超過原排程 90 分鐘仍未看到同步成功紀錄；本頁保留上次資料。'
+      : earlier.length
+        ? '損益依下列日期計算。休市、基金公布時差或來源尚未更新，都可能造成日期落後。'
+        : '同步成功與報價日期分開核對；報價並非盤中即時行情。',
+  };
+}
+function refreshDataStatus(){const state=getDataStatus(portfolioDataStatus);document.getElementById('dataStatus').className='data-status '+state.tone;document.getElementById('dataStatusTitle').textContent=state.title;document.getElementById('dataStatusMessage').textContent=state.message;}
+refreshDataStatus();setInterval(refreshDataStatus,60000);document.addEventListener('visibilitychange',refreshDataStatus);
+</script>
 </body>
 </html>
+

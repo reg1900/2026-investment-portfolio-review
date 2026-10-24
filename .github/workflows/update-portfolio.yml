@@ -6,7 +6,18 @@ on:
       timezone: 'Asia/Taipei'
     - cron: '35 15 * * 1-5'
       timezone: 'Asia/Taipei'
+    # 補跑也會重新檢查來源日期；GitHub 排程本身仍可能延遲。
+    - cron: '5 9,16 * * 1-5'
+      timezone: 'Asia/Taipei'
+    - cron: '35 17,20 * * 1-5'
+      timezone: 'Asia/Taipei'
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'scripts/**'
+      - '.github/workflows/update-portfolio.yml'
 
 concurrency:
   group: portfolio-dashboard-update
@@ -15,6 +26,7 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: write
     steps:
@@ -31,6 +43,9 @@ jobs:
         env:
           GOOGLE_SHEET_SYNC_URL: ${{ secrets.GOOGLE_SHEET_SYNC_URL }}
           GOOGLE_SHEET_SYNC_TOKEN: ${{ secrets.GOOGLE_SHEET_SYNC_TOKEN }}
+
+      - name: 檢查同步與行情日期判讀
+        run: node --test scripts/*.test.mjs
 
       - name: 驗證儀表板
         run: node scripts/validate-dashboard.mjs
@@ -73,3 +88,4 @@ jobs:
       - name: 發布 GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
