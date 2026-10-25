@@ -38,6 +38,9 @@ test('updater retries a temporary failure and preserves separate source dates', 
   });
   const output=await fs.readFile(path.join(dir,'index.html'),'utf8');
   const metadata=JSON.parse(output.match(/const portfolioDataStatus=([^;]+);/)[1]);
+  const updatedHoldings=JSON.parse(output.match(/const holdings=(\[[\s\S]*?\]);/)[1]);
+  assert.equal(updatedHoldings.find(h=>h.n==='0050').q,'NT$20.00');
+  assert.equal(updatedHoldings.find(h=>h.n==='富達永續').q,'US$10.2500');
   assert.equal(metadata.sources.find(s=>s.name==='台灣 ETF 收盤').date,'2026-10-23');
   assert.equal(metadata.sources.find(s=>s.name==='富達永續淨值').date,'2026-10-23');
   assert.ok(output.includes('最近同步成功：'));

@@ -217,7 +217,7 @@ for (const holding of holdings) {
     const quote = twQuotes.get(holding.n);
     validateQuoteDate(quote.isoDate, holding.quoteDate);
     holding.dayPnl = quote.change * holding.u;
-    holding.q = `NT${quote.price.toFixed(2)}`;
+    holding.q = `NT$${quote.price.toFixed(2)}`;
     holding.v = Math.round(quote.price * taiwanPositions[holding.n]);
     holding.d = ymdToShort(quote.isoDate);
     holding.quoteDate = quote.isoDate;
@@ -227,7 +227,7 @@ for (const holding of holdings) {
     const quote = fundQuotes[position.source];
     validateQuoteDate(quote.isoDate, holding.quoteDate);
     holding.dayPnl = quote.change * holding.u * fx.value;
-    holding.q = `US${quote.nav.toFixed(4)}`;
+    holding.q = `US$${quote.nav.toFixed(4)}`;
     holding.v = Math.round(quote.nav * position.units * fx.value);
     holding.d = ymdToShort(quote.isoDate);
     holding.quoteDate = quote.isoDate;
