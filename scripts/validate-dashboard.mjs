@@ -19,14 +19,16 @@ const checks = [
   ['two-column cards', html.includes('grid-template-columns:repeat(2,minmax(0,1fr))')],
   ['holding units', html.includes('unit-pill') && html.includes('持有單位')],
   ['interactive allocation', html.includes('allocationRing') && html.includes('allocationDetail')],
-  ['five-item navigation', html.includes('grid-template-columns:repeat(5,1fr)')],
+  ['six-item navigation', html.includes('href="#exposure"') && html.includes('grid-template-columns:repeat(6,minmax(0,1fr))')],
+  ['exposure calculator', html.includes('id="exposureBody"') && html.includes('id="loanMonths"')],
+  ['market-based rebalance', html.includes('依目前市值') && !html.includes('以成本金額試算')],
   ['rebalance target', html.includes('00713 <b>60%</b>・00631L <b>40%</b>')],
 ];
 
 for (const [name, ok] of checks) {
   if (!ok) throw new Error(`Validation failed: ${name}`);
 }
-if (/NaN|undefined|null/.test(html)) throw new Error('Validation failed: invalid numeric value');
+const holdings=JSON.parse(html.match(/const holdings=(\[[\s\S]*?\]);/)[1]);
+for(const holding of holdings) if(![holding.c,holding.v,holding.u,holding.day].every(Number.isFinite))throw new Error('Validation failed: invalid holding values');
 
 console.log('Dashboard validation passed.');
-

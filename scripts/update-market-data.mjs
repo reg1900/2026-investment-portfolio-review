@@ -1,5 +1,7 @@
 import fs from 'node:fs/promises';
 import { installDataStatus, getDataStatus } from './data-status.mjs';
+import { installPortfolioReview, renderMarketBalance } from './portfolio-review.mjs';
+import { quoteNumber, validateQuoteDate } from './source-validation.mjs';
 
 const HTML_PATH = new URL('../index.html', import.meta.url);
 const TZ = 'Asia/Taipei';
@@ -37,8 +39,9 @@ function ymdToShort(ymd) {
 
 function rocDateToIso(value) {
   if (!/^\d{7}$/.test(value)) throw new Error(`Unexpected TWSE date: ${value}`);
+  value = String(value);
   const year = Number(value.slice(0, 3)) + 1911;
-  return `${year}-${value.slice(3, 5)}-${value.slice(5, 7)}`;
+  return validateQuoteDate(`${year}-${value.slice(3, 5)}-${value.slice(5, 7)}`);
 }
 
 async function fetchWithTimeout(url, type = 'text') {
@@ -91,7 +94,11 @@ async function fetchPortfolioSnapshot() {
   const positions = new Map();
   for (const row of data.holdings) {
     const key = portfolioKey(String(row.name || ''));
-    if (!key) continue;
+    if (!key) {
+      if (Number(row.units) > 0) throw new Error('Google Sheet contains an unsupported holding');
+      continue;
+    }
+    if (positions.has(key)) throw new Error(`Duplicate Google Sheet holding: ${key}`);
     const position = {
       units: Number(row.units),
       cost: Number(row.cost),
@@ -105,6 +112,8 @@ async function fetchPortfolioSnapshot() {
   }
 
   const expected = [...EXPECTED_TAIWAN, ...EXPECTED_FUNDS];
+  const unexpected = [...positions.keys()].filter(key => !expected.includes(key));
+  if (unexpected.length) throw new Error(`Unsupported Google Sheet holdings: ${unexpected.join(', ')}`);
   const missing = expected.filter(key => !positions.has(key));
   if (missing.length) throw new Error(`Google Sheet sync missing holdings: ${missing.join(', ')}`);
   const totalCost = expected.reduce((sum, key) => sum + positions.get(key).cost, 0);
@@ -115,9 +124,7 @@ async function fetchPortfolioSnapshot() {
 function extractExistingHoldings(html) {
   const match = html.match(/const holdings=(\[[\s\S]*?\]);/);
   if (!match) throw new Error('Could not find holdings array in index.html');
-  // The repository owns this literal. Evaluating only the isolated array keeps
-  // the updater compatible with both the original JS literal and JSON output.
-  return Function(`"use strict"; return (${match[1]});`)();
+  return JSON.parse(match[1]);
 }
 
 async function fetchTaiwanQuotes(taiwanPositions) {
@@ -132,13 +139,14 @@ async function fetchTaiwanQuotes(taiwanPositions) {
   for (const row of [...twseRows, ...tpexRows]) {
     const code = row.Code || row.SecuritiesCompanyCode;
     if (!(code in taiwanPositions)) continue;
-    const price = Number(row.ClosingPrice || row.Close);
-    const change = Number(row.Change);
+    const price = quoteNumber(row.ClosingPrice ?? row.Close, `${code} close`);
+    const change = quoteNumber(row.Change, `${code} change`);
     if (!(price > 0) || !Number.isFinite(change)) throw new Error(`Invalid Taiwan quote for ${code}`);
     const previous = price - change;
-    const day = previous > 0 ? change / previous * 100 : 0;
+    if (!(previous > 0)) throw new Error(`Invalid previous Taiwan price for ${code}`);
+    const day = change / previous * 100;
     const isoDate = rocDateToIso(row.Date);
-    result.set(code, { price, day, isoDate });
+    result.set(code, { price, change, day, isoDate });
   }
   const missing = Object.keys(taiwanPositions).filter(code => !result.has(code));
   if (missing.length) throw new Error(`Taiwan exchanges missing symbols: ${missing.join(', ')}`);
@@ -155,7 +163,8 @@ function parseFundSummary(html, name) {
   return {
     nav,
     day: change / previous * 100,
-    isoDate: match[1].replaceAll('/', '-'),
+    isoDate: validateQuoteDate(match[1].replaceAll('/', '-')),
+    change,
   };
 }
 
@@ -179,48 +188,7 @@ async function fetchUsdTwd() {
 
 function replaceOrThrow(html, pattern, replacement, label) {
   if (!pattern.test(html)) throw new Error(`Could not locate ${label} in index.html`);
-  return html.replace(pattern, replacement);
-}
-
-function renderAllocationSection(positions) {
-  const groups = [
-    ['0050', ['0050'], '#174e3c'],
-    ['海外基金', EXPECTED_FUNDS, '#39715c'],
-    ['高股息', ['00713', '00919', '00878'], '#dda83d'],
-    ['投資級債', ['00937B', '00751B', '00933B'], '#7f9fac'],
-    ['00631L', ['00631L'], '#ae4d43'],
-    ['00406A', ['00406A'], '#9b5d8d'],
-  ];
-  const total = [...positions.values()].reduce((sum, p) => sum + p.cost, 0);
-  let cursor = 0;
-  const values = groups.map(([label, keys, color]) => {
-    const pct = keys.reduce((sum, key) => sum + positions.get(key).cost, 0) / total * 100;
-    const start = cursor;
-    cursor += pct;
-    return { label, color, pct, start, end: cursor };
-  });
-  const gradient = values.map(v => `${v.color} ${v.start.toFixed(2)}% ${v.end.toFixed(2)}%`).join(',');
-  const aria = values.map(v => `${v.label} ${v.pct.toFixed(2)}%`).join('，');
-  const rows = values.map(v => `<div><i class="dot" style="background:${v.color}"></i><span>${v.label}</span><b>${v.pct.toFixed(2)}%</b></div>`).join('');
-  return `<section class="section" id="allocation"><div class="section-head"><h2>資產配置</h2><small>依成本占比</small></div><div class="card allocation"><div class="ring-row"><div class="ring" style="background:conic-gradient(${gradient})" aria-label="${aria}"></div><div class="allocation-list">${rows}</div></div></div></section>`;
-}
-
-function renderBalanceSection(positions) {
-  const a = positions.get('00713').cost;
-  const b = positions.get('00631L').cost;
-  const total = a + b;
-  const aPct = a / total * 100;
-  const bPct = 100 - aPct;
-  const targetA = total * 0.6;
-  const targetB = total * 0.4;
-  const transfer = Math.abs(a - targetA);
-  const sellCode = a > targetA ? '00713' : '00631L';
-  const buyCode = a > targetA ? '00631L' : '00713';
-  const sellBefore = sellCode === '00713' ? a : b;
-  const sellAfter = sellCode === '00713' ? targetA : targetB;
-  const buyBefore = buyCode === '00713' ? a : b;
-  const buyAfter = buyCode === '00713' ? targetA : targetB;
-  return `<section class="section" id="balance"><div class="section-head"><h2>00713 × 00631L</h2><small>兩檔子組合</small></div><div class="card balance"><div class="compare"><div class="compare-row"><span>目前</span><div class="track"><div class="part a" style="width:${aPct.toFixed(1)}%">00713<br><b>${aPct.toFixed(1)}%</b></div><div class="part b" style="width:${bPct.toFixed(1)}%">00631L<br><b>${bPct.toFixed(1)}%</b></div></div></div><div class="compare-row"><span>目標</span><div class="track"><div class="part a" style="width:60%">00713<br><b>60%</b></div><div class="part b" style="width:40%">00631L<br><b>40%</b></div></div></div></div><div class="rebalance-plan"><div class="rebalance-head"><strong>調整指引</strong><small>以成本金額試算</small></div><div class="trade-grid"><div class="trade sell"><span class="trade-action">賣出</span><strong>${sellCode}</strong><b class="money">NT$${fmtInt(transfer)}</b><small><span class="money">NT$${fmtInt(sellBefore)}</span> → <span class="money">NT$${fmtInt(sellAfter)}</span></small></div><div class="trade buy"><span class="trade-action">買入</span><strong>${buyCode}</strong><b class="money">NT$${fmtInt(transfer)}</b><small><span class="money">NT$${fmtInt(buyBefore)}</span> → <span class="money">NT$${fmtInt(buyAfter)}</span></small></div></div><div class="target-summary">調整後：00713 <b>60%</b>・00631L <b>40%</b></div><div class="balance-note">未計交易費用與價格變動。00631L 為每日槓桿 ETF，比例會隨行情快速偏移，宜定期重新檢查。</div></div></div></section>`;
+  return html.replace(pattern, () => replacement);
 }
 
 const html = await fs.readFile(HTML_PATH, 'utf8');
@@ -241,13 +209,15 @@ for (const holding of holdings) {
   const synced = portfolio.positions.get(holding.n);
   if (!synced) throw new Error(`Dashboard holding is missing from Google Sheet sync: ${holding.n}`);
   holding.c = synced.cost;
-  holding.w = `${synced.weight.toFixed(2)}%`;
+  holding.w = `${(synced.cost / portfolio.totalCost * 100).toFixed(2)}%`;
   holding.u = synced.units;
   holding.unit = EXPECTED_FUNDS.includes(holding.n) ? '單位' : '股';
-  holding.avg = `NT$${synced.averageCost.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}${EXPECTED_FUNDS.includes(holding.n) ? '/單位' : ''}`;
+  holding.avg = `NT$${(synced.cost / synced.units).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}${EXPECTED_FUNDS.includes(holding.n) ? '/單位' : ''}`;
   if (holding.n in taiwanPositions) {
     const quote = twQuotes.get(holding.n);
-    holding.q = `NT$${quote.price.toFixed(2)}`;
+    validateQuoteDate(quote.isoDate, holding.quoteDate);
+    holding.dayPnl = quote.change * holding.u;
+    holding.q = `NT${quote.price.toFixed(2)}`;
     holding.v = Math.round(quote.price * taiwanPositions[holding.n]);
     holding.d = ymdToShort(quote.isoDate);
     holding.quoteDate = quote.isoDate;
@@ -255,7 +225,9 @@ for (const holding of holdings) {
   } else if (holding.n in fundPositions) {
     const position = fundPositions[holding.n];
     const quote = fundQuotes[position.source];
-    holding.q = `US$${quote.nav.toFixed(4)}`;
+    validateQuoteDate(quote.isoDate, holding.quoteDate);
+    holding.dayPnl = quote.change * holding.u * fx.value;
+    holding.q = `US${quote.nav.toFixed(4)}`;
     holding.v = Math.round(quote.nav * position.units * fx.value);
     holding.d = ymdToShort(quote.isoDate);
     holding.quoteDate = quote.isoDate;
@@ -283,7 +255,7 @@ const metadata = { syncedAt: updatedAt, sources: [
 
 let output = html;
 output = replaceOrThrow(output, /const holdings=\[[\s\S]*?\];/, `const holdings=${JSON.stringify(holdings)};`, 'holdings array');
-output = replaceOrThrow(output, /<section class="section" id="balance">[\s\S]*?<\/section>/, renderBalanceSection(portfolio.positions), 'balance section');
+output = replaceOrThrow(output, /<section class="section" id="balance">[\s\S]*?<\/section>/, renderMarketBalance(holdings), 'balance section');
 output = replaceOrThrow(output, /<div class="asof">[\s\S]*?<\/div>/, `<div class="asof">更新時間：${updatedAt}</div>`, 'update timestamp');
 output = replaceOrThrow(output, /<div class="hero-total">[\s\S]*?<\/div>\s*<div class="summary">/, `<div class="hero-total"><div class="label">估算目前市值</div><div class="amount money">NT$${fmtInt(totalValue)}</div><div class="sub">台灣 ETF ${twDate} 收盤；海外基金 ${fundDateText} 淨值</div></div>\n    <div class="summary">`, 'hero total');
 output = replaceOrThrow(
@@ -300,11 +272,13 @@ output = replaceOrThrow(
 );
 
 output = installDataStatus(output, metadata);
+output = await installPortfolioReview(output, {draft:false});
 const freshness = getDataStatus(metadata);
 if (freshness.tone === 'waiting') console.warn(`::warning::${freshness.title}；台灣 ETF ${twDate}；基金 ${fundDateText}`);
 if (process.env.GITHUB_STEP_SUMMARY) await fs.appendFile(process.env.GITHUB_STEP_SUMMARY,
   `## 資料同步結果\n\n- 同步成功：${updatedAt}（台北）\n- 台灣 ETF：${twDate}\n- 富達：${fundQuotes.fidelity.isoDate}\n- 施羅德：${fundQuotes.schroder.isoDate}\n- 狀態：${freshness.title}\n\n${freshness.message}\n`);
-if (/NaN|undefined|null/.test(output)) throw new Error('Generated HTML contains an invalid numeric value');
+for (const h of holdings) {
+  if (![h.c, h.v, h.u, h.day, h.dayPnl].every(Number.isFinite)) throw new Error(`Invalid output values for ${h.n}`);
+}
 await fs.writeFile(HTML_PATH, output);
 console.log(JSON.stringify({ updatedAt, twDate, fundDateText, usdTwd: fx.value, totalValue: Math.round(totalValue), totalPnl: Math.round(totalPnl) }, null, 2));
-
