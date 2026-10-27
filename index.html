@@ -24,7 +24,7 @@
 <body>
 <main class="app">
 <header class="hero" id="home">
-    <div class="topline"><div><div class="eyebrow">匿名投資儀表板</div><h1>2026 9月 投資案</h1><div class="asof">最近同步成功：2026-10-27 23:13（台北）</div></div><button class="privacy" id="privacy" aria-pressed="false">隱藏金額</button></div>
+    <div class="topline"><div><div class="eyebrow">匿名投資儀表板</div><h1>2026 9月 投資案</h1><div class="asof">最近同步成功：2026-10-27 23:31（台北）</div></div><button class="privacy" id="privacy" aria-pressed="false">隱藏金額</button></div>
     <div class="hero-total"><div class="label">估算目前市值</div><div class="amount money">NT$11,939,065</div><div class="sub">台灣 ETF 2026-10-22～2026-10-27 收盤；海外基金 2026-10-26 淨值</div></div>
     <div class="summary"><div><span>未實現損益</span><strong class="money loss">−NT$182,313</strong></div><div><span>損益率</span><strong class="loss">−1.50%</strong></div><div><span>投資成本</span><strong class="money">NT$12,121,378</strong></div></div>
   </header>
@@ -117,7 +117,7 @@ const navObserver=new IntersectionObserver(entries=>{const visible=entries.filte
 navTargets.forEach(target=>navObserver.observe(target));navLinks[0].classList.add('active');
 </script>
 <script id="dataStatusScript">
-const portfolioDataStatus={"syncedAt":"2026-10-27 23:13","sources":[{"name":"台灣 ETF 收盤","date":"2026-10-22"},{"name":"台灣 ETF 收盤","date":"2026-10-27"},{"name":"富達永續淨值","date":"2026-10-26"},{"name":"施羅德環球淨值","date":"2026-10-26"},{"name":"美元匯率","date":"2026-10-27T11:01:00.000Z","kind":"fx"}]};
+const portfolioDataStatus={"syncedAt":"2026-10-27 23:31","sources":[{"name":"台灣 ETF 收盤","date":"2026-10-22"},{"name":"台灣 ETF 收盤","date":"2026-10-27"},{"name":"富達永續淨值","date":"2026-10-26"},{"name":"施羅德環球淨值","date":"2026-10-26"},{"name":"美元匯率","date":"2026-10-27T11:01:00.000Z","kind":"fx"}]};
 function getDataStatus(meta, now = new Date()) {
   const local = new Intl.DateTimeFormat('sv-SE', {
     timeZone: 'Asia/Taipei', year: 'numeric', month: '2-digit', day: '2-digit',
