@@ -7,8 +7,16 @@ import {installPortfolioReview} from './portfolio-review.mjs';
 import {quoteNumber,validateQuoteDate} from './source-validation.mjs';
 const close=(a,b,tolerance=.01)=>assert.ok(Math.abs(a-b)<tolerance,`${a} differs from ${b}`);
 const html=await fs.readFile(new URL('../index.html',import.meta.url),'utf8');
-const holdings=JSON.parse(html.match(/const holdings=(\[[\s\S]*?\]);/)[1]);
-const cash=Function('return '+html.match(/const cash=(\[[\s\S]*?\]);/)[1])();
+// Fixed calculation fixtures: live prices, units and distributions may change daily.
+// Only the HTML preservation test below reads the current dashboard data.
+const holdings=[
+  {n:'0050',u:100000,c:9000000,v:10377092},
+  {n:'00713',u:16000,c:1018400,v:1054400},
+  {n:'00631L',u:13000,c:505130,v:462930},
+];
+const cash=Array.from({length:12},(_,i)=>({
+  m:`${i+1}月`,x:[['測試配息',i<6?20000:i===11?62551:62550]],
+}));
 
 test('870萬 original loan, one payment, 359 remaining installments',()=>{
   const original=loanSchedule({principal:8700000,annualRate:2.3,years:30});

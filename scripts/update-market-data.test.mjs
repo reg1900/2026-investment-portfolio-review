@@ -15,8 +15,19 @@ test('updater retries a temporary failure and preserves separate source dates', 
     await fs.copyFile(new URL('../'+file,import.meta.url),path.join(dir,file));
   }
   const original=await fs.readFile(path.join(dir,'index.html'),'utf8');
-  const holdings=JSON.parse(original.match(/const holdings=(\[[\s\S]*?\]);/)[1]);
+  // Reset only the temporary fixture, never the real dashboard. The mocked
+  // 10/23 quotes must be newer than this fixture even after live data advances.
+  const holdings=JSON.parse(original.match(/const holdings=(\[[\s\S]*?\]);/)[1])
+    .map(h=>({...h,quoteDate:'2026-10-22',d:'10/22',u:10000,c:1000000,v:2000000,w:'9.09%'}));
+  const fixture=original.replace(/const holdings=\[[\s\S]*?\];/,
+    ()=>`const holdings=${JSON.stringify(holdings)};`);
+  await fs.writeFile(path.join(dir,'index.html'),fixture);
   const program=`
+    const RealDate=Date;
+    globalThis.Date=class extends RealDate {
+      constructor(...args){super(...(args.length?args:['2026-10-25T00:00:00Z']));}
+      static now(){return RealDate.parse('2026-10-25T00:00:00Z');}
+    };
     const holdings=${JSON.stringify(holdings)};
     let first=true;
     globalThis.fetch=async url=>{
@@ -51,4 +62,14 @@ test('updater retries a temporary failure and preserves separate source dates', 
   assert.match(stderr,/retry 1\/3/);
   assert.ok(!stdout.includes('DO_NOT_LOG')&&!stderr.includes('DO_NOT_LOG'));
   for(const match of output.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi))new Function(match[1]);
+  // An actual source regression must still fail without overwriting the page.
+  const newer=output.replace(/"quoteDate":"2026-10-23"/g,'"quoteDate":"2026-10-24"');
+  await fs.writeFile(path.join(dir,'index.html'),newer);
+  await assert.rejects(
+    promisify(execFile)(process.execPath,['--input-type=module','-e',program],{
+      env:{...process.env,GOOGLE_SHEET_SYNC_URL:'https://script.google.com/test',GOOGLE_SHEET_SYNC_TOKEN:'DO_NOT_LOG',GITHUB_STEP_SUMMARY:''},
+    }),
+    error=>error.stderr.includes('Source date moved backwards'),
+  );
+  assert.equal(await fs.readFile(path.join(dir,'index.html'),'utf8'),newer);
 });
