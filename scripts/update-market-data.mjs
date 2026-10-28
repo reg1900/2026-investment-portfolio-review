@@ -1,7 +1,8 @@
 import fs from 'node:fs/promises';
 import { installDataStatus, getDataStatus } from './data-status.mjs';
 import { installPortfolioReview, renderMarketBalance } from './portfolio-review.mjs';
-import { quoteNumber, validateQuoteDate } from './source-validation.mjs';
+import { validateQuoteDate } from './source-validation.mjs';
+import { fetchTaiwanCloses } from './taiwan-quotes.mjs';
 
 const HTML_PATH = new URL('../index.html', import.meta.url);
 const TZ = 'Asia/Taipei';
@@ -10,8 +11,6 @@ const EXPECTED_TAIWAN = ['0050', '00713', '00937B', '00631L', '00919', '00878', 
 const EXPECTED_FUNDS = ['富達永續', '施羅德環球'];
 
 const URLS = {
-  twse: 'https://openapi.twse.com.tw/v1/exchangeReport/STOCK_DAY_ALL',
-  tpex: 'https://www.tpex.org.tw/openapi/v1/tpex_mainboard_quotes',
   fidelity: 'https://tbbfws.moneydj.com/W4/wb/wb02.djhtm?a=FTZA55-068C&aspid=TBB',
   schroder: 'https://www.moneydj.com/funddj/ya/yp010001.djhtm?a=PYZT8',
   fx: 'https://raw.githubusercontent.com/haotool/app/data/public/rates/latest.json',
@@ -35,13 +34,6 @@ function ymdToShort(ymd) {
   const normalized = ymd.replaceAll('/', '-');
   const [, month, day] = normalized.split('-');
   return `${Number(month)}/${Number(day)}`;
-}
-
-function rocDateToIso(value) {
-  if (!/^\d{7}$/.test(value)) throw new Error(`Unexpected TWSE date: ${value}`);
-  value = String(value);
-  const year = Number(value.slice(0, 3)) + 1911;
-  return validateQuoteDate(`${year}-${value.slice(3, 5)}-${value.slice(5, 7)}`);
 }
 
 async function fetchWithTimeout(url, type = 'text') {
@@ -127,32 +119,6 @@ function extractExistingHoldings(html) {
   return JSON.parse(match[1]);
 }
 
-async function fetchTaiwanQuotes(taiwanPositions) {
-  const [twseRows, tpexRows] = await Promise.all([
-    fetchWithTimeout(URLS.twse, 'json'),
-    fetchWithTimeout(URLS.tpex, 'json'),
-  ]);
-  if (!Array.isArray(twseRows) || !Array.isArray(tpexRows)) {
-    throw new Error('TWSE or TPEx response is not an array');
-  }
-  const result = new Map();
-  for (const row of [...twseRows, ...tpexRows]) {
-    const code = row.Code || row.SecuritiesCompanyCode;
-    if (!(code in taiwanPositions)) continue;
-    const price = quoteNumber(row.ClosingPrice ?? row.Close, `${code} close`);
-    const change = quoteNumber(row.Change, `${code} change`);
-    if (!(price > 0) || !Number.isFinite(change)) throw new Error(`Invalid Taiwan quote for ${code}`);
-    const previous = price - change;
-    if (!(previous > 0)) throw new Error(`Invalid previous Taiwan price for ${code}`);
-    const day = change / previous * 100;
-    const isoDate = rocDateToIso(row.Date);
-    result.set(code, { price, change, day, isoDate });
-  }
-  const missing = Object.keys(taiwanPositions).filter(code => !result.has(code));
-  if (missing.length) throw new Error(`Taiwan exchanges missing symbols: ${missing.join(', ')}`);
-  return result;
-}
-
 function parseFundSummary(html, name) {
   const match = html.match(/淨值日期[\s\S]*?<tr>\s*<td[^>]*>(\d{4}\/\d{2}\/\d{2})<\/td>\s*<td[^>]*>([\d.]+)<\/td>\s*<td[^>]*>([-+\d.]+)<\/td>/i);
   if (!match) throw new Error(`Could not parse ${name} NAV summary`);
@@ -200,7 +166,7 @@ const fundPositions = {
   '施羅德環球': { ...portfolio.positions.get('施羅德環球'), source: 'schroder' },
 };
 const [twQuotes, fundQuotes, fx] = await Promise.all([
-  fetchTaiwanQuotes(taiwanPositions),
+  fetchTaiwanCloses(taiwanPositions, fetchWithTimeout),
   fetchFundQuotes(),
   fetchUsdTwd(),
 ]);
@@ -216,6 +182,8 @@ for (const holding of holdings) {
   if (holding.n in taiwanPositions) {
     const quote = twQuotes.get(holding.n);
     validateQuoteDate(quote.isoDate, holding.quoteDate);
+    holding.quoteSource = quote.source;
+    holding.quoteSourceUrl = quote.sourceUrl;
     holding.dayPnl = quote.change * holding.u;
     holding.q = `NT$${quote.price.toFixed(2)}`;
     holding.v = Math.round(quote.price * taiwanPositions[holding.n]);
@@ -267,7 +235,7 @@ output = replaceOrThrow(
 output = replaceOrThrow(
   output,
   /<div class="card notice">[\s\S]*?<\/div>\s*\n\s*<\/main>/,
-  `<div class="card notice">持有數量、成本與成本占比自 Google Sheets「投資比重」唯讀同步。未實現損益＝估算市值−投資成本，未計已領配息、稅費與交易成本。台灣 ETF 採證交所與櫃買中心 ${twDate} 收盤資料；海外基金自動更新採 MoneyDJ 同步之富達與施羅德淨值（${fundDateText}），以臺銀資料鏡像的美元即期買入 ${fx.value.toFixed(3)} 換算。資料抓取異常時流程會停止，不覆蓋上一版。</div>\n\n</main>`,
+  `<div class="card notice">持有數量、成本與成本占比自 Google Sheets「投資比重」唯讀同步。未實現損益＝估算市值−投資成本，未計已領配息、稅費與交易成本。台灣 ETF 採證交所與櫃買中心 ${twDate} 收盤資料，優先使用證交所盤後每日報表，OpenAPI 作備援，各檔來源見明細；海外基金自動更新採 MoneyDJ 同步之富達與施羅德淨值（${fundDateText}），以臺銀資料鏡像的美元即期買入 ${fx.value.toFixed(3)} 換算。資料抓取異常時流程會停止，不覆蓋上一版。</div>\n\n</main>`,
   'methodology notice',
 );
 

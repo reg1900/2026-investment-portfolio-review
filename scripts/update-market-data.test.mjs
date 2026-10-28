@@ -11,7 +11,7 @@ test('updater retries a temporary failure and preserves separate source dates', 
   const dir=await fs.mkdtemp(path.join(os.tmpdir(),'portfolio-updater-'));
   t.after(()=>fs.rm(dir,{recursive:true,force:true}));
   await fs.mkdir(path.join(dir,'scripts'));
-  for (const file of ['index.html','scripts/update-market-data.mjs','scripts/data-status.mjs','scripts/portfolio-review.mjs','scripts/portfolio-math.mjs','scripts/loan-config.mjs','scripts/exposure-view.mjs','scripts/review-style.css','scripts/source-validation.mjs']) {
+  for (const file of ['index.html','scripts/update-market-data.mjs','scripts/data-status.mjs','scripts/portfolio-review.mjs','scripts/portfolio-math.mjs','scripts/loan-config.mjs','scripts/exposure-view.mjs','scripts/review-style.css','scripts/source-validation.mjs','scripts/taiwan-quotes.mjs']) {
     await fs.copyFile(new URL('../'+file,import.meta.url),path.join(dir,file));
   }
   const original=await fs.readFile(path.join(dir,'index.html'),'utf8');
@@ -38,6 +38,13 @@ test('updater retries a temporary failure and preserves separate source dates', 
       }
       if(address.includes('openapi.twse.com.tw'))return new Response(JSON.stringify(holdings.filter(h=>h.unit==='股').map(h=>({Code:h.n,ClosingPrice:20,Change:1,Date:'1151023'}))));
       if(address.includes('tpex.org.tw'))return new Response('[]');
+      if(address.includes('/afterTrading/MI_INDEX')){
+        const date=new URL(address).searchParams.get('date');
+        return new Response(JSON.stringify({stat:'OK',date,tables:[{
+          fields:['證券代號','收盤價','漲跌(+/-)','漲跌價差'],
+          data:holdings.filter(h=>h.unit==='股').map(h=>[h.n,'20.00','+','1.00']),
+        }]}));
+      }
       if(address.includes('moneydj.com'))return new Response(Buffer.concat([Buffer.from('b262adc8a4e9b4c1','hex'),Buffer.from('<tr><td>2026/10/23</td><td>10.25</td><td>0.05</td></tr>')]));
       if(address.includes('raw.githubusercontent.com'))return new Response(JSON.stringify({sourceQuotes:{USD:{spot:{buy:32.43}}},sourcePublishedAt:'2026-10-23 16:00'}));
       throw new Error('Unexpected source');
