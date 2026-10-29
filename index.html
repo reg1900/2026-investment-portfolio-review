@@ -34,13 +34,20 @@ body{background:#fff}.hero{background:#eff6f8;color:#171b28;border:1px solid #e1
 .position-quote{display:flex;justify-content:flex-end;align-items:baseline;gap:18px;margin:10px 27px 0 0;font-size:1rem;font-variant-numeric:tabular-nums}.position-quote strong{white-space:nowrap;font-weight:650}.position-size strong,.position-size small,.position-profit strong,.position-profit small{white-space:nowrap}@media(max-width:280px){.position-summary{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 12px}.position-name{grid-column:1/-1}.position-size{grid-column:1}.position-profit{grid-column:2}.position-chevron{grid-column:3}.positions-legend{font-size:.66rem;gap:3px}.position-summary .position-name strong{font-size:1rem}.position-quote{margin-right:20px;font-size:.9rem;gap:12px}}
 
 .bottom-nav{grid-template-columns:repeat(5,1fr)}.hero-total .amount{font-size:1.45rem!important}.hero-total{margin-top:12px}.hero{padding-top:18px;padding-bottom:18px}.summary{margin-top:12px}.position-summary>span{gap:6px}
+
+/* 首頁摘要：讓市值成為視覺焦點，並以整齊的資訊列呈現損益。 */
+.hero{margin:10px 0 16px;padding:16px!important;border-radius:20px!important;background:#f1f7f9!important;border:1px solid #dce9ed!important;box-shadow:none!important;color:#172a32}
+.topline{align-items:center;gap:8px}.hero .asof{font-size:.76rem;color:#657c85}.privacy{padding:6px 11px;font-size:.8rem;border-radius:10px}
+.hero-total{margin:12px 0 10px!important;padding:0 0 11px;border-bottom:1px solid #d6e5e9}.hero-total .amount{font-size:1.25rem!important;line-height:1.25;letter-spacing:0;font-weight:800;color:#173b48;font-variant-numeric:tabular-nums}
+.summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0!important}.summary div{padding:0!important;background:transparent!important;border:0!important;border-radius:0}.summary span{font-size:.73rem;color:#647b84;white-space:nowrap}.summary strong{display:block;margin-top:3px;font-size:.85rem;line-height:1.3;font-variant-numeric:tabular-nums;white-space:nowrap}.hero .loss{color:#15968e}.hero .gain{color:#d84d55}@media(max-width:350px){.summary{gap:4px}.summary strong{font-size:.76rem}.summary span{font-size:.69rem}}
+
 </style>
 </head>
 <body>
 <main class="app">
 <header class="hero" id="home">
-    <div class="topline"><div><div class="asof">最近同步成功：2026-10-30 00:42（台北）</div></div><button class="privacy" id="privacy" aria-pressed="false">隱藏金額</button></div>
-    <div class="hero-total"><div class="label">估算目前市值</div><div class="amount money">NT$12,019,555</div><div class="sub">台灣 ETF 2026-10-29 收盤；海外基金 2026-10-28 淨值</div></div>
+    <div class="topline"><div><div class="asof">最近同步成功：2026-10-30 01:07（台北）</div></div><button class="privacy" id="privacy" aria-pressed="false">隱藏金額</button></div>
+    <div class="hero-total"><div class="amount money">NT$12,019,555</div></div>
     <div class="summary"><div><span>未實現損益</span><strong class="money loss">−NT$137,523</strong></div><div><span>損益率</span><strong class="loss">−1.13%</strong></div><div><span>投資成本</span><strong class="money">NT$12,157,078</strong></div></div>
   </header>
 
@@ -52,7 +59,7 @@ body{background:#fff}.hero{background:#eff6f8;color:#171b28;border:1px solid #e1
 
   <section class="section" id="cash"><div class="section-head"><h2>每月配息</h2><small>點月份看明細</small></div><div class="card cash-card"><div class="cash-top"><span>12 個月配息情境</span><strong class="money">NT$495,301</strong></div><div class="bars" id="bars"></div><div class="cash-detail" id="cashDetail" aria-live="polite"></div><p class="cash-plan-note">沿用既有配息表，部分月份含實收金額；尚未隨持倉及最新配息公告自動重估。配息可能含本金，不代表投資報酬。</p></div></section>
 
-  <section class="section" id="balance"><div class="section-head"><h2>00713 × 00631L</h2><small>依目前市值</small></div><div class="card balance"><div class="compare"><div class="compare-row"><span>目前</span><div class="track"><div class="part a" style="width:66.22%">00713<br><b>66.2%</b></div><div class="part b" style="width:33.78%">00631L<br><b>33.8%</b></div></div></div><div class="compare-row"><span>目標</span><div class="track"><div class="part a" style="width:60%">00713<br><b>60%</b></div><div class="part b" style="width:40%">00631L<br><b>40%</b></div></div></div></div><div class="rebalance-plan"><div class="rebalance-head"><strong>等額轉換試算</strong><small>不是立即交易建議</small></div><div class="trade-grid"><div class="trade sell"><span class="trade-action">賣出 00713</span><b class="money">$99,070</b><small>零股約 <span class="money">1,502 股</span></small></div><div class="trade buy"><span class="trade-action">買入 00631L</span><b class="money">$99,070</b><small>依賣出款可買約 <span class="money">2,760 股</span></small></div></div><div class="target-summary">調整目標：00713 <b>60%</b>・00631L <b>40%</b></div><p class="risk-alert">這個調整會增加正2持倉。已有借款槓桿時，先確認還款緩衝與下跌承受度，再決定是否執行。</p><details class="rebalance-mode"><summary>另一種方式：只減碼，不加碼</summary><p class="risk-note">只減碼 00713 約 <b class="money">$247,675</b>，其餘一檔不變，也可讓兩檔子組合接近 60：40。賣出款可留作還款準備，或在確認提前清償條件後評估還貸；這是另一種試算，不需和上面的等額轉換同時執行。</p></details><div class="balance-note">金額以各檔最近報價的市值計；股數向下取整，未計手續費、交易稅與價差，實際可買股數可能更少。00713 是台股權益資產，不是 00631L 的避險資產。目標僅適用這兩檔，並非整體組合比例。</div></div></div></section>
+  <section class="section" id="balance"><div class="section-head"><h2>00713 × 00631L</h2><small>依目前市值</small></div><div class="card balance"><div class="compare"><div class="compare-row"><span>目前</span><div class="track"><div class="part a" style="width:66.22%">00713<br><b>66.2%</b></div><div class="part b" style="width:33.78%">00631L<br><b>33.8%</b></div></div></div><div class="compare-row"><span>目標</span><div class="track"><div class="part a" style="width:60%">00713<br><b>60%</b></div><div class="part b" style="width:40%">00631L<br><b>40%</b></div></div></div></div><div class="rebalance-plan"><div class="rebalance-head"><strong>等額轉換試算</strong></div><div class="trade-grid"><div class="trade sell"><span class="trade-action">賣出 00713</span><b class="money">$99,070</b><small>零股約 <span class="money">1,502 股</span></small></div><div class="trade buy"><span class="trade-action">買入 00631L</span><b class="money">$99,070</b><small>依賣出款可買約 <span class="money">2,760 股</span></small></div></div><div class="target-summary">調整目標：00713 <b>60%</b>・00631L <b>40%</b></div><details class="rebalance-mode"><summary>另一種方式：只減碼，不加碼</summary><p class="risk-note">只減碼 00713 約 <b class="money">$247,675</b>，其餘一檔不變，也可讓兩檔子組合接近 60：40。賣出款可留作還款準備，或在確認提前清償條件後評估還貸；這是另一種試算，不需和上面的等額轉換同時執行。</p></details><div class="balance-note">金額以各檔最近報價的市值計；股數向下取整，未計手續費、交易稅與價差，實際可買股數可能更少。00713 是台股權益資產，不是 00631L 的避險資產。目標僅適用這兩檔，並非整體組合比例。</div></div></div></section>
 
   
 
@@ -130,7 +137,7 @@ const navObserver=new IntersectionObserver(entries=>{const visible=entries.filte
 navTargets.forEach(target=>navObserver.observe(target));navLinks[0].classList.add('active');
 </script>
 <script id="dataStatusScript">
-const portfolioDataStatus={"syncedAt":"2026-10-30 00:42","sources":[{"name":"台灣 ETF 收盤","date":"2026-10-29"},{"name":"富達永續淨值","date":"2026-10-28"},{"name":"施羅德環球淨值","date":"2026-10-28"},{"name":"美元匯率","date":"2026-10-29T15:01:00.000Z","kind":"fx"}]};
+const portfolioDataStatus={"syncedAt":"2026-10-30 01:07","sources":[{"name":"台灣 ETF 收盤","date":"2026-10-29"},{"name":"富達永續淨值","date":"2026-10-28"},{"name":"施羅德環球淨值","date":"2026-10-28"},{"name":"美元匯率","date":"2026-10-29T15:01:00.000Z","kind":"fx"}]};
 function getDataStatus(meta, now = new Date()) {
   const local = new Intl.DateTimeFormat('sv-SE', {
     timeZone: 'Asia/Taipei', year: 'numeric', month: '2-digit', day: '2-digit',
