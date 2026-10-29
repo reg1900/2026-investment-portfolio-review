@@ -232,12 +232,6 @@ output = replaceOrThrow(
   `<div class="summary"><div><span>未實現損益</span><strong class="money ${pnlClass}">${pnlSign}NT$${fmtInt(Math.abs(totalPnl))}</strong></div><div><span>損益率</span><strong class="${pnlClass}">${pnlSign}${Math.abs(totalRate).toFixed(2)}%</strong></div><div><span>投資成本</span><strong class="money">NT$${fmtInt(totalCost)}</strong></div></div>\n  </header>`,
   'summary cards',
 );
-output = replaceOrThrow(
-  output,
-  /<div class="card notice">[\s\S]*?<\/div>\s*\n\s*<\/main>/,
-  `<div class="card notice">持有數量、成本與成本占比自 Google Sheets「投資比重」唯讀同步。未實現損益＝估算市值−投資成本，未計已領配息、稅費與交易成本。台灣 ETF 採證交所與櫃買中心 ${twDate} 收盤資料，優先使用證交所盤後每日報表，OpenAPI 作備援，各檔來源見明細；海外基金自動更新採 MoneyDJ 同步之富達與施羅德淨值（${fundDateText}），以臺銀資料鏡像的美元即期買入 ${fx.value.toFixed(3)} 換算。資料抓取異常時流程會停止，不覆蓋上一版。</div>\n\n</main>`,
-  'methodology notice',
-);
 
 output = installDataStatus(output, metadata);
 output = await installPortfolioReview(output, {draft:false});
