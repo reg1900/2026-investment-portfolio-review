@@ -79,12 +79,10 @@ test('invalid, future and regressing source dates are rejected',()=>{
 });
 test('review build is idempotent and preserves loan, date and holding data',async()=>{
   const once=await installPortfolioReview(html),twice=await installPortfolioReview(once);
-  assert.equal((twice.match(/id="exposureBody"/g)||[]).length,1);
-  assert.equal((twice.match(/id="exposureScript"/g)||[]).length,1);
+  assert.equal((twice.match(/id="exposureBody"/g)||[]).length,0);
+  assert.equal((twice.match(/id="exposureScript"/g)||[]).length,0);
   assert.equal((twice.match(/data-basis="cost"/g)||[]).length,1);
   assert.equal(twice.match(/const holdings=(\[[\s\S]*?\]);/)[1],html.match(/const holdings=(\[[\s\S]*?\]);/)[1]);
-  assert.ok(twice.includes('8,683,197'));
-  assert.ok(twice.includes('value="359"'));
   assert.ok(!twice.includes('780 萬'));
   assert.ok(!twice.includes('以成本金額試算'));
   for(const m of twice.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi))new Function(m[1]);

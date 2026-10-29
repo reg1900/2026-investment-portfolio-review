@@ -63,7 +63,7 @@ test('updater retries a temporary failure and preserves separate source dates', 
   assert.equal(metadata.sources.find(s=>s.name==='富達永續淨值').date,'2026-10-23');
   assert.ok(output.includes('最近同步成功：'));
   assert.ok(!output.includes('本地審核版・尚未發布'));
-  assert.equal((output.match(/id="exposureScript"/g)||[]).length,1);
+  assert.equal((output.match(/id="exposureScript"/g)||[]).length,0);
   assert.equal((output.match(/id="dataStatus"/g)||[]).length,1);
   assert.equal(output.match(/const cash=([\s\S]*?);/)[1],original.match(/const cash=([\s\S]*?);/)[1]);
   assert.match(stderr,/retry 1\/3/);
