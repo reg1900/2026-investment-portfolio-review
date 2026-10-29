@@ -36,14 +36,12 @@ function allocationRuntime(){
 }
 
 function card(h){
-  const p=h.v-h.c,rate=h.c>0?p/h.c*100:0,up=p>=0,sign=up?'+':'−',tone=up?'pl-up':'pl-down';
-  const dayUp=h.day>=0,daySign=dayUp?'+':'−',dayTone=dayUp?'pl-up':'pl-down';
-  const todayP=Number.isFinite(h.dayPnl)?h.dayPnl:h.v-h.v/(1+h.day/100);
-  const isFund=h.k==='海外基金',quoteLabel=isFund?'淨值':'收盤價',shortQuote=h.q.replace(/^NT\$/,'$');
-  const signedAmount=value=>{const n=Math.round(value);return (n>0?'+':n<0?'−':'')+Math.abs(n).toLocaleString('zh-TW');};
-  const amountTone=value=>Math.round(value)>0?'pl-up':Math.round(value)<0?'pl-down':'pl-flat';
-  const units=`${h.u.toLocaleString('zh-TW',{maximumFractionDigits:2})} ${h.unit}`;
-  return `<article class="card holding ${up?'tile-gain':'tile-loss'}"><button class="tile-button" aria-expanded="false"><div class="card-name-row"><span class="ticker">${h.n}</span><span class="unit-pill money">${units}</span></div><div class="quote-row"><b class="quote-value">${shortQuote}</b><b class="day-rate ${dayTone}">${daySign}${Math.abs(h.day).toFixed(2)}%</b></div><div class="profit-stack"><b class="money daily-pnl ${amountTone(todayP)}" aria-label="單日價差損益，台幣，報價日期 ${h.quoteDate||h.d}" title="單日價差損益｜${h.quoteDate||h.d}｜台幣">${signedAmount(todayP)}</b><div class="total-pnl-row ${amountTone(p)}" title="未實現總損益率與金額｜台幣｜不含配息"><span class="total-rate" aria-label="未實現總損益率">${sign}${Math.abs(rate).toFixed(2)}%</span><b class="money total-pnl" aria-label="未實現總損益金額，台幣，不含配息">${signedAmount(p)}</b></div></div><div class="tile-details"><span class="detail-section">完整明細</span><span>類型</span><b>${h.k}</b><span>持有單位</span><b class="money">${units}</b><span>${quoteLabel}</span><b>${h.q}</b><span>成本均價</span><b>${h.avg}</b><span>估算市值</span><b class="money">${money(h.v)}</b><span>投資成本</span><b class="money">${money(Math.round(h.c))}</b><span>單日價差損益</span><b class="money ${amountTone(todayP)}">${signedAmount(todayP)} 元</b><span>總損益率</span><b class="${tone}">${sign}${Math.abs(rate).toFixed(2)}%</b><span>總損益金額</span><b class="money ${tone}">${sign}${money(Math.abs(Math.round(p)))}</b><span>資料日期</span><b>${h.quoteDate||h.d}</b><span>行情來源</span><b>${h.quoteSource||(isFund?'MoneyDJ 基金淨值':'證交所／櫃買中心')}</b><span class="detail-section">${isFund?'單日損益為淨值價差按目前匯率換算，未含匯率變動與配息。':'單日損益為收盤價差，未含配息及交易費用。'}</span></div></button></article>`;
+  const names={'0050':'元大台灣50','00713':'元大高息低波','00631L':'元大台灣50正2','00919':'群益台灣精選高息','00878':'國泰永續高股息','00937B':'群益ESG投等債20+','00751B':'元大AAA至A公司債','00933B':'國泰10Y+金融債','00406A':'台股主動ETF'};
+  const p=h.v-h.c,rate=h.c>0?p/h.c*100:0;
+  const fmt=n=>Math.round(n).toLocaleString('zh-TW'),signed=n=>(n>0?'+':n<0?'−':'')+fmt(Math.abs(n));
+  const tone=p>=0?'pl-up':'pl-down',daily=Number.isFinite(h.dayPnl)?h.dayPnl:h.v-h.v/(1+h.day/100);
+  const fund=h.k==='海外基金';
+  return `<article class="card holding"><button class="tile-button" aria-expanded="false"><div class="position-summary"><span class="position-name"><strong>${names[h.n]||h.n}</strong><small>${h.n} · ${fund?'基金':'ETF'}</small></span><span class="position-size"><strong class="money">${h.u.toLocaleString('zh-TW',{maximumFractionDigits:2})}</strong><small class="money">${fmt(h.v)}</small></span><span class="position-profit ${tone}"><strong class="money">${signed(p)}</strong><small>${p>=0?'+':'−'}${Math.abs(rate).toFixed(2)}%</small></span><span class="position-chevron" aria-hidden="true"></span></div><div class="position-quote"><strong>${h.q.replace(/^NT\$/,'$')}</strong><strong class="${h.day>=0?'pl-up':'pl-down'}">${h.day>=0?'+':'−'}${Math.abs(h.day).toFixed(2)}%</strong></div><div class="tile-details"><span>${fund?'基金淨值':'收盤價'}</span><b>${h.q}</b><span>成本均價</span><b>${h.avg}</b><span>投資成本</span><b class="money">${fmt(h.c)}</b><span>帳面市值</span><b class="money">${fmt(h.v)}</b><span>持有單位</span><b class="money">${h.u.toLocaleString('zh-TW',{maximumFractionDigits:2})} ${h.unit}</b><span>單日價差損益</span><b class="money ${daily>=0?'pl-up':'pl-down'}">${signed(daily)}</b><span>單日漲跌幅</span><b class="${h.day>=0?'pl-up':'pl-down'}">${h.day>=0?'+':'−'}${Math.abs(h.day).toFixed(2)}%</b><span>報價日期</span><b>${h.quoteDate||h.d}</b><span>行情來源</span><b>${h.quoteSource||(fund?'MoneyDJ 基金淨值':'證交所／櫃買中心')}</b><span>損益幣別</span><b>新台幣</b><span class="detail-section">損益未計配息與交易費用。基金單日損益按目前匯率換算，未含匯率變動。</span></div></button></article>`;
 }
 
 export async function installPortfolioReview(html,{draft=true}={}) {
@@ -71,6 +69,8 @@ export async function installPortfolioReview(html,{draft=true}={}) {
   output=output.replace(/<script id="exposureScript">[\s\S]*?<\/script>\s*/,'');
   const functions=[loanSchedule,calculateExposure,stressScenario].map(fn=>fn.toString()).join('\n');
   output=output.replace('</body>',()=>`<script id="exposureScript">\n${functions}\n(${exposureRuntime.toString()})();\n</script>\n</body>`);
+  output=output.replace('點方塊看明細','點箭頭展開');
+  if(!output.includes('class="positions-legend"'))output=output.replace('<div class="holdings" id="holdingsGrid">','<div class="positions-legend"><span>名稱／代號</span><span>股數／市值</span><span>損益／損益率</span><span></span></div><div class="holdings" id="holdingsGrid">');
   return output;
 }
 
