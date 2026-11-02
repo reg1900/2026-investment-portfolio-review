@@ -51,12 +51,12 @@ html{font-size:17px}
 <body>
 <main class="app">
 <header class="hero" id="home">
-    <div class="topline"><div><div class="asof">最近同步成功：2026-11-02 19:08（台北）</div></div><button class="privacy" id="privacy" aria-pressed="false">隱藏金額</button></div>
+    <div class="topline"><div><div class="asof">最近同步成功：2026-11-02 21:35（台北）</div></div><button class="privacy" id="privacy" aria-pressed="false">隱藏金額</button></div>
     <div class="hero-total"><div class="amount money">NT$11,813,177</div></div>
     <div class="summary"><div><span>未實現損益</span><strong class="money loss">−NT$377,771</strong></div><div><span>損益率</span><strong class="loss">−3.10%</strong></div><div><span>投資成本</span><strong class="money">NT$12,190,948</strong></div></div>
   </header>
 
-  <section class="data-status waiting" id="dataStatus" aria-label="資料更新狀態"><details class="status-disclosure"><summary><span>資料更新狀態</span><strong id="dataStatusTitle">部分報價非今日資料</strong></summary><p id="dataStatusMessage">損益依下列日期計算。休市、基金公布時差或來源尚未更新，都可能造成日期落後。</p><dl><div><dt>台灣 ETF 收盤</dt><dd>2026-11-02</dd></div><div><dt>富達永續淨值</dt><dd>2026-10-30</dd></div><div><dt>施羅德環球淨值</dt><dd>2026-10-30</dd></div><div><dt>美元匯率</dt><dd>2026-11-02</dd></div></dl><div class="sync-schedule">平日 08:35／15:35 同步；09:05／16:05／17:35／20:35 再檢查。排程可能延遲。</div><a href="https://github.com/reg1900/2026-investment-portfolio-review/actions/workflows/update-portfolio.yml" target="_blank" rel="noopener">查看執行紀錄 ↗</a></details></section>
+  <section class="data-status waiting" id="dataStatus" aria-label="資料更新狀態"><details class="status-disclosure"><summary><span>資料更新狀態</span><strong id="dataStatusTitle">部分報價非今日資料</strong></summary><p id="dataStatusMessage">損益依下列日期計算。休市、基金公布時差或來源尚未更新，都可能造成日期落後。</p><dl><div><dt>台灣 ETF 收盤</dt><dd>2026-11-02</dd></div><div><dt>富達永續淨值</dt><dd>2026-10-30</dd></div><div><dt>施羅德環球淨值</dt><dd>2026-10-30</dd></div><div><dt>美元匯率</dt><dd>2026-11-02</dd></div></dl><div class="sync-schedule">平日 08:37／09:07 同步；15:17–21:47 每半小時補查。排程可能延遲；每次最多重試三次。</div><a href="https://github.com/reg1900/2026-investment-portfolio-review/actions/workflows/update-portfolio.yml" target="_blank" rel="noopener">查看執行紀錄 ↗</a></details></section>
 
   <section class="section" id="holdings"><div class="section-head"><h2>現價與未實現損益</h2><small>點箭頭展開</small></div><div class="positions-legend"><span>名稱／代號</span><span>現價<br>股數／市值</span><span>漲跌幅<br>損益／損益率</span><span></span></div><div class="holdings" id="holdingsGrid"></div></section>
 
@@ -142,7 +142,21 @@ const navObserver=new IntersectionObserver(entries=>{const visible=entries.filte
 navTargets.forEach(target=>navObserver.observe(target));navLinks[0].classList.add('active');
 </script>
 <script id="dataStatusScript">
-const portfolioDataStatus={"syncedAt":"2026-11-02 19:08","sources":[{"name":"台灣 ETF 收盤","date":"2026-11-02"},{"name":"富達永續淨值","date":"2026-10-30"},{"name":"施羅德環球淨值","date":"2026-10-30"},{"name":"美元匯率","date":"2026-11-02T07:30:00.000Z","kind":"fx"}]};
+const portfolioDataStatus={"syncedAt":"2026-11-02 21:35","holdings":[{"n":"0050","unit":"股","quoteDate":"2026-11-02","quoteSource":"證交所盤後每日報表"},{"n":"00713","unit":"股","quoteDate":"2026-11-02","quoteSource":"證交所盤後每日報表"},{"n":"00937B","unit":"股","quoteDate":"2026-11-02","quoteSource":"櫃買中心收盤資料"},{"n":"00631L","unit":"股","quoteDate":"2026-11-02","quoteSource":"證交所盤後每日報表"},{"n":"00919","unit":"股","quoteDate":"2026-11-02","quoteSource":"證交所盤後每日報表"},{"n":"00878","unit":"股","quoteDate":"2026-11-02","quoteSource":"證交所盤後每日報表"},{"n":"00751B","unit":"股","quoteDate":"2026-11-02","quoteSource":"櫃買中心收盤資料"},{"n":"00933B","unit":"股","quoteDate":"2026-11-02","quoteSource":"櫃買中心收盤資料"},{"n":"00406A","unit":"股","quoteDate":"2026-11-02","quoteSource":"證交所盤後每日報表"}],"sources":[{"name":"台灣 ETF 收盤","date":"2026-11-02"},{"name":"富達永續淨值","date":"2026-10-30"},{"name":"施羅德環球淨值","date":"2026-10-30"},{"name":"美元匯率","date":"2026-11-02T07:30:00.000Z","kind":"fx"}]};
+function quoteFreshness(holdings, now=new Date()) {
+  const local=new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Taipei',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).format(now);
+  const today=local.slice(0,10),weekday=new Date(today+'T12:00:00Z').getUTCDay();
+  const quotes=holdings.filter(h=>h.unit==='股');
+  const latest=quotes.map(h=>h.quoteDate||'').sort().at(-1)||'';
+  const afterClose=weekday!==0&&weekday!==6&&local.slice(11)>='16:05';
+  const rows=quotes.map(h=>({code:h.n,date:h.quoteDate||'',source:h.quoteSource||'',olderThanPeers:!!latest&&(h.quoteDate||'')<latest}));
+  const missing=rows.filter(h=>!h.date),lagging=rows.filter(h=>h.olderThanPeers);
+  // 平日不等於交易日；沒有當日報表時提示待確認，不把休市判為價格錯誤。
+  const pending=afterClose&&latest<today;
+  return {checkedAt:local,latest,rows,missing:missing.map(h=>h.code),lagging:lagging.map(h=>h.code),pending,
+    alert:!!(missing.length||lagging.length||pending),
+    message:missing.length?'部分台灣 ETF 缺少報價日期':lagging.length?'部分台灣 ETF 報價落後其他標的':pending?'盤後仍未取得今日收盤；可能來源延遲或休市，請核對':'台灣 ETF 日期一致'};
+}
 function getDataStatus(meta, now = new Date()) {
   const local = new Intl.DateTimeFormat('sv-SE', {
     timeZone: 'Asia/Taipei', year: 'numeric', month: '2-digit', day: '2-digit',
@@ -163,13 +177,15 @@ function getDataStatus(meta, now = new Date()) {
       if (slot <= cutoff.getTime()) expected = Math.max(expected, slot);
     }
   }
+  const quoteAudit=quoteFreshness(meta.holdings||[],now);
+  const quoteAlert=(meta.holdings||[]).length>0&&quoteAudit.alert;
   const overdue = !Number.isFinite(checkedAt.getTime()) || checkedAt.getTime() < expected;
   const earlier = meta.sources.filter(source => source.kind !== 'fx' && source.date < today);
   return {
     overdue,
-    tone: overdue || earlier.length ? 'waiting' : 'current',
-    title: overdue ? '同步時間已落後，等待補跑' : earlier.length ? '部分報價非今日資料' : '同步完成・報價日期為今日',
-    message: overdue
+    tone: quoteAlert || overdue || earlier.length ? 'waiting' : 'current',
+    title: quoteAlert ? quoteAudit.message : overdue ? '同步時間已落後，等待補跑' : earlier.length ? '部分報價非今日資料' : '同步完成・報價日期為今日',
+    message: quoteAlert ? '逐檔日期：'+quoteAudit.rows.map(h=>h.code+' '+h.date).join('；') : overdue
       ? '超過原排程 90 分鐘仍未看到同步成功紀錄；本頁保留上次資料。'
       : earlier.length
         ? '損益依下列日期計算。休市、基金公布時差或來源尚未更新，都可能造成日期落後。'
@@ -177,7 +193,20 @@ function getDataStatus(meta, now = new Date()) {
   };
 }
 function refreshDataStatus(){const state=getDataStatus(portfolioDataStatus);document.getElementById('dataStatus').className='data-status '+state.tone;document.getElementById('dataStatusTitle').textContent=state.title;document.getElementById('dataStatusMessage').textContent=state.message;}
-refreshDataStatus();setInterval(refreshDataStatus,60000);document.addEventListener('visibilitychange',refreshDataStatus);
+refreshDataStatus();setInterval(refreshDataStatus,60000);
+async function checkNewQuotes(){
+ if(document.hidden||checkNewQuotes.busy)return;checkNewQuotes.busy=true;
+ try{const u=new URL(location.href);u.hash='';u.searchParams.set('_refresh',Date.now());
+ const response=await fetch(u,{cache:'no-store'});if(!response.ok)return;
+ const text=await response.text(),match=text.match(/const portfolioDataStatus=([^;]+);/);
+ if(!match)return;const next=JSON.parse(match[1]);
+ if(next.syncedAt>portfolioDataStatus.syncedAt){
+ sessionStorage.setItem('portfolioView',JSON.stringify({hidden:document.getElementById('privacy').getAttribute('aria-pressed')==='true',open:[...document.querySelectorAll('.holding.open .position-name small')].map(x=>x.textContent)}));
+ location.reload();}
+ }catch{}finally{checkNewQuotes.busy=false;}
+}
+try{const saved=JSON.parse(sessionStorage.getItem('portfolioView')||'null');if(saved){sessionStorage.removeItem('portfolioView');if(saved.hidden)document.getElementById('privacy').click();for(const tile of document.querySelectorAll('.holding'))if(saved.open.includes(tile.querySelector('.position-name small')?.textContent))tile.querySelector('button').click();}}catch{}
+setInterval(checkNewQuotes,120000);document.addEventListener('visibilitychange',()=>{refreshDataStatus();checkNewQuotes();});checkNewQuotes();
 </script>
 </body>
 </html>
