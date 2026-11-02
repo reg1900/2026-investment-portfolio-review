@@ -2,15 +2,10 @@ name: 更新投資儀表板
 
 on:
   schedule:
-    - cron: '35 8 * * 1-5'
-      timezone: 'Asia/Taipei'
-    - cron: '35 15 * * 1-5'
-      timezone: 'Asia/Taipei'
-    # 補跑也會重新檢查來源日期；GitHub 排程本身仍可能延遲。
-    - cron: '5 9,16 * * 1-5'
-      timezone: 'Asia/Taipei'
-    - cron: '35 17,20 * * 1-5'
-      timezone: 'Asia/Taipei'
+    # UTC；台北 08:37、09:07，以及15:17–21:47每半小時。
+    - cron: '37 0 * * 1-5'
+    - cron: '7 1 * * 1-5'
+    - cron: '17,47 7-13 * * 1-5'
   workflow_dispatch:
   push:
     branches: [main]
@@ -26,7 +21,9 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
+    outputs:
+      stale: ${{ steps.audit.outputs.stale }}
     permissions:
       contents: write
     steps:
@@ -39,10 +36,22 @@ jobs:
           node-version: 22
 
       - name: 更新市場資料
-        run: node scripts/update-market-data.mjs
+        run: |
+          for attempt in 1 2 3; do
+            node scripts/update-market-data.mjs
+            if node scripts/quote-freshness.mjs --retry; then break; else
+              if [ "$attempt" -lt 3 ]; then sleep 90; fi
+            fi
+          done
         env:
           GOOGLE_SHEET_SYNC_URL: ${{ secrets.GOOGLE_SHEET_SYNC_URL }}
           GOOGLE_SHEET_SYNC_TOKEN: ${{ secrets.GOOGLE_SHEET_SYNC_TOKEN }}
+
+      - name: 逐檔報價日期與觸發紀錄
+        id: audit
+        run: node scripts/quote-freshness.mjs
+        env:
+          TRIGGER_SCHEDULE: ${{ github.event.schedule }}
 
       - name: 檢查同步與行情日期判讀
         run: node --test scripts/*.test.mjs
@@ -89,3 +98,9 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
 
+
+      - name: 過期行情告警
+        if: needs.update.outputs.stale == 'true'
+        run: |
+          echo "::error::行情尚未到齊或盤後未取得今日報價；已保留各檔實際日期，請檢查 update summary。休市日請核對交易所公告。"
+          exit 1
