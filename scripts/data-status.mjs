@@ -1,4 +1,5 @@
 import fs from 'node:fs/promises';
+import {quoteFreshness} from './quote-freshness.mjs';
 import { pathToFileURL } from 'node:url';
 
 // 僅判斷日期與同步時間，不把平日直接視為開市日。
@@ -22,13 +23,15 @@ export function getDataStatus(meta, now = new Date()) {
       if (slot <= cutoff.getTime()) expected = Math.max(expected, slot);
     }
   }
+  const quoteAudit=quoteFreshness(meta.holdings||[],now);
+  const quoteAlert=(meta.holdings||[]).length>0&&quoteAudit.alert;
   const overdue = !Number.isFinite(checkedAt.getTime()) || checkedAt.getTime() < expected;
   const earlier = meta.sources.filter(source => source.kind !== 'fx' && source.date < today);
   return {
     overdue,
-    tone: overdue || earlier.length ? 'waiting' : 'current',
-    title: overdue ? '同步時間已落後，等待補跑' : earlier.length ? '部分報價非今日資料' : '同步完成・報價日期為今日',
-    message: overdue
+    tone: quoteAlert || overdue || earlier.length ? 'waiting' : 'current',
+    title: quoteAlert ? quoteAudit.message : overdue ? '同步時間已落後，等待補跑' : earlier.length ? '部分報價非今日資料' : '同步完成・報價日期為今日',
+    message: quoteAlert ? '逐檔日期：'+quoteAudit.rows.map(h=>h.code+' '+h.date).join('；') : overdue
       ? '超過原排程 90 分鐘仍未看到同步成功紀錄；本頁保留上次資料。'
       : earlier.length
         ? '損益依下列日期計算。休市、基金公布時差或來源尚未更新，都可能造成日期落後。'
@@ -50,9 +53,22 @@ function sourceDate(source) {
 
 export function installDataStatus(html, meta, now = new Date()) {
   const state = getDataStatus(meta, now);
-  const panel = `<section class="data-status ${state.tone}" id="dataStatus" aria-label="資料更新狀態"><details class="status-disclosure"><summary><span>資料更新狀態</span><strong id="dataStatusTitle">${state.title}</strong></summary><p id="dataStatusMessage">${state.message}</p><dl>${meta.sources.map(s => `<div><dt>${escapeHtml(s.name)}</dt><dd>${escapeHtml(sourceDate(s))}</dd></div>`).join('')}</dl><div class="sync-schedule">平日 08:35／15:35 同步；09:05／16:05／17:35／20:35 再檢查。排程可能延遲。</div><a href="https://github.com/reg1900/2026-investment-portfolio-review/actions/workflows/update-portfolio.yml" target="_blank" rel="noopener">查看執行紀錄 ↗</a></details></section>`;
+  const panel = `<section class="data-status ${state.tone}" id="dataStatus" aria-label="資料更新狀態"><details class="status-disclosure"><summary><span>資料更新狀態</span><strong id="dataStatusTitle">${state.title}</strong></summary><p id="dataStatusMessage">${state.message}</p><dl>${meta.sources.map(s => `<div><dt>${escapeHtml(s.name)}</dt><dd>${escapeHtml(sourceDate(s))}</dd></div>`).join('')}</dl><div class="sync-schedule">平日 08:37／09:07 同步；15:17–21:47 每半小時補查。排程可能延遲；每次最多重試三次。</div><a href="https://github.com/reg1900/2026-investment-portfolio-review/actions/workflows/update-portfolio.yml" target="_blank" rel="noopener">查看執行紀錄 ↗</a></details></section>`;
   const css = `.data-status{margin:14px 0 18px;padding:14px 15px;border:1px solid #d6b567;border-radius:16px;background:#fff5da;color:#493d21;font-size:.9rem}.data-status.current{background:#edf5ef;border-color:#bad5c4;color:#214a35}.data-status>strong{display:block;font-size:1rem}.data-status p{margin:5px 0 10px;line-height:1.6}.data-status dl{margin:0;border-top:1px solid #493d2120}.data-status dl div{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px solid #493d2120}.data-status dt{font-weight:650}.data-status dd{margin:0;text-align:right;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.sync-schedule{margin-top:9px;font-size:.86rem;line-height:1.6}.data-status a{display:inline-block;margin-top:8px;padding:3px 0;color:inherit;font-weight:750;text-underline-offset:3px}`;
-  const script = `<script id="dataStatusScript">\nconst portfolioDataStatus=${JSON.stringify(meta).replaceAll('<','\\u003c')};\n${getDataStatus.toString()}\nfunction refreshDataStatus(){const state=getDataStatus(portfolioDataStatus);document.getElementById('dataStatus').className='data-status '+state.tone;document.getElementById('dataStatusTitle').textContent=state.title;document.getElementById('dataStatusMessage').textContent=state.message;}\nrefreshDataStatus();setInterval(refreshDataStatus,60000);document.addEventListener('visibilitychange',refreshDataStatus);\n</script>`;
+  const script = `<script id="dataStatusScript">\nconst portfolioDataStatus=${JSON.stringify(meta).replaceAll('<','\\u003c')};\n${quoteFreshness.toString()}\n${getDataStatus.toString()}\nfunction refreshDataStatus(){const state=getDataStatus(portfolioDataStatus);document.getElementById('dataStatus').className='data-status '+state.tone;document.getElementById('dataStatusTitle').textContent=state.title;document.getElementById('dataStatusMessage').textContent=state.message;}\nrefreshDataStatus();setInterval(refreshDataStatus,60000);
+async function checkNewQuotes(){
+ if(document.hidden||checkNewQuotes.busy)return;checkNewQuotes.busy=true;
+ try{const u=new URL(location.href);u.hash='';u.searchParams.set('_refresh',Date.now());
+ const response=await fetch(u,{cache:'no-store'});if(!response.ok)return;
+ const text=await response.text(),match=text.match(/const portfolioDataStatus=([^;]+);/);
+ if(!match)return;const next=JSON.parse(match[1]);
+ if(next.syncedAt>portfolioDataStatus.syncedAt){
+ sessionStorage.setItem('portfolioView',JSON.stringify({hidden:document.getElementById('privacy').getAttribute('aria-pressed')==='true',open:[...document.querySelectorAll('.holding.open .position-name small')].map(x=>x.textContent)}));
+ location.reload();}
+ }catch{}finally{checkNewQuotes.busy=false;}
+}
+try{const saved=JSON.parse(sessionStorage.getItem('portfolioView')||'null');if(saved){sessionStorage.removeItem('portfolioView');if(saved.hidden)document.getElementById('privacy').click();for(const tile of document.querySelectorAll('.holding'))if(saved.open.includes(tile.querySelector('.position-name small')?.textContent))tile.querySelector('button').click();}}catch{}
+setInterval(checkNewQuotes,120000);document.addEventListener('visibilitychange',()=>{refreshDataStatus();checkNewQuotes();});checkNewQuotes();\n</script>`;
   let output = html.replace(/<div class="asof">[\s\S]*?<\/div>/, `<div class="asof">最近同步成功：${escapeHtml(meta.syncedAt)}（台北）</div>`);
   output = output.replace(/<style id="dataStatusStyle">[\s\S]*?<\/style>\s*/,'');
   output = output.replace('</head>', `<style id="dataStatusStyle">${css}</style>\n</head>`);

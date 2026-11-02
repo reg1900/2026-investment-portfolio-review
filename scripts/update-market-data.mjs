@@ -214,7 +214,7 @@ const twDate = twDates.length === 1 ? twDates[0] : `${twDates[0]}～${twDates.at
 const fundDates = Object.values(fundQuotes).map(v => v.isoDate).sort();
 const fundDateText = fundDates[0] === fundDates.at(-1) ? fundDates[0] : `${fundDates[0]}～${fundDates.at(-1)}`;
 const updatedAt = formatTaipei();
-const metadata = { syncedAt: updatedAt, sources: [
+const metadata = { syncedAt: updatedAt, holdings:holdings.filter(h=>h.unit==='股').map(h=>({n:h.n,unit:h.unit,quoteDate:h.quoteDate,quoteSource:h.quoteSource})), sources: [
   ...twDates.map(date => ({name:'台灣 ETF 收盤',date})),
   {name:'富達永續淨值',date:fundQuotes.fidelity.isoDate},
   {name:'施羅德環球淨值',date:fundQuotes.schroder.isoDate},

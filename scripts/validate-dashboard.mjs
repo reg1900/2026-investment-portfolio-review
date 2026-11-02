@@ -8,7 +8,7 @@ for (const match of html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi))
 }
 
 const checks = [
-  ['11 holdings', (html.match(/\{\"n\":/g) || []).length === 11],
+  ['11 holdings', JSON.parse(html.match(/const holdings=(\[[\s\S]*?\]);/)[1]).length === 11],
   ['sync timestamp', /最近同步成功：\d{4}-\d{2}-\d{2} \d{2}:\d{2}/.test(html)],
   ['separate source dates', html.includes('id="dataStatus"') && html.includes('id="dataStatusScript"')],
   ['Taiwan quote sources', html.includes('證交所盤後每日報表') && html.includes('櫃買中心收盤資料')],
