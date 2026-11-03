@@ -32,6 +32,6 @@ for(const h of holdings.filter(h=>h.unit==='股')){
   let url;try{url=new URL(h.quoteSourceUrl);}catch{throw new Error('Validation failed: missing Taiwan source URL');}
   if(!expected[h.quoteSource]||url.protocol!=='https:'||url.hostname!==expected[h.quoteSource])throw new Error('Validation failed: Taiwan quote source mismatch');
 }
-for(const holding of holdings) if(![holding.c,holding.v,holding.u,holding.day].every(Number.isFinite))throw new Error('Validation failed: invalid holding values');
+for(const holding of holdings) if(![holding.c,holding.v,holding.u].every(Number.isFinite)||!(holding.dayComparable===false&&holding.day===null&&holding.dayPnl===null)&&!Number.isFinite(holding.day))throw new Error('Validation failed: invalid holding values');
 
 console.log('Dashboard validation passed.');

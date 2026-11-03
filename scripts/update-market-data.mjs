@@ -184,12 +184,13 @@ for (const holding of holdings) {
     validateQuoteDate(quote.isoDate, holding.quoteDate);
     holding.quoteSource = quote.source;
     holding.quoteSourceUrl = quote.sourceUrl;
-    holding.dayPnl = quote.change * holding.u;
+    holding.dayPnl = quote.comparable===false ? null : quote.change * holding.u;
+    holding.dayComparable = quote.comparable!==false;
     holding.q = `NT$${quote.price.toFixed(2)}`;
     holding.v = Math.round(quote.price * taiwanPositions[holding.n]);
     holding.d = ymdToShort(quote.isoDate);
     holding.quoteDate = quote.isoDate;
-    holding.day = Number(quote.day.toFixed(4));
+    holding.day = quote.day===null ? null : Number(quote.day.toFixed(4));
   } else if (holding.n in fundPositions) {
     const position = fundPositions[holding.n];
     const quote = fundQuotes[position.source];
@@ -199,7 +200,7 @@ for (const holding of holdings) {
     holding.v = Math.round(quote.nav * position.units * fx.value);
     holding.d = ymdToShort(quote.isoDate);
     holding.quoteDate = quote.isoDate;
-    holding.day = Number(quote.day.toFixed(4));
+    holding.day = quote.day===null ? null : Number(quote.day.toFixed(4));
   }
 }
 
@@ -240,7 +241,7 @@ if (freshness.tone === 'waiting') console.warn(`::warning::${freshness.title}；
 if (process.env.GITHUB_STEP_SUMMARY) await fs.appendFile(process.env.GITHUB_STEP_SUMMARY,
   `## 資料同步結果\n\n- 同步成功：${updatedAt}（台北）\n- 台灣 ETF：${twDate}\n- 富達：${fundQuotes.fidelity.isoDate}\n- 施羅德：${fundQuotes.schroder.isoDate}\n- 狀態：${freshness.title}\n\n${freshness.message}\n`);
 for (const h of holdings) {
-  if (![h.c, h.v, h.u, h.day, h.dayPnl].every(Number.isFinite)) throw new Error(`Invalid output values for ${h.n}`);
+  if (![h.c, h.v, h.u].every(Number.isFinite)||!(h.dayComparable===false&&h.day===null&&h.dayPnl===null)&&![h.day,h.dayPnl].every(Number.isFinite)) throw new Error(`Invalid output values for ${h.n}`);
 }
 await fs.writeFile(HTML_PATH, output);
 console.log(JSON.stringify({ updatedAt, twDate, fundDateText, usdTwd: fx.value, totalValue: Math.round(totalValue), totalPnl: Math.round(totalPnl) }, null, 2));

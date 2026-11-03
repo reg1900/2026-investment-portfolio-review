@@ -42,6 +42,11 @@ export function parseDailyReport(data,positions,date,now=new Date()) {
     if(!(row[code] in positions))continue;
     if(result.has(row[code]))throw new Error('Duplicate symbol in TWSE daily report');
     const symbol=plain(row[sign]),magnitude=quoteNumber(row[change],'change');
+    if(symbol==='X'&&magnitude===0){
+      const price=quoteNumber(row[close],'close');if(!(price>0))throw new Error('Invalid close');
+      result.set(row[code],{price,change:null,day:null,comparable:false,isoDate:validateQuoteDate(date,undefined,now),source:'證交所盤後每日報表',sourceUrl:url});
+      continue;
+    }
     if(magnitude<0||(!['+','-','－','−'].includes(symbol)&&!(symbol===''&&magnitude===0)))
       throw new Error('TWSE change sign missing or not comparable');
     result.set(row[code],quote(row[close],['-','－','−'].includes(symbol)?-magnitude:magnitude,
@@ -70,7 +75,7 @@ export function selectQuotes(maps,positions){
   for(const map of maps)for(const [code,candidate] of map){
     const current=selected.get(code);
     if(current?.isoDate===candidate.isoDate&&
-      (Math.abs(current.price-candidate.price)>.005||Math.abs(current.change-candidate.change)>.005))
+      (Math.abs(current.price-candidate.price)>.005||(current.change!==null&&candidate.change!==null&&Math.abs(current.change-candidate.change)>.005)))
       throw new Error('Same-date close disagreement for '+code);
     if(!current||candidate.isoDate>current.isoDate)selected.set(code,candidate);
   }

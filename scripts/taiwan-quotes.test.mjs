@@ -80,3 +80,9 @@ test('no-trading-day report falls back to last actual report without changing it
   },{now:monday,warn:()=>{}});
   assert.equal(m.get('0050').isoDate,'2026-10-23');
 });
+
+test('official X with zero change preserves current close and other holdings',()=>{
+ const d={stat:'OK',date:'20261103',tables:[{fields:['證券代號','收盤價','漲跌(+/-)','漲跌價差'],data:[['00406A','7.98','<p>X</p>','0.00'],['0050','100.60','-','3.50']]}]};
+ const q=parseDailyReport(d,{'00406A':1,'0050':1},'2026-11-03',new Date('2026-11-03T11:00Z'));
+ assert.equal(q.size,2);assert.equal(q.get('00406A').price,7.98);assert.equal(q.get('00406A').day,null);assert.equal(q.get('00406A').comparable,false);assert.equal(q.get('0050').price,100.60);
+});
