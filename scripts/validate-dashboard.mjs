@@ -11,7 +11,6 @@ const checks = [
   ['11 holdings', JSON.parse(html.match(/const holdings=(\[[\s\S]*?\]);/)[1]).length === 11],
   ['sync timestamp', /最近同步成功：\d{4}-\d{2}-\d{2} \d{2}:\d{2}/.test(html)],
   ['separate source dates', html.includes('id="dataStatus"') && html.includes('id="dataStatusScript"')],
-  ['Taiwan quote sources', html.includes('證交所盤後每日報表') && html.includes('櫃買中心收盤資料')],
   ['fund quote source', html.includes('MoneyDJ')],
   ['privacy control', html.includes('id="privacy"')],
   ['red-up styling', html.includes('.pl-up{color:#c43e36}')],
@@ -28,6 +27,11 @@ for (const [name, ok] of checks) {
   if (!ok) throw new Error(`Validation failed: ${name}`);
 }
 const holdings=JSON.parse(html.match(/const holdings=(\[[\s\S]*?\]);/)[1]);
+for(const h of holdings.filter(h=>h.unit==='股')){
+  const expected={'證交所盤後每日報表':'www.twse.com.tw','證交所 OpenAPI 備援':'openapi.twse.com.tw','櫃買中心收盤資料':'www.tpex.org.tw'};
+  let url;try{url=new URL(h.quoteSourceUrl);}catch{throw new Error('Validation failed: missing Taiwan source URL');}
+  if(!expected[h.quoteSource]||url.protocol!=='https:'||url.hostname!==expected[h.quoteSource])throw new Error('Validation failed: Taiwan quote source mismatch');
+}
 for(const holding of holdings) if(![holding.c,holding.v,holding.u,holding.day].every(Number.isFinite))throw new Error('Validation failed: invalid holding values');
 
 console.log('Dashboard validation passed.');
