@@ -110,7 +110,7 @@ async function fetchPortfolioSnapshot() {
   if (missing.length) throw new Error(`Google Sheet sync missing holdings: ${missing.join(', ')}`);
   const totalCost = expected.reduce((sum, key) => sum + positions.get(key).cost, 0);
   if (!(totalCost > 1_000_000 && totalCost < 100_000_000)) throw new Error('Google Sheet total cost is outside the safety range');
-  return { positions, totalCost, sourceUpdatedAt: data.updatedAt || null };
+  return { positions, totalCost, sourceUpdatedAt: data.updatedAt || null, realizedPnl: data.realizedPnl };
 }
 
 function extractExistingHoldings(html) {
@@ -235,7 +235,7 @@ output = replaceOrThrow(
 );
 
 output = installDataStatus(output, metadata);
-output = await installPortfolioReview(output, {draft:false});
+output = await installPortfolioReview(output, {draft:false, realizedPnl:portfolio.realizedPnl});
 const freshness = getDataStatus(metadata);
 if (freshness.tone === 'waiting') console.warn(`::warning::${freshness.title}；台灣 ETF ${twDate}；基金 ${fundDateText}`);
 if (process.env.GITHUB_STEP_SUMMARY) await fs.appendFile(process.env.GITHUB_STEP_SUMMARY,

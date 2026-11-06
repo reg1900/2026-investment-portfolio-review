@@ -3,6 +3,8 @@ import {pathToFileURL} from 'node:url';
 import {loanConfig} from './loan-config.mjs';
 import {loanSchedule,calculateExposure,stressScenario,balanceTradePlan} from './portfolio-math.mjs';
 import {exposureRuntime} from './exposure-view.mjs';
+import {holdingNames, quoteLinks} from './quote-links.mjs';
+import {renderRealizedPnl} from './realized-pnl.mjs';
 
 export function renderMarketBalance(holdings) {
   const p=balanceTradePlan(holdings),money=n=>'$'+Math.round(n).toLocaleString('zh-TW');
@@ -35,16 +37,17 @@ function allocationRuntime(){
   drawAllocation();
 }
 
-function card(h){
-  const names={'0050':'元大台灣50','00713':'元大高息低波','00631L':'元大台灣50正2','00919':'群益台灣精選高息','00878':'國泰永續高股息','00937B':'群益ESG投等債20+','00751B':'元大AAA至A公司債','00933B':'國泰10Y+金融債','00406A':'台股主動ETF'};
+function card(h,index){
+  const name=holdingNames[h.n] || h.n, url=quoteLinks[h.n];
+  const label=url ? `<a class="quote-link" href="${url}" target="_blank" rel="noopener noreferrer">${name}</a>` : name;
   const p=h.v-h.c,rate=h.c>0?p/h.c*100:0;
   const fmt=n=>Math.round(n).toLocaleString('zh-TW'),signed=n=>(n>0?'+':n<0?'−':'')+fmt(Math.abs(n));
   const tone=p>=0?'pl-up':'pl-down',daily=h.dayComparable===false?null:Number.isFinite(h.dayPnl)?h.dayPnl:h.v-h.v/(1+h.day/100);
   const fund=h.k==='海外基金';
-  return `<article class="card holding"><button class="tile-button" aria-expanded="false"><div class="position-summary"><span class="position-name"><strong>${names[h.n]||h.n}</strong><small>${h.n} · ${fund?'基金':'ETF'}</small></span><span class="position-size"><strong>${h.q.replace(/^NT\$/,'$')}</strong><strong class="money">${h.u.toLocaleString('zh-TW',{maximumFractionDigits:2})}</strong><small class="money">${fmt(h.v)}</small></span><span class="position-profit ${tone}"><strong class="${h.day>=0?'pl-up':'pl-down'}">${h.dayComparable===false?'—':(h.day>=0?'+':'−')+Math.abs(h.day).toFixed(2)+'%'}</strong><strong class="money">${signed(p)}</strong><small>${p>=0?'+':'−'}${Math.abs(rate).toFixed(2)}%</small></span><span class="position-chevron" aria-hidden="true"></span></div><div class="tile-details"><span>${fund?'基金淨值':'收盤價'}</span><b>${h.q}</b><span>成本均價</span><b>${h.avg}</b><span>投資成本</span><b class="money">${fmt(h.c)}</b><span>帳面市值</span><b class="money">${fmt(h.v)}</b><span>持有單位</span><b class="money">${h.u.toLocaleString('zh-TW',{maximumFractionDigits:2})} ${h.unit}</b><span>單日價差損益</span><b class="money ${daily>=0?'pl-up':'pl-down'}">${daily===null?'—':signed(daily)}</b><span>單日漲跌幅</span><b class="${h.day>=0?'pl-up':'pl-down'}">${h.dayComparable===false?'—':(h.day>=0?'+':'−')+Math.abs(h.day).toFixed(2)+'%'}</b>${h.dayComparable===false?'<span>漲跌說明</span><b>官方標示 X，單日漲跌不具可比性</b>':''}<span>報價日期</span><b>${h.quoteDate||h.d}</b><span>行情來源</span><b>${h.quoteSource||(fund?'MoneyDJ 基金淨值':'證交所／櫃買中心')}</b><span>損益幣別</span><b>新台幣</b><span class="detail-section">損益未計配息與交易費用。基金單日損益按目前匯率換算，未含匯率變動。</span></div></button></article>`;
+  return `<article class="card holding"><div class="tile-button"><div class="position-summary"><span class="position-name"><strong>${label}</strong><small>${h.n} · ${fund?'基金':'ETF'}</small></span><span class="position-size"><strong>${h.q.replace(/^NT\$/,'$')}</strong><strong class="money">${h.u.toLocaleString('zh-TW',{maximumFractionDigits:2})}</strong><small class="money">${fmt(h.v)}</small></span><span class="position-profit ${tone}"><strong class="${h.day>=0?'pl-up':'pl-down'}">${h.dayComparable===false?'—':(h.day>=0?'+':'−')+Math.abs(h.day).toFixed(2)+'%'}</strong><strong class="money">${signed(p)}</strong><small>${p>=0?'+':'−'}${Math.abs(rate).toFixed(2)}%</small></span><button class="position-toggle" type="button" aria-label="查看 ${name} 持倉明細" aria-expanded="false" aria-controls="holding-details-${index}"><span class="position-chevron" aria-hidden="true"></span></button></div><div class="tile-details" id="holding-details-${index}"><span>${fund?'基金淨值':'收盤價'}</span><b>${h.q}</b><span>成本均價</span><b>${h.avg}</b><span>投資成本</span><b class="money">${fmt(h.c)}</b><span>帳面市值</span><b class="money">${fmt(h.v)}</b><span>持有單位</span><b class="money">${h.u.toLocaleString('zh-TW',{maximumFractionDigits:2})} ${h.unit}</b><span>單日價差損益</span><b class="money ${daily>=0?'pl-up':'pl-down'}">${daily===null?'—':signed(daily)}</b><span>單日漲跌幅</span><b class="${h.day>=0?'pl-up':'pl-down'}">${h.dayComparable===false?'—':(h.day>=0?'+':'−')+Math.abs(h.day).toFixed(2)+'%'}</b>${h.dayComparable===false?'<span>漲跌說明</span><b>官方標示 X，單日漲跌不具可比性</b>':''}<span>報價日期</span><b>${h.quoteDate||h.d}</b><span>行情來源</span><b>${h.quoteSource||(fund?'MoneyDJ 基金淨值':'證交所／櫃買中心')}</b><span>損益幣別</span><b>新台幣</b><span class="detail-section">損益未計配息與交易費用。基金單日損益按目前匯率換算，未含匯率變動。</span></div></div></article>`;
 }
 
-export async function installPortfolioReview(html,{draft=true}={}) {
+export async function installPortfolioReview(html,{draft=true,realizedPnl}={}) {
   const holdings=JSON.parse(html.match(/const holdings=(\[[\s\S]*?\]);/)[1]);
   const cash=Function('return '+html.match(/const cash=(\[[\s\S]*?\]);/)[1])();
   calculateExposure(holdings,cash,loanConfig);
@@ -62,7 +65,30 @@ export async function installPortfolioReview(html,{draft=true}={}) {
   if(!output.includes('data-basis="cost"'))output=output.replace('<div class="card allocation"><div class="ring-row">','<div class="card allocation"><div class="basis-toggle" role="group" aria-label="資產配置計算基礎"><button type="button" data-basis="cost" aria-pressed="true">成本</button><button type="button" data-basis="market" aria-pressed="false">市值</button></div><div class="ring-row">');
   output=output.replace(/const allocationTotal=[\s\S]*?showAllocation\(0\);/,()=>`(${allocationRuntime.toString()})();`);
   output=output.replace(/\(function allocationRuntime\(\)\{[\s\S]*?drawAllocation\(\);\n\}\)\(\);/,()=>`(${allocationRuntime.toString()})();`);
-  output=output.replace(/function card\(h\)\{[\s\S]*?\}\s*document.getElementById\('holdingsGrid'\)/,()=>card.toString()+"\ndocument.getElementById('holdingsGrid')");
+  output=output.replace(/function card\(h(?:,index)?\)\{[\s\S]*?\}\s*document.getElementById\('holdingsGrid'\)/,()=>card.toString()+"\ndocument.getElementById('holdingsGrid')");
+  output=output.replace(/^const (?:holdingNames|quoteLinks|officialQuoteLinks)=.*;\n/gm,'');
+  output=output.replace('function card(h,index){',()=>`const holdingNames=${JSON.stringify(holdingNames)};\nconst quoteLinks=${JSON.stringify(quoteLinks)};\nfunction card(h,index){`);
+  output=output.replace(/document\.querySelectorAll\('\.(?:tile-button|holding \.tile-button)'\)\.forEach\(.*\);/,()=>`document.querySelectorAll('.holding .tile-button').forEach(row=>row.onclick=event=>{
+  if(event.target.closest('a'))return;
+  const tile=row.closest('.holding'),open=tile.classList.toggle('open');
+  row.querySelector('.position-toggle').setAttribute('aria-expanded',String(open));
+  syncPrivacy();
+});`);
+  const realizedSection=/<section class="section" id="realized">[\s\S]*?<\/section>/;
+  if(realizedPnl !== undefined || output.includes('id="realized"')){
+    try{
+      const section=renderRealizedPnl(realizedPnl);
+      output=output.replace(realizedSection,()=>section);
+    }catch{
+      if(!draft) console.warn('::warning::損益表本次未同步，保留上次資料。');
+      output=output.replace(realizedSection,section=>section.replace(
+        /(<div class="realized-trade"><div><strong>)([0-9]{4,6}[A-Z]?)(<\/strong>)/g,
+        (match,before,code,after)=>quoteLinks[code]
+          ? `${before}<a class="quote-link" href="${quoteLinks[code]}" target="_blank" rel="noopener noreferrer">${holdingNames[code] || code}</a>${after}`
+          : match,
+      ));
+    }
+  }
   const annualCash=cash.reduce((sum,m)=>sum+m.x.reduce((s,x)=>s+Number(x[1]),0),0);
   output=output.replace(/<div class="cash-top">[\s\S]*?<\/div>/,`<div class="cash-top"><span>12 個月配息情境</span><strong class="money">NT$${annualCash.toLocaleString('zh-TW')}</strong></div>`);
   if(!output.includes('class="cash-plan-note"'))output=output.replace('<div class="cash-detail" id="cashDetail" aria-live="polite"></div>','<div class="cash-detail" id="cashDetail" aria-live="polite"></div><p class="cash-plan-note">沿用既有配息表，部分月份含實收金額；尚未隨持倉及最新配息公告自動重估。配息可能含本金，不代表投資報酬。</p>');

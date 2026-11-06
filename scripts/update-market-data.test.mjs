@@ -11,7 +11,7 @@ test('updater retries a temporary failure and preserves separate source dates', 
   const dir=await fs.mkdtemp(path.join(os.tmpdir(),'portfolio-updater-'));
   t.after(()=>fs.rm(dir,{recursive:true,force:true}));
   await fs.mkdir(path.join(dir,'scripts'));
-  for (const file of ['index.html','scripts/update-market-data.mjs','scripts/data-status.mjs','scripts/quote-freshness.mjs','scripts/portfolio-review.mjs','scripts/portfolio-math.mjs','scripts/loan-config.mjs','scripts/exposure-view.mjs','scripts/review-style.css','scripts/source-validation.mjs','scripts/taiwan-quotes.mjs']) {
+  for (const file of ['index.html','scripts/update-market-data.mjs','scripts/data-status.mjs','scripts/quote-freshness.mjs','scripts/portfolio-review.mjs','scripts/portfolio-math.mjs','scripts/loan-config.mjs','scripts/exposure-view.mjs','scripts/review-style.css','scripts/source-validation.mjs','scripts/taiwan-quotes.mjs','scripts/realized-pnl.mjs','scripts/quote-links.mjs']) {
     await fs.copyFile(new URL('../'+file,import.meta.url),path.join(dir,file));
   }
   const original=await fs.readFile(path.join(dir,'index.html'),'utf8');
@@ -34,7 +34,7 @@ test('updater retries a temporary failure and preserves separate source dates', 
       const address=String(url);
       if(address.includes('script.google.com')) {
         if(first){first=false;throw new Error('temporary failure with token=DO_NOT_LOG');}
-        return new Response(JSON.stringify({ok:true,holdings:holdings.map(h=>({name:h.n,units:h.u,cost:h.c,weight:Number(h.w.replace('%','')),averageCost:h.c/h.u}))}));
+        return new Response(JSON.stringify({ok:true,realizedPnl:{syncedAt:'2026-10-24T22:15:00Z',trades:[{code:'00937B',date:'2026-10-23',pnl:-20}]},holdings:holdings.map(h=>({name:h.n,units:h.u,cost:h.c,weight:Number(h.w.replace('%','')),averageCost:h.c/h.u}))}));
       }
       if(address.includes('openapi.twse.com.tw'))return new Response(JSON.stringify(holdings.filter(h=>h.unit==='股').map(h=>({Code:h.n,ClosingPrice:20,Change:1,Date:'1151023'}))));
       if(address.includes('tpex.org.tw'))return new Response('[]');
@@ -66,6 +66,9 @@ test('updater retries a temporary failure and preserves separate source dates', 
   assert.equal((output.match(/id="exposureScript"/g)||[]).length,0);
   assert.equal((output.match(/id="dataStatus"/g)||[]).length,1);
   assert.equal(output.match(/const cash=([\s\S]*?);/)[1],original.match(/const cash=([\s\S]*?);/)[1]);
+  assert.match(output, /損益表同步時間 <time datetime="2026-10-24T22:15:00.000Z">2026-10-25 06:15/);
+  assert.match(output, /−NT\$20/);
+  assert.match(output, /class="quote-link" href="https:\/\/tw\.stock\.yahoo\.com\/quote\/00937B\.TWO"/);
   assert.match(stderr,/retry 1\/3/);
   assert.ok(!stdout.includes('DO_NOT_LOG')&&!stderr.includes('DO_NOT_LOG'));
   for(const match of output.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi))new Function(match[1]);

@@ -27,3 +27,9 @@ html{font-size:17px}
 .hero .asof{font-size:.82rem}.summary span{font-size:.79rem}.summary strong{font-size:.9rem}.positions-legend{font-size:.85rem}
 @media(max-width:350px){.summary{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:8px}.summary span{font-size:.78rem}.summary strong{font-size:.86rem}.position-summary .position-name strong{font-size:1.02rem}.position-summary .position-size strong,.position-summary .position-profit strong{font-size:.92rem}.position-summary small{font-size:.85rem}.bottom-nav a{font-size:.76rem}}
 
+
+.quote-link{color:#006d8b;text-decoration:underline;text-underline-offset:.14em}
+.position-toggle{display:grid;place-items:center;min-height:44px;width:24px;justify-self:center;border:0;background:none;padding:0;cursor:pointer}
+.position-toggle:focus-visible,.quote-link:focus-visible{outline:2px solid #006d8b;outline-offset:2px}
+.position-toggle .position-chevron{display:block;justify-self:center;margin-right:0}
+.holding .tile-button{cursor:pointer}
