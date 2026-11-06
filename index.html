@@ -47,6 +47,18 @@ html{font-size:17px}
 @media(max-width:350px){.summary{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:8px}.summary span{font-size:.78rem}.summary strong{font-size:.86rem}.position-summary .position-name strong{font-size:1.02rem}.position-summary .position-size strong,.position-summary .position-profit strong{font-size:.92rem}.position-summary small{font-size:.85rem}.bottom-nav a{font-size:.76rem}}
 
 </style>
+<style id="realizedPnlStyle">
+.bottom-nav.has-realized{grid-template-columns:repeat(6,minmax(0,1fr))}
+.bottom-nav.has-realized a{white-space:nowrap;padding-inline:0}
+.realized-card{padding:14px}
+.realized-total,.realized-trade{display:flex;flex-wrap:wrap;gap:6px 12px;justify-content:space-between;align-items:center}
+.realized-total>div,.realized-trade>div{display:grid;gap:4px}
+.realized-total span,.realized-trade time,.realized-card p{color:var(--muted)}
+.realized-total strong{font-size:1.45rem}
+.realized-trade{border-top:1px solid var(--line);padding-top:12px;margin-top:12px}
+.realized-trade strong{font-size:1.1rem}
+.realized-card p{margin:12px 0 0;font-size:.85rem}
+</style>
 </head>
 <body>
 <main class="app">
@@ -60,7 +72,15 @@ html{font-size:17px}
 
   <section class="section" id="holdings"><div class="section-head"><h2>現價與未實現損益</h2><small>點箭頭展開</small></div><div class="positions-legend"><span>名稱／代號</span><span>現價<br>股數／市值</span><span>漲跌幅<br>損益／損益率</span><span></span></div><div class="holdings" id="holdingsGrid"></div></section>
 
-  <section class="section" id="allocation"><div class="section-head"><h2>資產配置</h2><small id="allocationBasisLabel">依成本占比</small></div><div class="card allocation"><div class="basis-toggle" role="group" aria-label="資產配置計算基礎"><button type="button" data-basis="cost" aria-pressed="true">成本</button><button type="button" data-basis="market" aria-pressed="false">市值</button></div><div class="ring-row"><button class="ring allocation-ring" id="allocationRing" type="button" aria-label="資產配置互動圓環"><span class="ring-center"><strong id="allocationFocusName">全部資產</strong><span id="allocationFocusPct">100%</span></span></button><div class="allocation-list" id="allocationList"></div></div><div class="allocation-detail" id="allocationDetail" aria-live="polite"></div></div></section>
+  <section class="section" id="realized">
+  <div class="section-head"><h2>已實現損益</h2></div>
+  <div class="card realized-card">
+    <div class="realized-total"><div><span>累計賣出損益</span><strong class="money pl-up">+NT$2,160</strong></div><span>1 筆</span></div>
+    <div class="realized-trade"><div><strong>00937B</strong><time datetime="2026-11-05">2026-11-05</time></div><strong class="money pl-up">+NT$2,160</strong></div>
+    <p>資料取自 2026-11-06 的「損益表」快照。此筆為賣出金額減賣出成本，未另外扣除手續費與交易稅。</p>
+  </div>
+</section>
+<section class="section" id="allocation"><div class="section-head"><h2>資產配置</h2><small id="allocationBasisLabel">依成本占比</small></div><div class="card allocation"><div class="basis-toggle" role="group" aria-label="資產配置計算基礎"><button type="button" data-basis="cost" aria-pressed="true">成本</button><button type="button" data-basis="market" aria-pressed="false">市值</button></div><div class="ring-row"><button class="ring allocation-ring" id="allocationRing" type="button" aria-label="資產配置互動圓環"><span class="ring-center"><strong id="allocationFocusName">全部資產</strong><span id="allocationFocusPct">100%</span></span></button><div class="allocation-list" id="allocationList"></div></div><div class="allocation-detail" id="allocationDetail" aria-live="polite"></div></div></section>
 
   <section class="section" id="cash"><div class="section-head"><h2>每月配息</h2><small>點月份看明細</small></div><div class="card cash-card"><div class="cash-top"><span>12 個月配息情境</span><strong class="money">NT$495,301</strong></div><div class="bars" id="bars"></div><div class="cash-detail" id="cashDetail" aria-live="polite"></div><p class="cash-plan-note">沿用既有配息表，部分月份含實收金額；尚未隨持倉及最新配息公告自動重估。配息可能含本金，不代表投資報酬。</p></div></section>
 
@@ -136,6 +156,12 @@ function card(h){
 document.getElementById('holdingsGrid').innerHTML=holdings.map(card).join('');
 document.querySelectorAll('.tile-button').forEach(button=>button.onclick=()=>{const tile=button.closest('.holding'),open=tile.classList.toggle('open');button.setAttribute('aria-expanded',open);syncPrivacy()});
 function syncPrivacy(){document.querySelectorAll('.money').forEach(n=>n.classList.toggle('masked',hidden));document.getElementById('privacy').textContent=hidden?'顯示金額':'隱藏金額';document.getElementById('privacy').setAttribute('aria-pressed',hidden)}document.getElementById('privacy').onclick=()=>{hidden=!hidden;syncPrivacy()};
+const realizedNav=document.querySelector('.bottom-nav');
+const realizedLink=document.createElement('a');
+realizedLink.href='#realized';
+realizedLink.innerHTML='<b aria-hidden="true">✓</b>已實現';
+realizedNav.classList.add('has-realized');
+realizedNav.querySelector('a[href="#holdings"]').after(realizedLink);
 const navLinks=[...document.querySelectorAll('.bottom-nav a')];
 const navTargets=navLinks.map(link=>document.querySelector(link.getAttribute('href'))).filter(Boolean);
 const navObserver=new IntersectionObserver(entries=>{const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];if(!visible)return;navLinks.forEach(link=>link.classList.toggle('active',link.getAttribute('href')===`#${visible.target.id}`))},{rootMargin:'-20% 0px -60% 0px',threshold:[0,.25,.5]});
