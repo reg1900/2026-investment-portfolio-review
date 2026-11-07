@@ -1,4 +1,6 @@
 import fs from 'node:fs/promises';
+import {installCashReceipts} from './cash-receipts.mjs';
+import {fetchDividendAnnouncements,existingDividendSnapshot,installDividendAnnouncements} from './dividend-announcements.mjs';
 import { installDataStatus, getDataStatus } from './data-status.mjs';
 import { installPortfolioReview, renderMarketBalance } from './portfolio-review.mjs';
 import { validateQuoteDate } from './source-validation.mjs';
@@ -112,7 +114,7 @@ async function fetchPortfolioSnapshot() {
   if (missing.length) throw new Error(`Google Sheet sync missing holdings: ${missing.join(', ')}`);
   const totalCost = expected.reduce((sum, key) => sum + positions.get(key).cost, 0);
   if (!(totalCost > 1_000_000 && totalCost < 100_000_000)) throw new Error('Google Sheet total cost is outside the safety range');
-  return { positions, totalCost, sourceUpdatedAt: data.updatedAt || null, realizedPnl: data.realizedPnl };
+  return { positions, totalCost, sourceUpdatedAt: data.updatedAt || null, realizedPnl: data.realizedPnl, cashReceipts: data.cashReceipts };
 }
 
 function extractExistingHoldings(html) {
@@ -246,6 +248,9 @@ output = replaceOrThrow(
 
 output = installDataStatus(output, metadata);
 output = await installPortfolioReview(output, {draft:false, realizedPnl:portfolio.realizedPnl});
+output=installCashReceipts(output,portfolio.cashReceipts);
+const dividends=await fetchDividendAnnouncements(fetchWithTimeout,existingDividendSnapshot(html));
+output=installDividendAnnouncements(output,dividends,holdings);
 const freshness = getDataStatus(metadata);
 if (freshness.tone === 'waiting') console.warn(`::warning::${freshness.title}；台灣 ETF ${twDate}；基金 ${fundDateText}`);
 if (process.env.GITHUB_STEP_SUMMARY) await fs.appendFile(process.env.GITHUB_STEP_SUMMARY,
