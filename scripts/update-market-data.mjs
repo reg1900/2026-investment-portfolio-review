@@ -3,6 +3,7 @@ import { installDataStatus, getDataStatus } from './data-status.mjs';
 import { installPortfolioReview, renderMarketBalance } from './portfolio-review.mjs';
 import { validateQuoteDate } from './source-validation.mjs';
 import { fetchTaiwanCloses } from './taiwan-quotes.mjs';
+import {parseSchroderNav} from './schroder-nav.mjs';
 
 const HTML_PATH = new URL('../index.html', import.meta.url);
 const TZ = 'Asia/Taipei';
@@ -11,6 +12,7 @@ const EXPECTED_TAIWAN = ['0050', '00713', '00937B', '00631L', '00919', '00878', 
 const EXPECTED_FUNDS = ['富達永續', '施羅德環球'];
 
 const URLS = {
+  schroderOfficial: 'https://fev2-vite.schdr.eu-central-1.isgdigital.com/?language=zh-tw&location=tw&channel=individual&clientId=schdr&clientVersion=v1&externalId=SCHDR_F000011DCB&r=%2Ffund%2FSCHDR_F000011DCB%2F',
   fidelity: 'https://tbbfws.moneydj.com/W4/wb/wb02.djhtm?a=FTZA55-068C&aspid=TBB',
   schroder: 'https://www.moneydj.com/funddj/ya/yp010001.djhtm?a=PYZT8',
   fx: 'https://raw.githubusercontent.com/haotool/app/data/public/rates/latest.json',
@@ -135,14 +137,20 @@ function parseFundSummary(html, name) {
 }
 
 async function fetchFundQuotes() {
-  const [fidelityHtml, schroderHtml] = await Promise.all([
-    fetchWithTimeout(URLS.fidelity, 'big5'),
-    fetchWithTimeout(URLS.schroder, 'big5'),
+  const [fidelityResult,officialResult,backupResult]=await Promise.allSettled([
+    fetchWithTimeout(URLS.fidelity,'big5').then(html=>({
+      ...parseFundSummary(html,'Fidelity'),source:'MoneyDJ／台灣企銀基金淨值',sourceUrl:URLS.fidelity,
+    })),
+    fetchWithTimeout(URLS.schroderOfficial).then(parseSchroderNav),
+    fetchWithTimeout(URLS.schroder,'big5').then(html=>({
+      ...parseFundSummary(html,'Schroder'),source:'MoneyDJ 基金淨值',sourceUrl:URLS.schroder,
+    })),
   ]);
-  return {
-    fidelity: parseFundSummary(fidelityHtml, 'Fidelity'),
-    schroder: parseFundSummary(schroderHtml, 'Schroder'),
-  };
+  if(fidelityResult.status!=='fulfilled')throw new Error('Fidelity NAV unavailable');
+  const candidates=[officialResult,backupResult].filter(result=>result.status==='fulfilled').map(result=>result.value);
+  candidates.sort((a,b)=>b.isoDate.localeCompare(a.isoDate));
+  if(!candidates.length)throw new Error('Schroder NAV unavailable from official and backup sources');
+  return {fidelity:fidelityResult.value,schroder:candidates[0]};
 }
 
 async function fetchUsdTwd() {
@@ -196,6 +204,8 @@ for (const holding of holdings) {
     const quote = fundQuotes[position.source];
     validateQuoteDate(quote.isoDate, holding.quoteDate);
     holding.dayPnl = quote.change * holding.u * fx.value;
+    holding.quoteSource = quote.source;
+    holding.quoteSourceUrl = quote.sourceUrl;
     holding.q = `US$${quote.nav.toFixed(4)}`;
     holding.v = Math.round(quote.nav * position.units * fx.value);
     holding.d = ymdToShort(quote.isoDate);

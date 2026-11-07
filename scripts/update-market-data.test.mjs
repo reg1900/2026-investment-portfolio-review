@@ -11,7 +11,7 @@ test('updater retries a temporary failure and preserves separate source dates', 
   const dir=await fs.mkdtemp(path.join(os.tmpdir(),'portfolio-updater-'));
   t.after(()=>fs.rm(dir,{recursive:true,force:true}));
   await fs.mkdir(path.join(dir,'scripts'));
-  for (const file of ['index.html','scripts/update-market-data.mjs','scripts/data-status.mjs','scripts/quote-freshness.mjs','scripts/portfolio-review.mjs','scripts/portfolio-math.mjs','scripts/loan-config.mjs','scripts/exposure-view.mjs','scripts/review-style.css','scripts/source-validation.mjs','scripts/taiwan-quotes.mjs','scripts/realized-pnl.mjs','scripts/quote-links.mjs']) {
+  for (const file of ['index.html','scripts/update-market-data.mjs','scripts/data-status.mjs','scripts/quote-freshness.mjs','scripts/portfolio-review.mjs','scripts/portfolio-math.mjs','scripts/loan-config.mjs','scripts/exposure-view.mjs','scripts/review-style.css','scripts/source-validation.mjs','scripts/taiwan-quotes.mjs','scripts/realized-pnl.mjs','scripts/quote-links.mjs','scripts/schroder-nav.mjs']) {
     await fs.copyFile(new URL('../'+file,import.meta.url),path.join(dir,file));
   }
   const original=await fs.readFile(path.join(dir,'index.html'),'utf8');
