@@ -11,7 +11,7 @@ test('updater retries a temporary failure and preserves separate source dates', 
   const dir=await fs.mkdtemp(path.join(os.tmpdir(),'portfolio-updater-'));
   t.after(()=>fs.rm(dir,{recursive:true,force:true}));
   await fs.mkdir(path.join(dir,'scripts'));
-  for (const file of ['index.html','scripts/update-market-data.mjs','scripts/data-status.mjs','scripts/quote-freshness.mjs','scripts/portfolio-review.mjs','scripts/portfolio-math.mjs','scripts/loan-config.mjs','scripts/exposure-view.mjs','scripts/review-style.css','scripts/source-validation.mjs','scripts/taiwan-quotes.mjs','scripts/realized-pnl.mjs','scripts/quote-links.mjs','scripts/schroder-nav.mjs','scripts/dividend-announcements.mjs','scripts/cash-receipts.mjs']) {
+  for (const file of ['index.html','scripts/update-market-data.mjs','scripts/data-status.mjs','scripts/quote-freshness.mjs','scripts/portfolio-review.mjs','scripts/portfolio-math.mjs','scripts/loan-config.mjs','scripts/exposure-view.mjs','scripts/review-style.css','scripts/source-validation.mjs','scripts/taiwan-quotes.mjs','scripts/realized-pnl.mjs','scripts/quote-links.mjs','scripts/schroder-nav.mjs']) {
     await fs.copyFile(new URL('../'+file,import.meta.url),path.join(dir,file));
   }
   const original=await fs.readFile(path.join(dir,'index.html'),'utf8');
@@ -65,7 +65,7 @@ test('updater retries a temporary failure and preserves separate source dates', 
   assert.ok(!output.includes('本地審核版・尚未發布'));
   assert.equal((output.match(/id="exposureScript"/g)||[]).length,0);
   assert.equal((output.match(/id="dataStatus"/g)||[]).length,1);
-  assert.equal(output.match(/const cash=([\s\S]*?);/)[1],'[]');
+  assert.equal(output.match(/const cash=([\s\S]*?);/)[1],original.match(/const cash=([\s\S]*?);/)[1]);
   assert.match(output, /損益表同步時間 <time datetime="2026-10-24T22:15:00.000Z">2026-10-25 06:15/);
   assert.match(output, /−NT\$20/);
   assert.match(output, /class="quote-link" href="https:\/\/tw\.stock\.yahoo\.com\/quote\/00937B\.TWO"/);

@@ -89,6 +89,9 @@ export async function installPortfolioReview(html,{draft=true,realizedPnl}={}) {
       ));
     }
   }
+  const annualCash=cash.reduce((sum,m)=>sum+m.x.reduce((s,x)=>s+Number(x[1]),0),0);
+  output=output.replace(/<div class="cash-top">[\s\S]*?<\/div>/,`<div class="cash-top"><span>12 個月配息情境</span><strong class="money">NT$${annualCash.toLocaleString('zh-TW')}</strong></div>`);
+  if(!output.includes('class="cash-plan-note"'))output=output.replace('<div class="cash-detail" id="cashDetail" aria-live="polite"></div>','<div class="cash-detail" id="cashDetail" aria-live="polite"></div><p class="cash-plan-note">沿用既有配息表，部分月份含實收金額；尚未隨持倉及最新配息公告自動重估。配息可能含本金，不代表投資報酬。</p>');
   output=output.replace(/<script id="exposureScript">[\s\S]*?<\/script>\s*/,'');
   const functions=[loanSchedule,calculateExposure,stressScenario].map(fn=>fn.toString()).join('\n');
 
