@@ -64,53 +64,12 @@ html{font-size:17px}
 .position-toggle:focus-visible,.quote-link:focus-visible{outline:2px solid #006d8b;outline-offset:2px}
 .position-toggle .position-chevron{display:block;justify-self:center;margin-right:0}
 .holding .tile-button{cursor:pointer}
-
-.dividend-announcements{margin:0 0 24px}
-.dividend-announcements h3{font-size:1.15rem;margin:0}
-.dividend-upcoming{display:grid;gap:10px}
-.dividend-item{border:1px solid #dce7eb;border-radius:14px;padding:15px;background:#f7fafb;margin:8px 0}
-.dividend-title,.dividend-amount,.dividend-estimate{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
-.dividend-title strong{font-size:1.08rem;overflow-wrap:anywhere}
-.dividend-title>span{font-size:.85rem;white-space:nowrap;border-radius:6px;background:#e4f2f6;color:#006b86;padding:4px 7px}
-.dividend-amount{margin:12px 0;font-size:1rem}
-.dividend-dates{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:.95rem}
-.dividend-dates b{text-align:right;font-weight:600}
-.dividend-estimate{border-top:1px solid #dce7eb;margin-top:12px;padding-top:10px}
-.dividend-note,.dividend-source small{font-size:.85rem;color:#656973;line-height:1.6}
-.dividend-source{margin-top:12px;font-size:.85rem;display:grid;gap:3px}
-.dividend-source a{color:#007c9c}
-.dividend-warning{font-size:.85rem;color:#89520c}
-.dividend-history{margin:12px 0}
-.dividend-history summary{padding:10px 0;font-size:.95rem;cursor:pointer;font-weight:650}
-
-.receipt-currencies{display:flex;gap:8px;margin-bottom:18px}
-.receipt-currencies button{padding:9px 16px;background:#eef2f4;color:#555e66;border:0;border-radius:9px;font:inherit;cursor:pointer}
-.receipt-currencies button[aria-pressed=true]{background:#dff1f6;color:#007a9c;font-weight:700}
-.receipt-total{display:grid;grid-template-columns:1fr auto;align-items:baseline;gap:6px}
-.receipt-total>span{grid-column:1/-1;color:#656973}
-.receipt-total strong{font-size:1.55rem}
-.receipt-total small{font-size:.95rem;color:#656973}
-.receipt-months{margin:20px 0}
-.receipt-month{display:grid;grid-template-columns:1fr auto;width:100%;gap:8px 12px;text-align:left;padding:12px 0;font:inherit;background:none;border:0;cursor:pointer}
-.receipt-month>span:first-child{grid-column:1}
-.receipt-month>b{grid-column:2;grid-row:1;font-weight:650}
-.receipt-track{display:block;grid-column:1/-1;height:25px;background:#edf2f4;border-radius:5px;overflow:hidden}
-.receipt-fill{height:100%;display:flex}
-.receipt-fill i{height:100%;min-width:0}
-.receipt-month[aria-pressed=true] .receipt-track{outline:2px solid #cce5ee;outline-offset:2px}
-.receipt-line{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #e7ecee}
-.receipt-line>span{min-width:0;line-height:1.45}
-.receipt-line i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px}
-.receipt-line small{display:block;font-size:.83rem;color:#656973}
-.receipt-line a{color:#007a9c}
-.receipt-line b{white-space:nowrap;font-size:1.05rem}
-.receipt-note,.receipt-empty{font-size:.85rem;line-height:1.6;color:#656973}
 </style>
 </head>
 <body>
 <main class="app">
 <header class="hero" id="home">
-    <div class="topline"><div><div class="asof">最近同步成功：2026-11-07 23:57（台北）</div></div><button class="privacy" id="privacy" aria-pressed="false">隱藏金額</button></div>
+    <div class="topline"><div><div class="asof">最近同步成功：2026-11-08 00:19（台北）</div></div><button class="privacy" id="privacy" aria-pressed="false">隱藏金額</button></div>
     <div class="hero-total"><div class="amount money">NT$11,172,289</div></div>
     <div class="summary"><div><span>未實現損益</span><strong class="money loss">−NT$1,309,139</strong></div><div><span>損益率</span><strong class="loss">−10.49%</strong></div><div><span>投資成本</span><strong class="money">NT$12,481,428</strong></div></div>
   </header>
@@ -124,7 +83,7 @@ html{font-size:17px}
   <div class="card realized-card">
     <div class="realized-total"><div><span>累計賣出損益</span><strong class="money pl-up">+NT$2,160</strong></div><span>1 筆</span></div>
     <div class="realized-trade"><div><strong><a class="quote-link" href="https://tw.stock.yahoo.com/quote/00937B.TWO" target="_blank" rel="noopener noreferrer">群益ESG投等債20+</a></strong><time datetime="2026-11-05">2026-11-05・00937B</time></div><strong class="money pl-up">+NT$2,160</strong></div>
-    <p>損益表同步時間 <time datetime="2026-11-07T15:57:05.452Z">2026-11-07 23:57（台北）</time><br>損益金額依試算表「實現損益」欄。</p>
+    <p>損益表同步時間 <time datetime="2026-11-07T16:19:13.114Z">2026-11-08 00:19（台北）</time><br>損益金額依試算表「實現損益」欄。</p>
   </div>
 </section>
 <section class="section" id="allocation"><div class="section-head"><h2>資產配置</h2><small id="allocationBasisLabel">依成本占比</small></div><div class="card allocation"><div class="basis-toggle" role="group" aria-label="資產配置計算基礎"><button type="button" data-basis="cost" aria-pressed="true">成本</button><button type="button" data-basis="market" aria-pressed="false">市值</button></div><div class="ring-row"><button class="ring allocation-ring" id="allocationRing" type="button" aria-label="資產配置互動圓環"><span class="ring-center"><strong id="allocationFocusName">全部資產</strong><span id="allocationFocusPct">100%</span></span></button><div class="allocation-list" id="allocationList"></div></div><div class="allocation-detail" id="allocationDetail" aria-live="polite"></div></div></section>
@@ -206,8 +165,59 @@ const navTargets=navLinks.map(link=>document.querySelector(link.getAttribute('hr
 const navObserver=new IntersectionObserver(entries=>{const visible=entries.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];if(!visible)return;navLinks.forEach(link=>link.classList.toggle('active',link.getAttribute('href')===`#${visible.target.id}`))},{rootMargin:'-20% 0px -60% 0px',threshold:[0,.25,.5]});
 navTargets.forEach(target=>navObserver.observe(target));navLinks[0].classList.add('active');
 </script>
+<script id="cashReceiptsScript">const cashReceiptsSnapshot={"syncedAt":"2026-11-07T15:57:05.748Z","entries":[{"month":"2026-10","date":"2026-10-15","code":"00919","currency":"TWD","amount":13100},{"month":"2026-10","date":null,"code":"00937B","currency":"TWD","amount":3014},{"month":"2026-10","date":null,"code":"00933B","currency":"TWD","amount":1377},{"month":"2026-10","date":null,"code":"00751B","currency":"TWD","amount":4290},{"month":"2026-10","date":null,"code":"00713","currency":"TWD","amount":20000}]};
+function groupCashReceipts(snapshot,currency) {
+  const months=new Map();
+  for(const entry of snapshot.entries.filter(entry=>entry.currency===currency)){
+    const month=months.get(entry.month)||{month:entry.month,cents:0,entries:[]};
+    month.cents+=Math.round(entry.amount*100);
+    month.entries.push(entry);
+    months.set(entry.month,month);
+  }
+  return [...months.values()].sort((a,b)=>a.month.localeCompare(b.month)).map(month=>({...month,total:month.cents/100}));
+}
+(function cashReceiptsRuntime() {
+  const data=cashReceiptsSnapshot;
+  let currency=data.entries.some(entry=>entry.currency==='USD')&&!data.entries.some(entry=>entry.currency==='TWD')?'USD':'TWD';
+  let selectedMonth='';
+  const colors={'00713':'#3285ba','00919':'#cc8732','00937B':'#168e88','00933B':'#8267af','00751B':'#77924c','0050':'#2864a5','00878':'#cd6680','00406A':'#cb744d','富達永續':'#b48436','施羅德環球':'#5a68a6'};
+  const safe=value=>String(value).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
+  const money=value=>(currency==='TWD'?'NT$':'US$')+value.toLocaleString('zh-TW',{maximumFractionDigits:2});
+  const monthLabel=month=>month.replace('-',' 年 ')+' 月';
+  function draw() {
+    const months=groupCashReceipts(data,currency);
+    const total=months.reduce((sum,month)=>sum+month.cents,0)/100;
+    document.querySelectorAll('[data-receipt-currency]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.receiptCurrency===currency)));
+    document.getElementById('receiptTotal').textContent=months.length?money(total):'尚無入帳紀錄';
+    document.getElementById('receiptCount').textContent=data.entries.filter(entry=>entry.currency===currency).length+' 筆';
+    const maximum=Math.max(1,...months.map(month=>month.total));
+    document.getElementById('receiptMonths').innerHTML=months.map(month=>
+      '<button type="button" class="receipt-month" data-month="'+month.month+'" aria-label="查看'+month.month+' '+currency+'配息"><span>'+monthLabel(month.month)+
+      '</span><span class="receipt-track" aria-hidden="true"><span class="receipt-fill" style="width:'+Math.max(0,month.total/maximum*100)+'%">'+
+      month.entries.map(entry=>'<i style="width:'+(month.total>0?Math.round(entry.amount*100)/month.cents*100:0)+'%;background:'+(colors[entry.code]||'#658ba1')+'"></i>').join('')+
+      '</span></span><b class="money">'+money(month.total)+'</b></button>').join('');
+    selectedMonth=months.some(month=>month.month===selectedMonth)?selectedMonth:months.at(-1)?.month;
+    const selected=months.find(month=>month.month===selectedMonth);
+    document.getElementById('receiptDetail').innerHTML=selected?
+      '<div class="detail-head"><span>'+monthLabel(selected.month)+'</span><b class="money">'+money(selected.total)+'</b></div>'+
+      selected.entries.map(entry=>{
+        const name=holdingNames[entry.code]||entry.code,url=quoteLinks[entry.code];
+        const label=url?'<a href="'+safe(url)+'" target="_blank" rel="noopener noreferrer">'+safe(name)+'</a>':safe(name);
+        return '<div class="receipt-line"><span><i style="background:'+(colors[entry.code]||'#658ba1')+'"></i>'+label+
+          '<small>'+(entry.date?safe(entry.date):'已知月份，日期未提供')+'</small></span><b class="money">'+money(entry.amount)+'</b></div>';
+      }).join(''):'<p class="receipt-empty">尚無'+(currency==='TWD'?'新台幣':'美元')+'配息入帳紀錄。</p>';
+    document.querySelectorAll('.receipt-month').forEach(button=>{
+      button.setAttribute('aria-pressed',String(button.dataset.month===selectedMonth));
+      button.onclick=()=>{selectedMonth=button.dataset.month;draw();};
+    });
+    syncPrivacy();
+  }
+  document.querySelectorAll('[data-receipt-currency]').forEach(button=>button.onclick=()=>{currency=button.dataset.receiptCurrency;draw();});
+  draw();
+})();</script>
+<script id="dividendAnnouncementsData">const dividendAnnouncementsSnapshot={"attemptedAt":"2026-11-07T15:57:21.240Z","sources":[{"id":"twse","name":"證交所收益分配","url":"https://www.twse.com.tw/rwd/zh/ETF/etfDiv?response=json","type":"json","page":"https://www.twse.com.tw/zh/products/securities/etf/products/div.html","codes":["0050","00713","00631L","00919","00878","00406A"],"checkedAt":"2026-11-07T15:57:21.240Z","status":"ok","events":[{"code":"00878","exDate":"2026-11-17","payDate":"2026-12-11","amount":null,"currency":"TWD"},{"code":"00406A","exDate":"2026-11-03","payDate":"2026-11-27","amount":0.138,"currency":"TWD"},{"code":"00406A","exDate":"2026-10-05","payDate":"2026-11-02","amount":0.138,"currency":"TWD"},{"code":"00713","exDate":"2026-09-21","payDate":"2026-10-13","amount":1.25,"currency":"TWD"},{"code":"00919","exDate":"2026-09-16","payDate":"2026-10-15","amount":1.1,"currency":"TWD"},{"code":"00406A","exDate":"2026-09-02","payDate":"2026-09-30","amount":0.138,"currency":"TWD"},{"code":"00878","exDate":"2026-08-18","payDate":"2026-09-11","amount":1.01,"currency":"TWD"},{"code":"00406A","exDate":"2026-07-31","payDate":"2026-08-26","amount":0.128,"currency":"TWD"},{"code":"0050","exDate":"2026-07-21","payDate":"2026-08-10","amount":0.6,"currency":"TWD"},{"code":"00713","exDate":"2026-06-22","payDate":"2026-07-10","amount":1,"currency":"TWD"},{"code":"00919","exDate":"2026-06-16","payDate":"2026-07-13","amount":1,"currency":"TWD"},{"code":"00878","exDate":"2026-05-19","payDate":"2026-06-12","amount":0.66,"currency":"TWD"},{"code":"00713","exDate":"2026-03-20","payDate":"2026-04-14","amount":0.78,"currency":"TWD"},{"code":"00919","exDate":"2026-03-17","payDate":"2026-04-14","amount":0.78,"currency":"TWD"},{"code":"00878","exDate":"2026-02-26","payDate":"2026-03-23","amount":0.42,"currency":"TWD"},{"code":"0050","exDate":"2026-01-22","payDate":"2026-02-11","amount":1,"currency":"TWD"}]},{"id":"tpex","name":"櫃買中心除息預告","url":"https://www.tpex.org.tw/openapi/v1/tpex_exright_prepost","type":"json","page":"https://www.tpex.org.tw/openapi/v1/tpex_exright_prepost","codes":["00937B","00933B","00751B"],"checkedAt":"2026-11-07T15:57:21.240Z","status":"ok","events":[{"code":"00933B","exDate":"2026-11-17","payDate":null,"amount":null,"currency":"TWD"},{"code":"00937B","exDate":"2026-11-17","payDate":null,"amount":null,"currency":"TWD"}]},{"id":"capital","name":"群益投信","url":"https://www.capitalfund.com.tw/etf/product/detail/378/interest","type":"text","codes":["00937B"],"checkedAt":"2026-11-07T15:57:21.240Z","status":"ok","events":[{"code":"00937B","exDate":"2026-10-19","payDate":"2026-11-13","amount":0.072,"currency":"TWD"}]},{"id":"yuanta","name":"元大投信","url":"https://www.yuantafunds.com/myfund/information/1181?tab=3","type":"text","codes":["00751B"],"checkedAt":"2026-11-07T15:57:21.240Z","status":"ok","events":[{"code":"00751B","exDate":"2026-09-21","payDate":"2026-10-13","amount":0.43,"currency":"TWD"},{"code":"00751B","exDate":"2026-06-22","payDate":"2026-07-10","amount":0.43,"currency":"TWD"},{"code":"00751B","exDate":"2026-03-20","payDate":"2026-04-14","amount":0.41,"currency":"TWD"},{"code":"00751B","exDate":"2025-12-19","payDate":"2026-01-12","amount":0.41,"currency":"TWD"},{"code":"00751B","exDate":"2025-09-19","payDate":"2025-10-15","amount":0.41,"currency":"TWD"},{"code":"00751B","exDate":"2025-06-20","payDate":"2025-07-11","amount":0.41,"currency":"TWD"},{"code":"00751B","exDate":"2025-03-21","payDate":"2025-04-15","amount":0.45,"currency":"TWD"},{"code":"00751B","exDate":"2024-12-17","payDate":"2025-01-13","amount":0.46,"currency":"TWD"},{"code":"00751B","exDate":"2024-09-18","payDate":"2024-10-15","amount":0.46,"currency":"TWD"},{"code":"00751B","exDate":"2024-06-20","payDate":"2024-07-16","amount":0.47,"currency":"TWD"}]},{"id":"schroder","name":"施羅德官方基金中心","type":"text","codes":["施羅德環球"],"url":"https://fev2-vite.schdr.eu-central-1.isgdigital.com/?language=zh-tw&location=tw&channel=individual&clientId=schdr&clientVersion=v1&externalId=SCHDR_F000011DCB&r=%2Ffund%2FSCHDR_F000011DCB%2F","page":"https://www.schroders.com/zh-tw/tw/individual/fund-centre/?externalId=SCHDR_F000011DCB&r=%2Ffund%2FSCHDR_F000011DCB%2F","checkedAt":"2026-11-07T15:57:21.240Z","status":"ok","events":[{"code":"施羅德環球","exDate":null,"payDate":null,"referenceDate":"2026-10-28","amount":1.035067,"currency":"USD"},{"code":"施羅德環球","exDate":null,"payDate":null,"referenceDate":"2026-09-23","amount":1.07493,"currency":"USD"},{"code":"施羅德環球","exDate":null,"payDate":null,"referenceDate":"2026-08-26","amount":1.103969,"currency":"USD"},{"code":"施羅德環球","exDate":null,"payDate":null,"referenceDate":"2026-07-29","amount":1.074983,"currency":"USD"},{"code":"施羅德環球","exDate":null,"payDate":null,"referenceDate":"2026-06-24","amount":1.085227,"currency":"USD"}]},{"id":"fidelity","name":"MoneyDJ／台灣企銀（富達同級別）","type":"big5","codes":["富達永續"],"url":"https://tbbfws.moneydj.com/W4/wb/wb05.djhtm?a=FTZA55-068C&aspid=TBB","checkedAt":"2026-11-07T15:57:21.240Z","status":"ok","events":[{"code":"富達永續","exDate":"2026-11-02","payDate":null,"amount":0.0819,"currency":"USD"},{"code":"富達永續","exDate":"2026-10-01","payDate":null,"amount":0.0809,"currency":"USD"},{"code":"富達永續","exDate":"2026-09-01","payDate":null,"amount":0.0834,"currency":"USD"},{"code":"富達永續","exDate":"2026-08-03","payDate":null,"amount":0.0831,"currency":"USD"},{"code":"富達永續","exDate":"2026-07-01","payDate":null,"amount":0.0831,"currency":"USD"},{"code":"富達永續","exDate":"2026-06-01","payDate":null,"amount":0.082,"currency":"USD"},{"code":"富達永續","exDate":"2026-05-01","payDate":null,"amount":0.0799,"currency":"USD"},{"code":"富達永續","exDate":"2026-04-01","payDate":null,"amount":0.0758,"currency":"USD"},{"code":"富達永續","exDate":"2026-03-02","payDate":null,"amount":0.084,"currency":"USD"},{"code":"富達永續","exDate":"2026-02-02","payDate":null,"amount":0.081,"currency":"USD"},{"code":"富達永續","exDate":"2026-01-02","payDate":null,"amount":0.0807,"currency":"USD"},{"code":"富達永續","exDate":"2025-12-01","payDate":null,"amount":0.0721,"currency":"USD"},{"code":"富達永續","exDate":"2025-11-03","payDate":null,"amount":0.0721,"currency":"USD"},{"code":"富達永續","exDate":"2025-10-01","payDate":null,"amount":0.0719,"currency":"USD"},{"code":"富達永續","exDate":"2025-09-01","payDate":null,"amount":0.0716,"currency":"USD"},{"code":"富達永續","exDate":"2025-08-01","payDate":null,"amount":0.0714,"currency":"USD"},{"code":"富達永續","exDate":"2025-07-01","payDate":null,"amount":0.071,"currency":"USD"},{"code":"富達永續","exDate":"2025-06-02","payDate":null,"amount":0.0716,"currency":"USD"},{"code":"富達永續","exDate":"2025-05-01","payDate":null,"amount":0.0696,"currency":"USD"},{"code":"富達永續","exDate":"2025-04-01","payDate":null,"amount":0.0699,"currency":"USD"},{"code":"富達永續","exDate":"2025-03-03","payDate":null,"amount":0.072,"currency":"USD"},{"code":"富達永續","exDate":"2025-02-03","payDate":null,"amount":0.0714,"currency":"USD"},{"code":"富達永續","exDate":"2025-01-02","payDate":null,"amount":0.0694,"currency":"USD"},{"code":"富達永續","exDate":"2024-12-02","payDate":null,"amount":0.0705,"currency":"USD"}]}]};</script>
 <script id="dataStatusScript">
-const portfolioDataStatus={"syncedAt":"2026-11-07 23:57","holdings":[{"n":"0050","unit":"股","quoteDate":"2026-11-06","quoteSource":"證交所盤後每日報表"},{"n":"00713","unit":"股","quoteDate":"2026-11-06","quoteSource":"證交所盤後每日報表"},{"n":"00937B","unit":"股","quoteDate":"2026-11-06","quoteSource":"櫃買中心收盤資料"},{"n":"00631L","unit":"股","quoteDate":"2026-11-06","quoteSource":"證交所盤後每日報表"},{"n":"00919","unit":"股","quoteDate":"2026-11-06","quoteSource":"證交所盤後每日報表"},{"n":"00878","unit":"股","quoteDate":"2026-11-06","quoteSource":"證交所盤後每日報表"},{"n":"00751B","unit":"股","quoteDate":"2026-11-06","quoteSource":"櫃買中心收盤資料"},{"n":"00933B","unit":"股","quoteDate":"2026-11-06","quoteSource":"櫃買中心收盤資料"},{"n":"00406A","unit":"股","quoteDate":"2026-11-06","quoteSource":"證交所盤後每日報表"}],"sources":[{"name":"台灣 ETF 收盤","date":"2026-11-06"},{"name":"富達永續淨值","date":"2026-11-06"},{"name":"施羅德環球淨值","date":"2026-11-06"},{"name":"美元匯率","date":"2026-11-07T01:25:00.000Z","kind":"fx"}]};
+const portfolioDataStatus={"syncedAt":"2026-11-08 00:19","holdings":[{"n":"0050","unit":"股","quoteDate":"2026-11-06","quoteSource":"證交所盤後每日報表"},{"n":"00713","unit":"股","quoteDate":"2026-11-06","quoteSource":"證交所盤後每日報表"},{"n":"00937B","unit":"股","quoteDate":"2026-11-06","quoteSource":"櫃買中心收盤資料"},{"n":"00631L","unit":"股","quoteDate":"2026-11-06","quoteSource":"證交所盤後每日報表"},{"n":"00919","unit":"股","quoteDate":"2026-11-06","quoteSource":"證交所盤後每日報表"},{"n":"00878","unit":"股","quoteDate":"2026-11-06","quoteSource":"證交所盤後每日報表"},{"n":"00751B","unit":"股","quoteDate":"2026-11-06","quoteSource":"櫃買中心收盤資料"},{"n":"00933B","unit":"股","quoteDate":"2026-11-06","quoteSource":"櫃買中心收盤資料"},{"n":"00406A","unit":"股","quoteDate":"2026-11-06","quoteSource":"證交所盤後每日報表"}],"sources":[{"name":"台灣 ETF 收盤","date":"2026-11-06"},{"name":"富達永續淨值","date":"2026-11-06"},{"name":"施羅德環球淨值","date":"2026-11-06"},{"name":"美元匯率","date":"2026-11-07T01:25:00.000Z","kind":"fx"}]};
 function quoteFreshness(holdings, now=new Date()) {
   const local=new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Taipei',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).format(now);
   const today=local.slice(0,10),weekday=new Date(today+'T12:00:00Z').getUTCDay();
@@ -273,56 +283,5 @@ async function checkNewQuotes(){
 try{const saved=JSON.parse(sessionStorage.getItem('portfolioView')||'null');if(saved){sessionStorage.removeItem('portfolioView');if(saved.hidden)document.getElementById('privacy').click();for(const tile of document.querySelectorAll('.holding'))if(saved.open.includes(tile.querySelector('.position-name small')?.textContent))tile.querySelector('button').click();}}catch{}
 setInterval(checkNewQuotes,120000);document.addEventListener('visibilitychange',()=>{refreshDataStatus();checkNewQuotes();});checkNewQuotes();
 </script>
-<script id="cashReceiptsScript">const cashReceiptsSnapshot={"syncedAt":"2026-11-07T15:57:05.748Z","entries":[{"month":"2026-10","date":"2026-10-15","code":"00919","currency":"TWD","amount":13100},{"month":"2026-10","date":null,"code":"00937B","currency":"TWD","amount":3014},{"month":"2026-10","date":null,"code":"00933B","currency":"TWD","amount":1377},{"month":"2026-10","date":null,"code":"00751B","currency":"TWD","amount":4290},{"month":"2026-10","date":null,"code":"00713","currency":"TWD","amount":20000}]};
-function groupCashReceipts(snapshot,currency) {
-  const months=new Map();
-  for(const entry of snapshot.entries.filter(entry=>entry.currency===currency)){
-    const month=months.get(entry.month)||{month:entry.month,cents:0,entries:[]};
-    month.cents+=Math.round(entry.amount*100);
-    month.entries.push(entry);
-    months.set(entry.month,month);
-  }
-  return [...months.values()].sort((a,b)=>a.month.localeCompare(b.month)).map(month=>({...month,total:month.cents/100}));
-}
-(function cashReceiptsRuntime() {
-  const data=cashReceiptsSnapshot;
-  let currency=data.entries.some(entry=>entry.currency==='USD')&&!data.entries.some(entry=>entry.currency==='TWD')?'USD':'TWD';
-  let selectedMonth='';
-  const colors={'00713':'#3285ba','00919':'#cc8732','00937B':'#168e88','00933B':'#8267af','00751B':'#77924c','0050':'#2864a5','00878':'#cd6680','00406A':'#cb744d','富達永續':'#b48436','施羅德環球':'#5a68a6'};
-  const safe=value=>String(value).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
-  const money=value=>(currency==='TWD'?'NT$':'US$')+value.toLocaleString('zh-TW',{maximumFractionDigits:2});
-  const monthLabel=month=>month.replace('-',' 年 ')+' 月';
-  function draw() {
-    const months=groupCashReceipts(data,currency);
-    const total=months.reduce((sum,month)=>sum+month.cents,0)/100;
-    document.querySelectorAll('[data-receipt-currency]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.receiptCurrency===currency)));
-    document.getElementById('receiptTotal').textContent=months.length?money(total):'尚無入帳紀錄';
-    document.getElementById('receiptCount').textContent=data.entries.filter(entry=>entry.currency===currency).length+' 筆';
-    const maximum=Math.max(1,...months.map(month=>month.total));
-    document.getElementById('receiptMonths').innerHTML=months.map(month=>
-      '<button type="button" class="receipt-month" data-month="'+month.month+'" aria-label="查看'+month.month+' '+currency+'配息"><span>'+monthLabel(month.month)+
-      '</span><span class="receipt-track" aria-hidden="true"><span class="receipt-fill" style="width:'+Math.max(0,month.total/maximum*100)+'%">'+
-      month.entries.map(entry=>'<i style="width:'+(month.total>0?Math.round(entry.amount*100)/month.cents*100:0)+'%;background:'+(colors[entry.code]||'#658ba1')+'"></i>').join('')+
-      '</span></span><b class="money">'+money(month.total)+'</b></button>').join('');
-    selectedMonth=months.some(month=>month.month===selectedMonth)?selectedMonth:months.at(-1)?.month;
-    const selected=months.find(month=>month.month===selectedMonth);
-    document.getElementById('receiptDetail').innerHTML=selected?
-      '<div class="detail-head"><span>'+monthLabel(selected.month)+'</span><b class="money">'+money(selected.total)+'</b></div>'+
-      selected.entries.map(entry=>{
-        const name=holdingNames[entry.code]||entry.code,url=quoteLinks[entry.code];
-        const label=url?'<a href="'+safe(url)+'" target="_blank" rel="noopener noreferrer">'+safe(name)+'</a>':safe(name);
-        return '<div class="receipt-line"><span><i style="background:'+(colors[entry.code]||'#658ba1')+'"></i>'+label+
-          '<small>'+(entry.date?safe(entry.date):'已知月份，日期未提供')+'</small></span><b class="money">'+money(entry.amount)+'</b></div>';
-      }).join(''):'<p class="receipt-empty">尚無'+(currency==='TWD'?'新台幣':'美元')+'配息入帳紀錄。</p>';
-    document.querySelectorAll('.receipt-month').forEach(button=>{
-      button.setAttribute('aria-pressed',String(button.dataset.month===selectedMonth));
-      button.onclick=()=>{selectedMonth=button.dataset.month;draw();};
-    });
-    syncPrivacy();
-  }
-  document.querySelectorAll('[data-receipt-currency]').forEach(button=>button.onclick=()=>{currency=button.dataset.receiptCurrency;draw();});
-  draw();
-})();</script>
-<script id="dividendAnnouncementsData">const dividendAnnouncementsSnapshot={"attemptedAt":"2026-11-07T15:57:21.240Z","sources":[{"id":"twse","name":"證交所收益分配","url":"https://www.twse.com.tw/rwd/zh/ETF/etfDiv?response=json","type":"json","page":"https://www.twse.com.tw/zh/products/securities/etf/products/div.html","codes":["0050","00713","00631L","00919","00878","00406A"],"checkedAt":"2026-11-07T15:57:21.240Z","status":"ok","events":[{"code":"00878","exDate":"2026-11-17","payDate":"2026-12-11","amount":null,"currency":"TWD"},{"code":"00406A","exDate":"2026-11-03","payDate":"2026-11-27","amount":0.138,"currency":"TWD"},{"code":"00406A","exDate":"2026-10-05","payDate":"2026-11-02","amount":0.138,"currency":"TWD"},{"code":"00713","exDate":"2026-09-21","payDate":"2026-10-13","amount":1.25,"currency":"TWD"},{"code":"00919","exDate":"2026-09-16","payDate":"2026-10-15","amount":1.1,"currency":"TWD"},{"code":"00406A","exDate":"2026-09-02","payDate":"2026-09-30","amount":0.138,"currency":"TWD"},{"code":"00878","exDate":"2026-08-18","payDate":"2026-09-11","amount":1.01,"currency":"TWD"},{"code":"00406A","exDate":"2026-07-31","payDate":"2026-08-26","amount":0.128,"currency":"TWD"},{"code":"0050","exDate":"2026-07-21","payDate":"2026-08-10","amount":0.6,"currency":"TWD"},{"code":"00713","exDate":"2026-06-22","payDate":"2026-07-10","amount":1,"currency":"TWD"},{"code":"00919","exDate":"2026-06-16","payDate":"2026-07-13","amount":1,"currency":"TWD"},{"code":"00878","exDate":"2026-05-19","payDate":"2026-06-12","amount":0.66,"currency":"TWD"},{"code":"00713","exDate":"2026-03-20","payDate":"2026-04-14","amount":0.78,"currency":"TWD"},{"code":"00919","exDate":"2026-03-17","payDate":"2026-04-14","amount":0.78,"currency":"TWD"},{"code":"00878","exDate":"2026-02-26","payDate":"2026-03-23","amount":0.42,"currency":"TWD"},{"code":"0050","exDate":"2026-01-22","payDate":"2026-02-11","amount":1,"currency":"TWD"}]},{"id":"tpex","name":"櫃買中心除息預告","url":"https://www.tpex.org.tw/openapi/v1/tpex_exright_prepost","type":"json","page":"https://www.tpex.org.tw/openapi/v1/tpex_exright_prepost","codes":["00937B","00933B","00751B"],"checkedAt":"2026-11-07T15:57:21.240Z","status":"ok","events":[{"code":"00933B","exDate":"2026-11-17","payDate":null,"amount":null,"currency":"TWD"},{"code":"00937B","exDate":"2026-11-17","payDate":null,"amount":null,"currency":"TWD"}]},{"id":"capital","name":"群益投信","url":"https://www.capitalfund.com.tw/etf/product/detail/378/interest","type":"text","codes":["00937B"],"checkedAt":"2026-11-07T15:57:21.240Z","status":"ok","events":[{"code":"00937B","exDate":"2026-10-19","payDate":"2026-11-13","amount":0.072,"currency":"TWD"}]},{"id":"yuanta","name":"元大投信","url":"https://www.yuantafunds.com/myfund/information/1181?tab=3","type":"text","codes":["00751B"],"checkedAt":"2026-11-07T15:57:21.240Z","status":"ok","events":[{"code":"00751B","exDate":"2026-09-21","payDate":"2026-10-13","amount":0.43,"currency":"TWD"},{"code":"00751B","exDate":"2026-06-22","payDate":"2026-07-10","amount":0.43,"currency":"TWD"},{"code":"00751B","exDate":"2026-03-20","payDate":"2026-04-14","amount":0.41,"currency":"TWD"},{"code":"00751B","exDate":"2025-12-19","payDate":"2026-01-12","amount":0.41,"currency":"TWD"},{"code":"00751B","exDate":"2025-09-19","payDate":"2025-10-15","amount":0.41,"currency":"TWD"},{"code":"00751B","exDate":"2025-06-20","payDate":"2025-07-11","amount":0.41,"currency":"TWD"},{"code":"00751B","exDate":"2025-03-21","payDate":"2025-04-15","amount":0.45,"currency":"TWD"},{"code":"00751B","exDate":"2024-12-17","payDate":"2025-01-13","amount":0.46,"currency":"TWD"},{"code":"00751B","exDate":"2024-09-18","payDate":"2024-10-15","amount":0.46,"currency":"TWD"},{"code":"00751B","exDate":"2024-06-20","payDate":"2024-07-16","amount":0.47,"currency":"TWD"}]},{"id":"schroder","name":"施羅德官方基金中心","type":"text","codes":["施羅德環球"],"url":"https://fev2-vite.schdr.eu-central-1.isgdigital.com/?language=zh-tw&location=tw&channel=individual&clientId=schdr&clientVersion=v1&externalId=SCHDR_F000011DCB&r=%2Ffund%2FSCHDR_F000011DCB%2F","page":"https://www.schroders.com/zh-tw/tw/individual/fund-centre/?externalId=SCHDR_F000011DCB&r=%2Ffund%2FSCHDR_F000011DCB%2F","checkedAt":"2026-11-07T15:57:21.240Z","status":"ok","events":[{"code":"施羅德環球","exDate":null,"payDate":null,"referenceDate":"2026-10-28","amount":1.035067,"currency":"USD"},{"code":"施羅德環球","exDate":null,"payDate":null,"referenceDate":"2026-09-23","amount":1.07493,"currency":"USD"},{"code":"施羅德環球","exDate":null,"payDate":null,"referenceDate":"2026-08-26","amount":1.103969,"currency":"USD"},{"code":"施羅德環球","exDate":null,"payDate":null,"referenceDate":"2026-07-29","amount":1.074983,"currency":"USD"},{"code":"施羅德環球","exDate":null,"payDate":null,"referenceDate":"2026-06-24","amount":1.085227,"currency":"USD"}]},{"id":"fidelity","name":"MoneyDJ／台灣企銀（富達同級別）","type":"big5","codes":["富達永續"],"url":"https://tbbfws.moneydj.com/W4/wb/wb05.djhtm?a=FTZA55-068C&aspid=TBB","checkedAt":"2026-11-07T15:57:21.240Z","status":"ok","events":[{"code":"富達永續","exDate":"2026-11-02","payDate":null,"amount":0.0819,"currency":"USD"},{"code":"富達永續","exDate":"2026-10-01","payDate":null,"amount":0.0809,"currency":"USD"},{"code":"富達永續","exDate":"2026-09-01","payDate":null,"amount":0.0834,"currency":"USD"},{"code":"富達永續","exDate":"2026-08-03","payDate":null,"amount":0.0831,"currency":"USD"},{"code":"富達永續","exDate":"2026-07-01","payDate":null,"amount":0.0831,"currency":"USD"},{"code":"富達永續","exDate":"2026-06-01","payDate":null,"amount":0.082,"currency":"USD"},{"code":"富達永續","exDate":"2026-05-01","payDate":null,"amount":0.0799,"currency":"USD"},{"code":"富達永續","exDate":"2026-04-01","payDate":null,"amount":0.0758,"currency":"USD"},{"code":"富達永續","exDate":"2026-03-02","payDate":null,"amount":0.084,"currency":"USD"},{"code":"富達永續","exDate":"2026-02-02","payDate":null,"amount":0.081,"currency":"USD"},{"code":"富達永續","exDate":"2026-01-02","payDate":null,"amount":0.0807,"currency":"USD"},{"code":"富達永續","exDate":"2025-12-01","payDate":null,"amount":0.0721,"currency":"USD"},{"code":"富達永續","exDate":"2025-11-03","payDate":null,"amount":0.0721,"currency":"USD"},{"code":"富達永續","exDate":"2025-10-01","payDate":null,"amount":0.0719,"currency":"USD"},{"code":"富達永續","exDate":"2025-09-01","payDate":null,"amount":0.0716,"currency":"USD"},{"code":"富達永續","exDate":"2025-08-01","payDate":null,"amount":0.0714,"currency":"USD"},{"code":"富達永續","exDate":"2025-07-01","payDate":null,"amount":0.071,"currency":"USD"},{"code":"富達永續","exDate":"2025-06-02","payDate":null,"amount":0.0716,"currency":"USD"},{"code":"富達永續","exDate":"2025-05-01","payDate":null,"amount":0.0696,"currency":"USD"},{"code":"富達永續","exDate":"2025-04-01","payDate":null,"amount":0.0699,"currency":"USD"},{"code":"富達永續","exDate":"2025-03-03","payDate":null,"amount":0.072,"currency":"USD"},{"code":"富達永續","exDate":"2025-02-03","payDate":null,"amount":0.0714,"currency":"USD"},{"code":"富達永續","exDate":"2025-01-02","payDate":null,"amount":0.0694,"currency":"USD"},{"code":"富達永續","exDate":"2024-12-02","payDate":null,"amount":0.0705,"currency":"USD"}]}]};</script>
 </body>
 </html>
