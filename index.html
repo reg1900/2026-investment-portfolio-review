@@ -69,7 +69,7 @@ html{font-size:17px}
 <body>
 <main class="app">
 <header class="hero" id="home">
-    <div class="topline"><div><div class="asof">最近同步成功：2026-11-09 23:11（台北）</div></div><button class="privacy" id="privacy" aria-pressed="false">隱藏金額</button></div>
+    <div class="topline"><div><div class="asof">最近同步成功：2026-11-10 01:37（台北）</div></div><button class="privacy" id="privacy" aria-pressed="false">隱藏金額</button></div>
     <div class="hero-total"><div class="amount money">NT$11,062,184</div></div>
     <div class="summary"><div><span>未實現損益</span><strong class="money loss">−NT$910,044</strong></div><div><span>損益率</span><strong class="loss">−7.60%</strong></div><div><span>投資成本</span><strong class="money">NT$11,972,228</strong></div></div>
   </header>
@@ -83,7 +83,7 @@ html{font-size:17px}
   <div class="card realized-card">
     <div class="realized-total"><div><span>累計賣出損益</span><strong class="money pl-down">−NT$5,440</strong></div><span>2 筆</span></div>
     <div class="realized-trade"><div><strong><a class="quote-link" href="https://tw.stock.yahoo.com/quote/00713.TW" target="_blank" rel="noopener noreferrer">元大高息低波</a></strong><time datetime="2026-11-09">2026-11-09・00713</time></div><strong class="money pl-down">−NT$7,600</strong></div><div class="realized-trade"><div><strong><a class="quote-link" href="https://tw.stock.yahoo.com/quote/00937B.TWO" target="_blank" rel="noopener noreferrer">群益ESG投等債20+</a></strong><time datetime="2026-11-05">2026-11-05・00937B</time></div><strong class="money pl-up">+NT$2,160</strong></div>
-    <p>損益表同步時間 <time datetime="2026-11-09T15:11:54.154Z">2026-11-09 23:11（台北）</time><br>損益金額依試算表「實現損益」欄。</p>
+    <p>損益表同步時間 <time datetime="2026-11-09T17:37:33.387Z">2026-11-10 01:37（台北）</time><br>損益金額依試算表「實現損益」欄。</p>
   </div>
 </section>
 <section class="section" id="allocation"><div class="section-head"><h2>資產配置</h2><small id="allocationBasisLabel">依成本占比</small></div><div class="card allocation"><div class="basis-toggle" role="group" aria-label="資產配置計算基礎"><button type="button" data-basis="cost" aria-pressed="true">成本</button><button type="button" data-basis="market" aria-pressed="false">市值</button></div><div class="ring-row"><button class="ring allocation-ring" id="allocationRing" type="button" aria-label="資產配置互動圓環"><span class="ring-center"><strong id="allocationFocusName">全部資產</strong><span id="allocationFocusPct">100%</span></span></button><div class="allocation-list" id="allocationList"></div></div><div class="allocation-detail" id="allocationDetail" aria-live="polite"></div></div></section>
@@ -182,7 +182,7 @@ const navObserver=new IntersectionObserver(entries=>{const visible=entries.filte
 navTargets.forEach(target=>navObserver.observe(target));navLinks[0].classList.add('active');
 </script>
 <script id="dataStatusScript">
-const portfolioDataStatus={"syncedAt":"2026-11-09 23:11","holdings":[{"n":"0050","unit":"股","quoteDate":"2026-11-09","quoteSource":"證交所盤後每日報表"},{"n":"00713","unit":"股","quoteDate":"2026-11-09","quoteSource":"證交所盤後每日報表"},{"n":"00937B","unit":"股","quoteDate":"2026-11-09","quoteSource":"櫃買中心收盤資料"},{"n":"00631L","unit":"股","quoteDate":"2026-11-09","quoteSource":"證交所盤後每日報表"},{"n":"00919","unit":"股","quoteDate":"2026-11-09","quoteSource":"證交所盤後每日報表"},{"n":"00878","unit":"股","quoteDate":"2026-11-09","quoteSource":"證交所盤後每日報表"},{"n":"00751B","unit":"股","quoteDate":"2026-11-09","quoteSource":"櫃買中心收盤資料"},{"n":"00933B","unit":"股","quoteDate":"2026-11-09","quoteSource":"櫃買中心收盤資料"},{"n":"00406A","unit":"股","quoteDate":"2026-11-09","quoteSource":"證交所盤後每日報表"}],"sources":[{"name":"台灣 ETF 收盤","date":"2026-11-09"},{"name":"富達永續淨值","date":"2026-11-06"},{"name":"施羅德環球淨值","date":"2026-11-06"},{"name":"美元匯率","date":"2026-11-09T11:21:00.000Z","kind":"fx"}]};
+const portfolioDataStatus={"syncedAt":"2026-11-10 01:37","holdings":[{"n":"0050","unit":"股","quoteDate":"2026-11-09","quoteSource":"證交所盤後每日報表"},{"n":"00713","unit":"股","quoteDate":"2026-11-09","quoteSource":"證交所盤後每日報表"},{"n":"00937B","unit":"股","quoteDate":"2026-11-09","quoteSource":"櫃買中心收盤資料"},{"n":"00631L","unit":"股","quoteDate":"2026-11-09","quoteSource":"證交所盤後每日報表"},{"n":"00919","unit":"股","quoteDate":"2026-11-09","quoteSource":"證交所盤後每日報表"},{"n":"00878","unit":"股","quoteDate":"2026-11-09","quoteSource":"證交所盤後每日報表"},{"n":"00751B","unit":"股","quoteDate":"2026-11-09","quoteSource":"櫃買中心收盤資料"},{"n":"00933B","unit":"股","quoteDate":"2026-11-09","quoteSource":"櫃買中心收盤資料"},{"n":"00406A","unit":"股","quoteDate":"2026-11-09","quoteSource":"證交所盤後每日報表"}],"sources":[{"name":"台灣 ETF 收盤","date":"2026-11-09"},{"name":"富達永續淨值","date":"2026-11-06"},{"name":"施羅德環球淨值","date":"2026-11-06"},{"name":"美元匯率","date":"2026-11-09T11:21:00.000Z","kind":"fx"}]};
 function quoteFreshness(holdings, now=new Date()) {
   const local=new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Taipei',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).format(now);
   const today=local.slice(0,10),weekday=new Date(today+'T12:00:00Z').getUTCDay();
