@@ -10,15 +10,17 @@ export function getDataStatus(meta, now = new Date()) {
   }).format(now);
   const today = local.slice(0, 10);
   const checkedAt = new Date(meta.syncedAt.replace(' ', 'T') + ':00+08:00');
-  // 給原排程 90 分鐘緩衝，週末沿用週五；國定假日仍會同步資料。
+  // 主更新與基金補抓各保留 90 分鐘緩衝。條件式補跑不算必到的更新。
   const cutoff = new Date(now.getTime() - 90 * 60 * 1000);
   let expected = 0;
   for (let back = 0; back < 8; back++) {
     const day = new Date(Date.parse(today + 'T00:00:00+08:00') - back * 86400000);
     const date = new Intl.DateTimeFormat('sv-SE', {timeZone:'Asia/Taipei'}).format(day);
     const weekday = new Date(date + 'T12:00:00Z').getUTCDay();
-    if (weekday === 0 || weekday === 6) continue;
-    for (const time of ['08:35', '15:35']) {
+    const slots = [];
+    if (weekday >= 2) slots.push('10:47');
+    if (weekday >= 1 && weekday <= 5) slots.push('17:17');
+    for (const time of slots) {
       const slot = Date.parse(date + 'T' + time + ':00+08:00');
       if (slot <= cutoff.getTime()) expected = Math.max(expected, slot);
     }
@@ -53,7 +55,7 @@ function sourceDate(source) {
 
 export function installDataStatus(html, meta, now = new Date()) {
   const state = getDataStatus(meta, now);
-  const panel = `<section class="data-status ${state.tone}" id="dataStatus" aria-label="資料更新狀態"><details class="status-disclosure"><summary><span>資料更新狀態</span><strong id="dataStatusTitle">${state.title}</strong></summary><p id="dataStatusMessage">${state.message}</p><dl>${meta.sources.map(s => `<div><dt>${escapeHtml(s.name)}</dt><dd>${escapeHtml(sourceDate(s))}</dd></div>`).join('')}</dl><div class="sync-schedule">平日 08:37／09:07 同步；15:17–21:47 每半小時補查。排程可能延遲；每次最多重試三次。</div><a href="https://github.com/reg1900/2026-investment-portfolio-review/actions/workflows/update-portfolio.yml" target="_blank" rel="noopener">查看執行紀錄 ↗</a></details></section>`;
+  const panel = `<section class="data-status ${state.tone}" id="dataStatus" aria-label="資料更新狀態"><details class="status-disclosure"><summary><span>資料更新狀態</span><strong id="dataStatusTitle">${state.title}</strong></summary><p id="dataStatusMessage">${state.message}</p><dl>${meta.sources.map(s => `<div><dt>${escapeHtml(s.name)}</dt><dd>${escapeHtml(sourceDate(s))}</dd></div>`).join('')}</dl><div class="sync-schedule">平日 17:17 更新，18:47 視需要補跑；週二至週六 10:47 補抓基金淨值。排程可能延遲。</div><a href="https://github.com/reg1900/2026-investment-portfolio-review/actions/workflows/update-portfolio.yml" target="_blank" rel="noopener">查看執行紀錄 ↗</a></details></section>`;
   const css = `.data-status{margin:14px 0 18px;padding:14px 15px;border:1px solid #d6b567;border-radius:16px;background:#fff5da;color:#493d21;font-size:.9rem}.data-status.current{background:#edf5ef;border-color:#bad5c4;color:#214a35}.data-status>strong{display:block;font-size:1rem}.data-status p{margin:5px 0 10px;line-height:1.6}.data-status dl{margin:0;border-top:1px solid #493d2120}.data-status dl div{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px solid #493d2120}.data-status dt{font-weight:650}.data-status dd{margin:0;text-align:right;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.sync-schedule{margin-top:9px;font-size:.86rem;line-height:1.6}.data-status a{display:inline-block;margin-top:8px;padding:3px 0;color:inherit;font-weight:750;text-underline-offset:3px}`;
   const script = `<script id="dataStatusScript">\nconst portfolioDataStatus=${JSON.stringify(meta).replaceAll('<','\\u003c')};\n${quoteFreshness.toString()}\n${getDataStatus.toString()}\nfunction refreshDataStatus(){const state=getDataStatus(portfolioDataStatus);document.getElementById('dataStatus').className='data-status '+state.tone;document.getElementById('dataStatusTitle').textContent=state.title;document.getElementById('dataStatusMessage').textContent=state.message;}\nrefreshDataStatus();setInterval(refreshDataStatus,60000);
 async function checkNewQuotes(){

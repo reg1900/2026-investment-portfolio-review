@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import { getDataStatus, installDataStatus } from './data-status.mjs';
 
 const meta = (syncedAt, date) => ({syncedAt,sources:[{name:'ETF',date}]});
-test('weekend does not require new scheduled syncs; old quotes remain explicit', () => {
-  const state = getDataStatus(meta('2026-10-23 20:49','2026-10-22'),new Date('2026-10-25T12:00:00+08:00'));
+test('Sunday does not require a sync after the Saturday fund check', () => {
+  const state = getDataStatus(meta('2026-10-24 11:00','2026-10-23'),new Date('2026-10-25T12:00:00+08:00'));
   assert.equal(state.overdue,false);
   assert.equal(state.title,'部分報價非今日資料');
 });
@@ -13,9 +13,14 @@ test('successful execution with old source date never claims latest quotes', () 
   assert.equal(state.overdue,false);
   assert.equal(state.tone,'waiting');
 });
-test('missed morning schedule becomes overdue after 90 minutes', () => {
-  assert.equal(getDataStatus(meta('2026-10-23 20:49','2026-10-23'),new Date('2026-10-26T10:06:00+08:00')).overdue,true);
-  assert.equal(getDataStatus(meta('2026-10-23 20:49','2026-10-23'),new Date('2026-10-26T09:00:00+08:00')).overdue,false);
+test('Tuesday fund check becomes overdue after 90 minutes', () => {
+  assert.equal(getDataStatus(meta('2026-10-26 17:35','2026-10-26'),new Date('2026-10-27T12:17:00+08:00')).overdue,true);
+  assert.equal(getDataStatus(meta('2026-10-26 17:35','2026-10-26'),new Date('2026-10-27T12:16:00+08:00')).overdue,false);
+});
+test('Monday main update is expected after its grace period, with no separate backup deadline', () => {
+  assert.equal(getDataStatus(meta('2026-10-24 11:00','2026-10-23'),new Date('2026-10-26T18:46:00+08:00')).overdue,false);
+  assert.equal(getDataStatus(meta('2026-10-24 11:00','2026-10-23'),new Date('2026-10-26T18:47:00+08:00')).overdue,true);
+  assert.equal(getDataStatus(meta('2026-10-26 17:35','2026-10-26'),new Date('2026-10-26T21:00:00+08:00')).overdue,false);
 });
 test('same-day quotes with successful sync have current status', () => {
   assert.equal(getDataStatus(meta('2026-10-23 16:05','2026-10-23'),new Date('2026-10-23T16:06:00+08:00')).tone,'current');
