@@ -69,12 +69,12 @@ html{font-size:17px}
 <body>
 <main class="app">
 <header class="hero" id="home">
-    <div class="topline"><div><div class="asof">最近同步成功：2026-11-10 22:05（台北）</div></div><button class="privacy" id="privacy" aria-pressed="false">隱藏金額</button></div>
+    <div class="topline"><div><div class="asof">最近同步成功：2026-11-10 22:15（台北）</div></div><button class="privacy" id="privacy" aria-pressed="false">隱藏金額</button></div>
     <div class="hero-total"><div class="amount money">NT$11,856,839</div></div>
     <div class="summary"><div><span>未實現損益</span><strong class="money loss">−NT$710,389</strong></div><div><span>損益率</span><strong class="loss">−5.65%</strong></div><div><span>投資成本</span><strong class="money">NT$12,567,228</strong></div></div>
   </header>
 
-  <section class="data-status waiting" id="dataStatus" aria-label="資料更新狀態"><details class="status-disclosure"><summary><span>資料更新狀態</span><strong id="dataStatusTitle">部分報價非今日資料</strong></summary><p id="dataStatusMessage">損益依下列日期計算。休市、基金公布時差或來源尚未更新，都可能造成日期落後。</p><dl><div><dt>台灣 ETF 收盤</dt><dd>2026-11-10</dd></div><div><dt>富達永續淨值</dt><dd>2026-11-09</dd></div><div><dt>施羅德環球淨值</dt><dd>2026-11-09</dd></div><div><dt>美元匯率</dt><dd>2026-11-10</dd></div></dl><div class="sync-schedule">平日 08:37／09:07 同步；15:17–21:47 每半小時補查。排程可能延遲；每次最多重試三次。</div><a href="https://github.com/reg1900/2026-investment-portfolio-review/actions/workflows/update-portfolio.yml" target="_blank" rel="noopener">查看執行紀錄 ↗</a></details></section>
+  <section class="data-status waiting" id="dataStatus" aria-label="資料更新狀態"><details class="status-disclosure"><summary><span>資料更新狀態</span><strong id="dataStatusTitle">部分報價非今日資料</strong></summary><p id="dataStatusMessage">損益依下列日期計算。休市、基金公布時差或來源尚未更新，都可能造成日期落後。</p><dl><div><dt>台灣 ETF 收盤</dt><dd>2026-11-10</dd></div><div><dt>富達永續淨值</dt><dd>2026-11-09</dd></div><div><dt>施羅德環球淨值</dt><dd>2026-11-09</dd></div><div><dt>美元匯率</dt><dd>2026-11-10</dd></div></dl><div class="sync-schedule">平日 17:17 更新，18:47 視需要補跑；週二至週六 10:47 補抓基金淨值。排程可能延遲。</div><a href="https://github.com/reg1900/2026-investment-portfolio-review/actions/workflows/update-portfolio.yml" target="_blank" rel="noopener">查看執行紀錄 ↗</a></details></section>
 
   <section class="section" id="holdings"><div class="section-head"><h2>現價與未實現損益</h2><small>點箭頭展開</small></div><div class="positions-legend"><span>名稱／代號</span><span>現價<br>股數／市值</span><span>漲跌幅<br>損益／損益率</span><span></span></div><div class="holdings" id="holdingsGrid"></div></section>
 
@@ -83,7 +83,7 @@ html{font-size:17px}
   <div class="card realized-card">
     <div class="realized-total"><div><span>累計賣出損益</span><strong class="money pl-down">−NT$5,440</strong></div><span>2 筆</span></div>
     <div class="realized-trade"><div><strong><a class="quote-link" href="https://tw.stock.yahoo.com/quote/00713.TW" target="_blank" rel="noopener noreferrer">元大高息低波</a></strong><time datetime="2026-11-09">2026-11-09・00713</time></div><strong class="money pl-down">−NT$7,600</strong></div><div class="realized-trade"><div><strong><a class="quote-link" href="https://tw.stock.yahoo.com/quote/00937B.TWO" target="_blank" rel="noopener noreferrer">群益ESG投等債20+</a></strong><time datetime="2026-11-05">2026-11-05・00937B</time></div><strong class="money pl-up">+NT$2,160</strong></div>
-    <p>損益表同步時間 <time datetime="2026-11-10T14:05:18.798Z">2026-11-10 22:05（台北）</time><br>損益金額依試算表「實現損益」欄。</p>
+    <p>損益表同步時間 <time datetime="2026-11-10T14:14:58.208Z">2026-11-10 22:14（台北）</time><br>損益金額依試算表「實現損益」欄。</p>
   </div>
 </section>
 <section class="section" id="allocation"><div class="section-head"><h2>資產配置</h2><small id="allocationBasisLabel">依成本占比</small></div><div class="card allocation"><div class="basis-toggle" role="group" aria-label="資產配置計算基礎"><button type="button" data-basis="cost" aria-pressed="true">成本</button><button type="button" data-basis="market" aria-pressed="false">市值</button></div><div class="ring-row"><button class="ring allocation-ring" id="allocationRing" type="button" aria-label="資產配置互動圓環"><span class="ring-center"><strong id="allocationFocusName">全部資產</strong><span id="allocationFocusPct">100%</span></span></button><div class="allocation-list" id="allocationList"></div></div><div class="allocation-detail" id="allocationDetail" aria-live="polite"></div></div></section>
@@ -182,7 +182,7 @@ const navObserver=new IntersectionObserver(entries=>{const visible=entries.filte
 navTargets.forEach(target=>navObserver.observe(target));navLinks[0].classList.add('active');
 </script>
 <script id="dataStatusScript">
-const portfolioDataStatus={"syncedAt":"2026-11-10 22:05","holdings":[{"n":"0050","unit":"股","quoteDate":"2026-11-10","quoteSource":"證交所盤後每日報表"},{"n":"00713","unit":"股","quoteDate":"2026-11-10","quoteSource":"證交所盤後每日報表"},{"n":"00937B","unit":"股","quoteDate":"2026-11-10","quoteSource":"櫃買中心收盤資料"},{"n":"00631L","unit":"股","quoteDate":"2026-11-10","quoteSource":"證交所盤後每日報表"},{"n":"00919","unit":"股","quoteDate":"2026-11-10","quoteSource":"證交所盤後每日報表"},{"n":"00878","unit":"股","quoteDate":"2026-11-10","quoteSource":"證交所盤後每日報表"},{"n":"00751B","unit":"股","quoteDate":"2026-11-10","quoteSource":"櫃買中心收盤資料"},{"n":"00933B","unit":"股","quoteDate":"2026-11-10","quoteSource":"櫃買中心收盤資料"},{"n":"00406A","unit":"股","quoteDate":"2026-11-10","quoteSource":"證交所盤後每日報表"}],"sources":[{"name":"台灣 ETF 收盤","date":"2026-11-10"},{"name":"富達永續淨值","date":"2026-11-09"},{"name":"施羅德環球淨值","date":"2026-11-09"},{"name":"美元匯率","date":"2026-11-10T11:42:00.000Z","kind":"fx"}]};
+const portfolioDataStatus={"syncedAt":"2026-11-10 22:15","holdings":[{"n":"0050","unit":"股","quoteDate":"2026-11-10","quoteSource":"證交所盤後每日報表"},{"n":"00713","unit":"股","quoteDate":"2026-11-10","quoteSource":"證交所盤後每日報表"},{"n":"00937B","unit":"股","quoteDate":"2026-11-10","quoteSource":"櫃買中心收盤資料"},{"n":"00631L","unit":"股","quoteDate":"2026-11-10","quoteSource":"證交所盤後每日報表"},{"n":"00919","unit":"股","quoteDate":"2026-11-10","quoteSource":"證交所盤後每日報表"},{"n":"00878","unit":"股","quoteDate":"2026-11-10","quoteSource":"證交所盤後每日報表"},{"n":"00751B","unit":"股","quoteDate":"2026-11-10","quoteSource":"櫃買中心收盤資料"},{"n":"00933B","unit":"股","quoteDate":"2026-11-10","quoteSource":"櫃買中心收盤資料"},{"n":"00406A","unit":"股","quoteDate":"2026-11-10","quoteSource":"證交所盤後每日報表"}],"sources":[{"name":"台灣 ETF 收盤","date":"2026-11-10"},{"name":"富達永續淨值","date":"2026-11-09"},{"name":"施羅德環球淨值","date":"2026-11-09"},{"name":"美元匯率","date":"2026-11-10T11:42:00.000Z","kind":"fx"}]};
 function quoteFreshness(holdings, now=new Date()) {
   const local=new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Taipei',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).format(now);
   const today=local.slice(0,10),weekday=new Date(today+'T12:00:00Z').getUTCDay();
@@ -204,15 +204,17 @@ function getDataStatus(meta, now = new Date()) {
   }).format(now);
   const today = local.slice(0, 10);
   const checkedAt = new Date(meta.syncedAt.replace(' ', 'T') + ':00+08:00');
-  // 給原排程 90 分鐘緩衝，週末沿用週五；國定假日仍會同步資料。
+  // 主更新與基金補抓各保留 90 分鐘緩衝。條件式補跑不算必到的更新。
   const cutoff = new Date(now.getTime() - 90 * 60 * 1000);
   let expected = 0;
   for (let back = 0; back < 8; back++) {
     const day = new Date(Date.parse(today + 'T00:00:00+08:00') - back * 86400000);
     const date = new Intl.DateTimeFormat('sv-SE', {timeZone:'Asia/Taipei'}).format(day);
     const weekday = new Date(date + 'T12:00:00Z').getUTCDay();
-    if (weekday === 0 || weekday === 6) continue;
-    for (const time of ['08:35', '15:35']) {
+    const slots = [];
+    if (weekday >= 2) slots.push('10:47');
+    if (weekday >= 1 && weekday <= 5) slots.push('17:17');
+    for (const time of slots) {
       const slot = Date.parse(date + 'T' + time + ':00+08:00');
       if (slot <= cutoff.getTime()) expected = Math.max(expected, slot);
     }
