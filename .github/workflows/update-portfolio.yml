@@ -2,12 +2,11 @@ name: 更新投資儀表板
 
 on:
   schedule:
-    # UTC；台北 08:37、09:07，以及15:17–21:47每半小時。
-    - cron: '37 0 * * 1-5'
-    - cron: '7 1 * * 1-5'
-    # 台北週二至週六 10:17，補抓海外基金前一估值日淨值。
-    - cron: '17 2 * * 2-6'
-    - cron: '17,47 7-13 * * 1-5'
+    # UTC；台北平日 17:17 主更新、18:47 條件式補跑。
+    - cron: '17 9 * * 1-5'
+    - cron: '47 10 * * 1-5'
+    # 台北週二至週六 10:47，補抓海外基金前一估值日淨值。
+    - cron: '47 2 * * 2-6'
   workflow_dispatch:
   push:
     branches: [main]
@@ -26,6 +25,7 @@ jobs:
     timeout-minutes: 15
     outputs:
       stale: ${{ steps.audit.outputs.stale }}
+      skip: ${{ steps.backup.outputs.skip }}
     permissions:
       contents: write
     steps:
@@ -37,7 +37,43 @@ jobs:
         with:
           node-version: 22
 
+      - name: 檢查是否需要盤後補跑
+        id: backup
+        if: github.event_name == 'schedule' && github.event.schedule == '47 10 * * 1-5'
+        run: |
+          node --input-type=module <<'NODE'
+          import {appendFile, readFile} from 'node:fs/promises';
+          import {quoteFreshness} from './scripts/quote-freshness.mjs';
+
+          const snapshot = html => JSON.parse(html.match(/const portfolioDataStatus=([^;]+);/)[1]);
+          let skip = false;
+          try {
+            const saved = snapshot(await readFile('index.html', 'utf8'));
+            const url = new URL('https://reg1900.github.io/2026-investment-portfolio-review/');
+            url.searchParams.set('_backup_check', process.env.GITHUB_RUN_ID);
+            const response = await fetch(url, {cache: 'no-store', signal: AbortSignal.timeout(12000)});
+            if (!response.ok) throw new Error(`Pages HTTP ${response.status}`);
+            const published = snapshot(await response.text());
+            const audit = quoteFreshness(published.holdings);
+            const today = audit.checkedAt.slice(0, 10);
+            const expected = saved.holdings.filter(holding => holding.unit === '股');
+            skip = published.syncedAt === saved.syncedAt
+              && published.syncedAt >= `${today} 17:17`
+              && published.syncedAt <= audit.checkedAt
+              && expected.length > 0
+              && audit.rows.length === expected.length
+              && expected.every(holding => audit.rows.some(row => row.code === holding.n && row.date === today));
+          } catch (error) {
+            console.warn(`無法驗證網站已發布完整資料，繼續補跑：${error.message}`);
+          }
+          const message = skip ? '網站已發布今日完整台灣 ETF 收盤，略過補跑。' : '網站尚未確認今日完整收盤，執行補跑。';
+          console.log(message);
+          await appendFile(process.env.GITHUB_OUTPUT, `skip=${skip}\n`);
+          await appendFile(process.env.GITHUB_STEP_SUMMARY, `\n${message}\n`);
+          NODE
+
       - name: 更新市場資料
+        if: steps.backup.outputs.skip != 'true'
         run: |
           for attempt in 1 2 3; do
             node scripts/update-market-data.mjs
@@ -51,17 +87,21 @@ jobs:
 
       - name: 逐檔報價日期與觸發紀錄
         id: audit
+        if: steps.backup.outputs.skip != 'true'
         run: node scripts/quote-freshness.mjs
         env:
           TRIGGER_SCHEDULE: ${{ github.event.schedule }}
 
       - name: 檢查同步與行情日期判讀
+        if: steps.backup.outputs.skip != 'true'
         run: node --test scripts/*.test.mjs
 
       - name: 驗證儀表板
+        if: steps.backup.outputs.skip != 'true'
         run: node scripts/validate-dashboard.mjs
 
       - name: 保存更新
+        if: steps.backup.outputs.skip != 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -74,20 +114,24 @@ jobs:
           fi
 
       - name: 準備 GitHub Pages 檔案
+        if: steps.backup.outputs.skip != 'true'
         run: |
           mkdir -p _site
           cp index.html _site/index.html
 
       - name: 設定 GitHub Pages
+        if: steps.backup.outputs.skip != 'true'
         uses: actions/configure-pages@v5
 
       - name: 上傳 GitHub Pages 檔案
+        if: steps.backup.outputs.skip != 'true'
         uses: actions/upload-pages-artifact@v3
         with:
           path: _site
 
   deploy:
     needs: update
+    if: needs.update.outputs.skip != 'true'
     runs-on: ubuntu-latest
     permissions:
       pages: write
