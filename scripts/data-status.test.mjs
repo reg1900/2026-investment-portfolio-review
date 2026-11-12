@@ -40,3 +40,39 @@ test('repeated updates keep one status panel and executable script', () => {
   assert.ok(twice.includes('最近同步成功：2026-10-23 20:49'));
   new Function(twice.match(/<script id="dataStatusScript">([\s\S]*?)<\/script>/)[1]);
 });
+
+// Execute the generated browser code against an isolated browser-shaped context.
+import vm from 'node:vm';
+async function checkRefresh({nextTime='2026-11-12 17:30', storageFails=false, status=200}={}) {
+  let destination, request;
+  const context={
+    URL, Intl, Date, AbortSignal, console,
+    location:{href:'https://example.test/?v=old#holdings',replace:url=>{destination=url;}},
+    document:{hidden:false,getElementById:()=>({className:'',textContent:'',getAttribute:()=> 'true'}),querySelectorAll:()=>[],addEventListener:()=>{}},
+    sessionStorage:{getItem:()=>null,setItem:()=>{if(storageFails)throw Error('Storage disabled');}},
+    setInterval:()=>{},
+    fetch:async(url,options)=>{request={url:String(url),options};return {ok:status===200,text:async()=>`const portfolioDataStatus=${JSON.stringify(meta(nextTime,'2026-11-12'))};`};},
+  };
+  vm.createContext(context);
+  const html=installDataStatus('<head></head><body><header></header></body>',meta('2026-11-12 10:47','2026-11-11'));
+  vm.runInContext(html.match(/<script id="dataStatusScript">([\s\S]*?)<\/script>/)[1],context);
+  await new Promise(resolve=>setImmediate(resolve));
+  return {destination,request,busy:vm.runInContext('checkNewQuotes.busy',context)};
+}
+test('new data navigates to a new version URL and preserves the selected section', async()=>{
+  const result=await checkRefresh();
+  assert.equal(result.destination,'https://example.test/?v=202611121730#holdings');
+  assert.equal(result.request.options.cache,'no-store');
+  assert.ok(result.request.options.signal);
+  assert.equal(result.busy,false);
+});
+test('blocked browser storage does not prevent loading a newer snapshot', async()=>{
+  assert.ok((await checkRefresh({storageFails:true})).destination);
+});
+test('same, older, or failed responses do not trigger a reload loop', async()=>{
+  for(const input of [{nextTime:'2026-11-12 10:47'},{nextTime:'2026-11-11 17:30'},{status:503}]){
+    const result=await checkRefresh(input);
+    assert.equal(result.destination,undefined);
+    assert.equal(result.busy,false);
+  }
+});

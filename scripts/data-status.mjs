@@ -61,12 +61,13 @@ export function installDataStatus(html, meta, now = new Date()) {
 async function checkNewQuotes(){
  if(document.hidden||checkNewQuotes.busy)return;checkNewQuotes.busy=true;
  try{const u=new URL(location.href);u.hash='';u.searchParams.set('_refresh',Date.now());
- const response=await fetch(u,{cache:'no-store'});if(!response.ok)return;
+ const response=await fetch(u,{cache:'no-store',signal:AbortSignal.timeout(15000)});if(!response.ok)return;
  const text=await response.text(),match=text.match(/const portfolioDataStatus=([^;]+);/);
  if(!match)return;const next=JSON.parse(match[1]);
  if(next.syncedAt>portfolioDataStatus.syncedAt){
- sessionStorage.setItem('portfolioView',JSON.stringify({hidden:document.getElementById('privacy').getAttribute('aria-pressed')==='true',open:[...document.querySelectorAll('.holding.open .position-name small')].map(x=>x.textContent)}));
- location.reload();}
+ try{sessionStorage.setItem('portfolioView',JSON.stringify({hidden:document.getElementById('privacy')?.getAttribute('aria-pressed')==='true',open:[...document.querySelectorAll('.holding.open .position-name small')].map(x=>x.textContent)}));}catch{}
+ const nextUrl=new URL(location.href);nextUrl.searchParams.delete('_refresh');nextUrl.searchParams.set('v',next.syncedAt.replace(/[^0-9]/g,''));
+ location.replace(nextUrl.href);}
  }catch{}finally{checkNewQuotes.busy=false;}
 }
 try{const saved=JSON.parse(sessionStorage.getItem('portfolioView')||'null');if(saved){sessionStorage.removeItem('portfolioView');if(saved.hidden)document.getElementById('privacy').click();for(const tile of document.querySelectorAll('.holding'))if(saved.open.includes(tile.querySelector('.position-name small')?.textContent))tile.querySelector('button').click();}}catch{}
