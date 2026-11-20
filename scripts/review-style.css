@@ -33,3 +33,30 @@ html{font-size:17px}
 .position-toggle:focus-visible,.quote-link:focus-visible{outline:2px solid #006d8b;outline-offset:2px}
 .position-toggle .position-chevron{display:block;justify-self:center;margin-right:0}
 .holding .tile-button{cursor:pointer}
+
+.position-summary .pl-neutral,.tile-details .pl-neutral{color:#525e66}
+
+/* Numbers keep their reading size. On phones each metric owns a full row. */
+.hero .summary strong {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 540px) {
+  .hero .summary {
+    grid-template-columns: minmax(0, 1fr);
+    gap: .45rem;
+  }
+  .hero .summary > div {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: .15rem .8rem;
+  }
+  .hero .summary strong {
+    max-width: 100%;
+    margin: 0 0 0 auto;
+    font-size: .96rem;
+    text-align: end;
+  }
+}

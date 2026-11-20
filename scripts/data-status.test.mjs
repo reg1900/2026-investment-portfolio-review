@@ -4,7 +4,7 @@ import { getDataStatus, installDataStatus } from './data-status.mjs';
 
 const meta = (syncedAt, date) => ({syncedAt,sources:[{name:'ETF',date}]});
 test('Sunday does not require a sync after the Saturday fund check', () => {
-  const state = getDataStatus(meta('2026-10-24 11:00','2026-10-23'),new Date('2026-10-25T12:00:00+08:00'));
+  const state = getDataStatus(meta('2026-10-24 17:30','2026-10-23'),new Date('2026-10-25T12:00:00+08:00'));
   assert.equal(state.overdue,false);
   assert.equal(state.title,'部分報價非今日資料');
 });
@@ -18,8 +18,8 @@ test('Tuesday fund check becomes overdue after 90 minutes', () => {
   assert.equal(getDataStatus(meta('2026-10-26 17:35','2026-10-26'),new Date('2026-10-27T12:16:00+08:00')).overdue,false);
 });
 test('Monday main update is expected after its grace period, with no separate backup deadline', () => {
-  assert.equal(getDataStatus(meta('2026-10-24 11:00','2026-10-23'),new Date('2026-10-26T18:46:00+08:00')).overdue,false);
-  assert.equal(getDataStatus(meta('2026-10-24 11:00','2026-10-23'),new Date('2026-10-26T18:47:00+08:00')).overdue,true);
+  assert.equal(getDataStatus(meta('2026-10-24 17:30','2026-10-23'),new Date('2026-10-26T17:46:00+08:00')).overdue,false);
+  assert.equal(getDataStatus(meta('2026-10-24 17:30','2026-10-23'),new Date('2026-10-26T17:47:00+08:00')).overdue,true);
   assert.equal(getDataStatus(meta('2026-10-26 17:35','2026-10-26'),new Date('2026-10-26T21:00:00+08:00')).overdue,false);
 });
 test('same-day quotes with successful sync have current status', () => {
@@ -75,4 +75,27 @@ test('same, older, or failed responses do not trigger a reload loop', async()=>{
     assert.equal(result.destination,undefined);
     assert.equal(result.busy,false);
   }
+});
+
+test('current Taiwan closes and differently dated fund NAVs are identifiable', () => {
+  const now = new Date('2026-11-20T17:40:00+08:00');
+  const sources = [
+    {name:'台灣 ETF 收盤', date:'2026-11-20'},
+    {name:'富達永續淨值', date:'2026-11-19'},
+    {name:'施羅德環球淨值', date:'2026-11-19'},
+  ];
+  const snapshot = {syncedAt:'2026-11-20 17:40', sources};
+  assert.match(getDataStatus(snapshot, now).title, /台股已收盤・基金淨值 11\/19/);
+  sources[2].date = '2026-11-18';
+  assert.match(getDataStatus(snapshot, now).title, /各基金估值日見明細/);
+});
+
+test('late sync and a lagging ETF can both be seen', () => {
+  const snapshot = { ...meta('2026-11-19 17:40','2026-11-19'), holdings:[
+    {n:'0050',unit:'股',quoteDate:'2026-11-20'},
+    {n:'00937B',unit:'股',quoteDate:'2026-11-19'},
+  ]};
+  const state = getDataStatus(snapshot,new Date('2026-11-20T20:00:00+08:00'));
+  assert.match(state.message,/超過預定更新時間/);
+  assert.match(state.message,/00937B 2026-11-19/);
 });

@@ -18,8 +18,9 @@ export function getDataStatus(meta, now = new Date()) {
     const date = new Intl.DateTimeFormat('sv-SE', {timeZone:'Asia/Taipei'}).format(day);
     const weekday = new Date(date + 'T12:00:00Z').getUTCDay();
     const slots = [];
-    if (weekday >= 2) slots.push('10:47');
-    if (weekday >= 1 && weekday <= 5) slots.push('17:17');
+    if (weekday >= 2) slots.push('10:47', '14:17');
+    if (weekday >= 1 && weekday <= 5) slots.push('16:17', '17:17');
+    if (weekday === 6) slots.push('17:17');
     for (const time of slots) {
       const slot = Date.parse(date + 'T' + time + ':00+08:00');
       if (slot <= cutoff.getTime()) expected = Math.max(expected, slot);
@@ -28,16 +29,27 @@ export function getDataStatus(meta, now = new Date()) {
   const quoteAudit=quoteFreshness(meta.holdings||[],now);
   const quoteAlert=(meta.holdings||[]).length>0&&quoteAudit.alert;
   const overdue = !Number.isFinite(checkedAt.getTime()) || checkedAt.getTime() < expected;
-  const earlier = meta.sources.filter(source => source.kind !== 'fx' && source.date < today);
+  const priced = meta.sources.filter(source => source.kind !== 'fx');
+  const earlier = priced.filter(source => source.date < today);
+  const funds = priced.filter(source => source.name.includes('淨值'));
+  const etfs = priced.filter(source => source.name === '台灣 ETF 收盤');
+  const fundsBehind = earlier.length > 0 && earlier.every(source => funds.includes(source));
+  const datedFunds = funds.length && funds.every(source => source.date === funds[0].date && /^\d{4}-\d{2}-\d{2}$/.test(source.date));
+  const fundTitle = datedFunds ? '基金淨值 ' + funds[0].date.slice(5).replace('-', '/') : '各基金估值日見明細';
+  const splitDates = fundsBehind && etfs.length > 0 && etfs.every(source => source.date === today);
+  const etfDate = etfs[0]?.date;
+  const alignedEtfs = /^\d{4}-\d{2}-\d{2}$/.test(etfDate) && etfs.every(source => source.date === etfDate);
+  const datedTitle = alignedEtfs && funds.length ? '台股 ' + etfDate.slice(5).replace('-', '/') + '・' + fundTitle : '';
+  const problems = [];
+  if (overdue) problems.push('已超過預定更新時間 90 分鐘，上次成功同步於 ' + meta.syncedAt + '。');
+  if (quoteAlert) problems.push('逐檔日期：' + quoteAudit.rows.map(row => row.code + ' ' + (row.date || '未提供')).join('、') + '。');
   return {
     overdue,
     tone: quoteAlert || overdue || earlier.length ? 'waiting' : 'current',
-    title: quoteAlert ? quoteAudit.message : overdue ? '同步時間已落後，等待補跑' : earlier.length ? '部分報價非今日資料' : '同步完成・報價日期為今日',
-    message: quoteAlert ? '逐檔日期：'+quoteAudit.rows.map(h=>h.code+' '+h.date).join('；') : overdue
-      ? '超過原排程 90 分鐘仍未看到同步成功紀錄；本頁保留上次資料。'
-      : earlier.length
-        ? '損益依下列日期計算。休市、基金公布時差或來源尚未更新，都可能造成日期落後。'
-        : '同步成功與報價日期分開核對；報價並非盤中即時行情。',
+    title: quoteAlert ? quoteAudit.message : overdue ? '同步時間已落後，等待補跑' : splitDates ? '台股已收盤・' + fundTitle : datedTitle || (earlier.length ? '部分報價非今日資料' : '同步完成・報價日期為今日'),
+    message: problems.length ? problems.join(' ') : splitDates
+      ? '台灣 ETF 採今日收盤價，兩檔海外基金按各自公布的淨值估算。'
+      : earlier.length ? '各標的採下列報價日期估算。' : '損益依下列報價日期估算。',
   };
 }
 
@@ -55,22 +67,22 @@ function sourceDate(source) {
 
 export function installDataStatus(html, meta, now = new Date()) {
   const state = getDataStatus(meta, now);
-  const panel = `<section class="data-status ${state.tone}" id="dataStatus" aria-label="資料更新狀態"><details class="status-disclosure"><summary><span>資料更新狀態</span><strong id="dataStatusTitle">${state.title}</strong></summary><p id="dataStatusMessage">${state.message}</p><dl>${meta.sources.map(s => `<div><dt>${escapeHtml(s.name)}</dt><dd>${escapeHtml(sourceDate(s))}</dd></div>`).join('')}</dl><div class="sync-schedule">平日 17:17 更新，18:47 視需要補跑；週二至週六 10:47 補抓基金淨值。排程可能延遲。</div><a href="https://github.com/reg1900/2026-investment-portfolio-review/actions/workflows/update-portfolio.yml" target="_blank" rel="noopener">查看執行紀錄 ↗</a></details></section>`;
-  const css = `.data-status{margin:14px 0 18px;padding:14px 15px;border:1px solid #d6b567;border-radius:16px;background:#fff5da;color:#493d21;font-size:.9rem}.data-status.current{background:#edf5ef;border-color:#bad5c4;color:#214a35}.data-status>strong{display:block;font-size:1rem}.data-status p{margin:5px 0 10px;line-height:1.6}.data-status dl{margin:0;border-top:1px solid #493d2120}.data-status dl div{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px solid #493d2120}.data-status dt{font-weight:650}.data-status dd{margin:0;text-align:right;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.sync-schedule{margin-top:9px;font-size:.86rem;line-height:1.6}.data-status a{display:inline-block;margin-top:8px;padding:3px 0;color:inherit;font-weight:750;text-underline-offset:3px}`;
+  const panel = `<section class="data-status ${state.tone}" id="dataStatus" aria-label="資料更新狀態"><details class="status-disclosure"><summary><span>資料更新狀態</span><strong id="dataStatusTitle">${state.title}</strong></summary><p id="dataStatusMessage">${state.message}</p><dl>${meta.sources.map(s => `<div><dt>${escapeHtml(s.name)}</dt><dd>${escapeHtml(sourceDate(s))}</dd></div>`).join('')}</dl><div class="sync-schedule">台股於平日 16:17、17:17 檢查收盤，18:47 視需要補跑。基金於週二至週六 10:47、14:17 檢查，週六 17:17 再查一次。皆為台北預定時間。</div><a href="https://github.com/reg1900/2026-investment-portfolio-review/actions/workflows/update-portfolio.yml" target="_blank" rel="noopener">查看執行紀錄 ↗</a></details></section>`;
+  const css = `@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}}.data-status{margin:14px 0 18px;padding:14px 15px;border:1px solid #d6b567;border-radius:16px;background:#fff5da;color:#493d21;font-size:.9rem}.data-status.current{background:#edf5ef;border-color:#bad5c4;color:#214a35}.data-status>strong{display:block;font-size:1rem}.data-status p{margin:5px 0 10px;line-height:1.6}.data-status dl{margin:0;border-top:1px solid #493d2120}.data-status dl div{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px solid #493d2120}.data-status dt{font-weight:650}.data-status dd{margin:0;text-align:right;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.sync-schedule{margin-top:9px;font-size:.86rem;line-height:1.6}.data-status a{display:inline-block;margin-top:8px;padding:3px 0;color:inherit;font-weight:750;text-underline-offset:3px}`;
   const script = `<script id="dataStatusScript">\nconst portfolioDataStatus=${JSON.stringify(meta).replaceAll('<','\\u003c')};\n${quoteFreshness.toString()}\n${getDataStatus.toString()}\nfunction refreshDataStatus(){const state=getDataStatus(portfolioDataStatus);document.getElementById('dataStatus').className='data-status '+state.tone;document.getElementById('dataStatusTitle').textContent=state.title;document.getElementById('dataStatusMessage').textContent=state.message;}\nrefreshDataStatus();setInterval(refreshDataStatus,60000);
 async function checkNewQuotes(){
- if(document.hidden||checkNewQuotes.busy)return;checkNewQuotes.busy=true;
+ if(document.hidden||checkNewQuotes.busy||!/^https?:/.test(location.href))return;checkNewQuotes.busy=true;
  try{const u=new URL(location.href);u.hash='';u.searchParams.set('_refresh',Date.now());
  const response=await fetch(u,{cache:'no-store',signal:AbortSignal.timeout(15000)});if(!response.ok)return;
  const text=await response.text(),match=text.match(/const portfolioDataStatus=([^;]+);/);
  if(!match)return;const next=JSON.parse(match[1]);
  if(next.syncedAt>portfolioDataStatus.syncedAt){
- try{sessionStorage.setItem('portfolioView',JSON.stringify({hidden:document.getElementById('privacy')?.getAttribute('aria-pressed')==='true',open:[...document.querySelectorAll('.holding.open .position-name small')].map(x=>x.textContent)}));}catch{}
+ try{sessionStorage.setItem('portfolioView',JSON.stringify({hidden:document.getElementById('privacy')?.getAttribute('aria-pressed')==='true',open:[...document.querySelectorAll('.holding.open')].map(tile=>tile.dataset.code || tile.querySelector('.position-name small')?.textContent)}));}catch{}
  const nextUrl=new URL(location.href);nextUrl.searchParams.delete('_refresh');nextUrl.searchParams.set('v',next.syncedAt.replace(/[^0-9]/g,''));
  location.replace(nextUrl.href);}
  }catch{}finally{checkNewQuotes.busy=false;}
 }
-try{const saved=JSON.parse(sessionStorage.getItem('portfolioView')||'null');if(saved){sessionStorage.removeItem('portfolioView');if(saved.hidden)document.getElementById('privacy').click();for(const tile of document.querySelectorAll('.holding'))if(saved.open.includes(tile.querySelector('.position-name small')?.textContent))tile.querySelector('button').click();}}catch{}
+try{const saved=JSON.parse(sessionStorage.getItem('portfolioView')||'null');if(saved){sessionStorage.removeItem('portfolioView');if(saved.hidden)document.getElementById('privacy').click();for(const tile of document.querySelectorAll('.holding'))if(saved.open.includes(tile.dataset.code) || saved.open.includes(tile.querySelector('.position-name small')?.textContent) || (tile.dataset.code && saved.open.includes(tile.dataset.code+' · 基金')))tile.querySelector('button').click();}}catch{}
 setInterval(checkNewQuotes,120000);document.addEventListener('visibilitychange',()=>{refreshDataStatus();checkNewQuotes();});checkNewQuotes();\n</script>`;
   let output = html.replace(/<div class="asof">[\s\S]*?<\/div>/, `<div class="asof">最近同步成功：${escapeHtml(meta.syncedAt)}（台北）</div>`);
   output = output.replace(/<style id="dataStatusStyle">[\s\S]*?<\/style>\s*/,'');
