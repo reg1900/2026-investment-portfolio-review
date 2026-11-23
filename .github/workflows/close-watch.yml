@@ -1,0 +1,65 @@
+name: 盤後收盤補查
+on:
+  schedule:
+    # Also request checks before the close so delayed triggers can still be useful.
+    - cron: '39 0-13 * * 1-5'
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    outputs:
+      refresh: ${{ steps.site.outputs.refresh }}
+    steps:
+      - name: 按台北實際時間核對正式網站
+        id: site
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import { appendFile } from 'node:fs/promises';
+          const now = new Date();
+          const local = new Intl.DateTimeFormat('sv-SE', {
+            timeZone: 'Asia/Taipei', year: 'numeric', month: '2-digit', day: '2-digit',
+            hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+          }).format(now);
+          const [date, time] = local.split(' ');
+          const day = new Date(date + 'T12:00:00Z').getUTCDay();
+          let refresh = false;
+          let reason = '本次啟動在盤後檢查時段以外。';
+          if (day >= 1 && day <= 5 && time >= '16:17' && time < '22:00') {
+            try {
+              const url = new URL('https://reg1900.github.io/2026-investment-portfolio-review/');
+              url.searchParams.set('_close_check', process.env.GITHUB_RUN_ID);
+              const response = await fetch(url, { cache: 'no-store', signal: AbortSignal.timeout(15000) });
+              if (!response.ok) throw new Error('HTTP ' + response.status);
+              const html = await response.text();
+              const holdings = JSON.parse(html.match(/const holdings=(\[[\s\S]*?\]);/)[1]);
+              const etfs = holdings.filter(row => row.unit === '股');
+              // The current portfolio validator requires 11 holdings including two funds.
+              const complete = etfs.length === 9 && new Set(etfs.map(row => row.n)).size === 9
+                && etfs.every(row => row.quoteDate === date);
+              refresh = !complete;
+              reason = complete ? '正式網站已顯示全部當日收盤。' : '正式網站尚未顯示全部當日收盤，執行補抓。';
+            } catch {
+              refresh = true;
+              reason = '無法確認正式網站行情，執行既有同步與驗證。';
+            }
+          }
+          await appendFile(process.env.GITHUB_OUTPUT, 'refresh=' + refresh + '\n');
+          await appendFile(process.env.GITHUB_STEP_SUMMARY, local + '（台北）' + reason + '\n');
+          NODE
+
+  recover:
+    needs: check
+    if: needs.check.outputs.refresh == 'true'
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/update-portfolio.yml
+    secrets:
+      GOOGLE_SHEET_SYNC_URL: ${{ secrets.GOOGLE_SHEET_SYNC_URL }}
+      GOOGLE_SHEET_SYNC_TOKEN: ${{ secrets.GOOGLE_SHEET_SYNC_TOKEN }}

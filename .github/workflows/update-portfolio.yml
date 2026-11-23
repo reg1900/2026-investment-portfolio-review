@@ -9,6 +9,12 @@ on:
     - cron: '47 2 * * 2-6'
     - cron: '17 6 * * 2-6'  # 14:17 fund follow-up
     - cron: '17 9 * * 6'    # Saturday 17:17 for Friday NAVs
+  workflow_call:
+    secrets:
+      GOOGLE_SHEET_SYNC_URL:
+        required: true
+      GOOGLE_SHEET_SYNC_TOKEN:
+        required: true
   workflow_dispatch:
   push:
     branches: [main]
@@ -33,6 +39,8 @@ jobs:
     steps:
       - name: 取得網站原始碼
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'schedule' && github.event.repository.default_branch || github.sha }}
 
       - name: 設定 Node.js
         uses: actions/setup-node@v4
