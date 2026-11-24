@@ -4,6 +4,7 @@ export const TAIWAN_SOURCES={
   report:'https://www.twse.com.tw/rwd/zh/afterTrading/MI_INDEX',
   twse:'https://openapi.twse.com.tw/v1/exchangeReport/STOCK_DAY_ALL',
   tpex:'https://www.tpex.org.tw/openapi/v1/tpex_mainboard_quotes',
+  tpexDaily:'https://www.tpex.org.tw/www/zh-tw/afterTrading/dailyQuotes',
 };
 const plain=value=>String(value??'').replace(/<[^>]*>/g,'').trim();
 function quote(price,change,isoDate,source,sourceUrl,now) {
@@ -15,9 +16,8 @@ function quote(price,change,isoDate,source,sourceUrl,now) {
 export function completedDateCandidates(now=new Date()) {
   const parts=new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Taipei',
     year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).format(now);
-  // This is a close-only dashboard. Before the afternoon sync, use the prior
-  // calendar day; skip weekends and let the actual report identify holidays.
-  const offset=parts.slice(11,16)>='15:35'?0:1;
+  // Once regular trading closes, accept today's dated after-trading reports.
+  const offset=parts.slice(11,16)>='13:30'?0:1;
   const base=Date.parse(parts.slice(0,10)+'T12:00:00Z');
   const dates=[];
   for(let i=offset;i<offset+10;i++){
@@ -54,6 +54,26 @@ export function parseDailyReport(data,positions,date,now=new Date()) {
   }
   return result;
 }
+function tpexReportUrl(date) {
+  return TAIWAN_SOURCES.tpexDaily+'?'+new URLSearchParams({
+    date:date.replaceAll('-','/'),response:'json',id:'',type:'EW',
+  });
+}
+export function parseTpexReport(data,positions,date,now=new Date()) {
+  if(data?.stat?.toLowerCase()!=='ok'||data.date!==date.replaceAll('-',''))
+    throw new Error('TPEx daily report unavailable or date mismatch');
+  const table=data.tables?.find(t=>t.title==='上櫃股票行情');
+  const fields=['代號','收盤','漲跌'].map(name=>table?.fields?.indexOf(name)??-1);
+  if(fields.includes(-1)||!Array.isArray(table?.data))throw new Error('TPEx close table missing');
+  const [code,close,change]=fields,result=new Map();
+  for(const row of table.data){
+    const symbol=row[code];
+    if(!(symbol in positions))continue;
+    if(result.has(symbol))throw new Error('Duplicate symbol in TPEx daily report');
+    result.set(symbol,quote(row[close],row[change],date,'櫃買中心收盤資料',tpexReportUrl(date),now));
+  }
+  return result;
+}
 export function parseBulkQuotes(rows,positions,market,now=new Date()){
   if(!Array.isArray(rows))throw new Error('Exchange quotes are not an array');
   const result=new Map();
@@ -84,8 +104,9 @@ export function selectQuotes(maps,positions){
   return selected;
 }
 export async function fetchTaiwanCloses(positions,request,{now=new Date(),warn=console.warn}={}){
+  const dates=completedDateCandidates(now);
   async function daily(){
-    for(const date of completedDateCandidates(now)){
+    for(const date of dates){
       const url=TAIWAN_SOURCES.report+'?date='+date.replaceAll('-','')+'&type=ALLBUT0999&response=json';
       const map=parseDailyReport(await request(url,'json'),positions,date,now);
       if(map.size)return map;
@@ -96,8 +117,9 @@ export async function fetchTaiwanCloses(positions,request,{now=new Date(),warn=c
     daily(),
     request(TAIWAN_SOURCES.twse,'json').then(x=>parseBulkQuotes(x,positions,'twse',now)),
     request(TAIWAN_SOURCES.tpex,'json').then(x=>parseBulkQuotes(x,positions,'tpex',now)),
+    request(tpexReportUrl(dates[0]),'json').then(x=>parseTpexReport(x,positions,dates[0],now)),
   ]);
-  const labels=['TWSE daily report','TWSE OpenAPI backup','TPEx'];
+  const labels=['TWSE daily report','TWSE OpenAPI backup','TPEx','TPEx daily report'];
   const maps=responses.map((r,i)=>{
     if(r.status==='fulfilled')return r.value;
     warn(labels[i]+' unavailable or invalid; trying other validated close sources');

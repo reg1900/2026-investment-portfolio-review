@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {completedDateCandidates,parseDailyReport,parseBulkQuotes,selectQuotes,fetchTaiwanCloses} from './taiwan-quotes.mjs';
+import {completedDateCandidates,parseDailyReport,parseTpexReport,parseBulkQuotes,selectQuotes,fetchTaiwanCloses} from './taiwan-quotes.mjs';
 const now=new Date('2026-10-29T01:00:00+08:00');
 const listed={'0050':58000,'00631L':14000,'00713':16000};
 const positions={...listed,'00937B':42000};
@@ -12,6 +12,7 @@ const report={stat:'OK',date:'20261028',tables:[{fields:['證券代號','證券�
 ]}]};
 const bulk=Object.keys(listed).map(Code=>({Code,Date:'1151027',ClosingPrice:'20',Change:'1'}));
 const tpex=[{SecuritiesCompanyCode:'00937B',Date:'1151028',Close:'14.17',Change:'-0.03'}];
+const otcReport={stat:'ok',date:'20261028',tables:[{title:'上櫃股票行情',fields:['代號','收盤','漲跌'],data:[['00937B','14.17','-0.03']]}]};
 const clone=x=>structuredClone(x);
 test('official daily close parser reads actual date and signed change fields',()=>{
   const m=parseDailyReport(report,listed,'2026-10-28',now);
@@ -25,7 +26,8 @@ test('official daily close parser reads actual date and signed change fields',()
 test('close date selection avoids intraday data and skips weekends',()=>{
   assert.equal(completedDateCandidates(now)[0],'2026-10-28');
   assert.equal(completedDateCandidates(new Date('2026-10-29T15:35:00+08:00'))[0],'2026-10-29');
-  assert.equal(completedDateCandidates(new Date('2026-10-29T15:34:00+08:00'))[0],'2026-10-28');
+  assert.equal(completedDateCandidates(new Date('2026-10-29T13:29:00+08:00'))[0],'2026-10-28');
+  assert.equal(completedDateCandidates(new Date('2026-10-29T13:30:00+08:00'))[0],'2026-10-29');
   assert.equal(completedDateCandidates(new Date('2026-10-26T08:35:00+08:00'))[0],'2026-10-23');
 });
 test('invalid, future, mismatched or non-comparable report quotes are rejected',()=>{
@@ -53,12 +55,21 @@ test('newer report replaces stale OpenAPI, and same-date disagreement stops refr
 });
 test('report-first orchestration combines current listed and OTC closes',async()=>{
   const warnings=[];
-  const request=async url=>url.includes('/afterTrading/')?report:url.includes('openapi.twse')?bulk:tpex;
+  const request=async url=>url.includes('/dailyQuotes')?otcReport:url.includes('/afterTrading/')?report:url.includes('openapi.twse')?bulk:tpex;
   const m=await fetchTaiwanCloses(positions,request,{now,warn:x=>warnings.push(x)});
   assert.equal(m.size,4);assert.equal(m.get('0050').price,108.65);
   assert.equal(m.get('00937B').price,14.17);assert.equal(m.get('00937B').change,-.03);
   assert.equal(m.get('00937B').source,'櫃買中心收盤資料');
   assert.equal(warnings.length,0);
+});
+test('dated OTC report supersedes an older bulk snapshot and rejects a mismatched date',()=>{
+  const daily=parseTpexReport(otcReport,positions,'2026-10-28',now);
+  const old=parseBulkQuotes([{...tpex[0],Date:'1151027',Close:'14.20'}],positions,'tpex',now);
+  const q=selectQuotes([old,daily],{'00937B':1}).get('00937B');
+  assert.equal(q.price,14.17);
+  assert.equal(q.change,-0.03);
+  assert.match(q.sourceUrl,/dailyQuotes/);
+  assert.throws(()=>parseTpexReport(otcReport,positions,'2026-10-27',now),/date mismatch/);
 });
 test('report failures use dated OpenAPI backup and warn rather than inventing prices',async()=>{
   const warnings=[];
